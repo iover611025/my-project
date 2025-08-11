@@ -6,9 +6,9 @@ namespace X
     public class Trapezoid2DFake3D_Horizontal : MonoBehaviour
     {
         [Header("梯形設定")]
-        public float leftHeight = 2f;     // 左側高度
-        public float rightHeight = 4f;    // 右側高度
-        public float width = 3f;          // 整體寬度
+        public float leftHeight = 2f;      // 左邊高度
+        public float rightHeight = 4f;     // 右邊高度
+        public float width = 3f;           // 寬度（左右距離）
         public string sortingLayerName = "Default";
         public int sortingOrder = 0;
         [Range(-1f, 1f)] public float perspective = 0.3f; // 偽3D視差
@@ -20,21 +20,21 @@ namespace X
         {
             Mesh mesh = new Mesh();
 
-            // 偽3D橫向梯形：中心對齊
-            // perspective 讓梯形有左右深度變化感
+            // 讓橫向梯形中心在 (0,0)
             float yOffset = width * perspective;
 
-            // 頂點順序：左下、右下、右上、左上
+            // 頂點順序：左下、右下、右上、左上（逆時針，法線朝+z，scale.z正即可顯示）
             Vector3[] vertices = new Vector3[4];
-            vertices[0] = new Vector3(-width / 2, -leftHeight / 2 - yOffset, 0);       // 左下
-            vertices[1] = new Vector3(width / 2, -rightHeight / 2 + yOffset, 0);       // 右下
-            vertices[2] = new Vector3(width / 2, rightHeight / 2 + yOffset, 0);        // 右上
-            vertices[3] = new Vector3(-width / 2, leftHeight / 2 - yOffset, 0);        // 左上
+            vertices[0] = new Vector3(-width / 2, -leftHeight / 2 - yOffset, 0);    // 左下
+            vertices[1] = new Vector3(width / 2, -rightHeight / 2 + yOffset, 0);    // 右下
+            vertices[2] = new Vector3(width / 2, rightHeight / 2 + yOffset, 0);     // 右上
+            vertices[3] = new Vector3(-width / 2, leftHeight / 2 - yOffset, 0);     // 左上
 
+            // 逆時針三角形順序（避免背面剔除）
             int[] triangles = new int[]
             {
-                0, 1, 2,
-                0, 2, 3
+                0, 2, 1,
+                0, 3, 2
             };
 
             Vector2[] uvs = new Vector2[4]
