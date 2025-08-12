@@ -20,6 +20,15 @@ namespace X
             {
                 Debug.Log($"你撿到：【{data.itemName}】");
                 // 這裡可以呼叫你的背包系統，把 data 加入背包
+                var inventoryUI = Object.FindFirstObjectByType<InventoryUI>();
+                if (inventoryUI != null)
+                {
+                    inventoryUI.AddItemToSlot(data);
+                }
+                else
+                {
+                    Debug.LogWarning("找不到 InventoryUI 實例！");
+                }
                 Destroy(gameObject); // 撿起後物品消失
             }
             else
