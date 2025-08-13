@@ -16,3 +16,6 @@ MonoBehaviour:
   - id: 1
     itemName: "\u6E2C\u8A661"
     icon: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
+  - id: 2
+    itemName: "\u6E2C\u8A662"
+    icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
