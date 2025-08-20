@@ -19,7 +19,6 @@ namespace X
             var inventoryUI = GetComponentInParent<InventoryUI>();
             if (inventoryUI != null)
             {
-                // 如果這個欄位的 icon 已經是握持區的 icon，則取消握持
                 if (inventoryUI.heldItemImage != null && inventoryUI.heldItemImage.sprite == iconImage.sprite && iconImage.sprite != null)
                 {
                     inventoryUI.ClearHeldItem();

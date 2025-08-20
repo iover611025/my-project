@@ -8,7 +8,7 @@ namespace X
     {
         public List<InventorySlot> slots;
         public Image heldItemImage; // 握持區
-        private Sprite defaultHeldItemSprite; // 新增：記錄預設圖
+        private Sprite defaultHeldItemSprite;
 
         void Awake()
         {
@@ -33,17 +33,16 @@ namespace X
             if (heldItemImage != null)
             {
                 heldItemImage.sprite = icon;
-                heldItemImage.enabled = icon != null;
+                heldItemImage.enabled = true;
             }
         }
 
-        // 修改：取消握持時設回預設圖
         public void ClearHeldItem()
         {
             if (heldItemImage != null)
             {
                 heldItemImage.sprite = defaultHeldItemSprite;
-                heldItemImage.enabled = defaultHeldItemSprite != null;
+                heldItemImage.enabled = true;
             }
         }
     }

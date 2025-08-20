@@ -12,9 +12,8 @@ namespace X
     [System.Serializable]
     public class ItemData
     {
-        public int id;           // 道具ID
-        public string itemName;  // 道具名稱
-        public Sprite icon;      // 道具圖示
-        // 你可以擴充其他欄位
+        public int id;
+        public string itemName;
+        public Sprite icon;
     }
 }

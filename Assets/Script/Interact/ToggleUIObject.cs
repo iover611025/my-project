@@ -21,7 +21,6 @@ namespace X
         {
             isOpen = !isOpen;
             UpdateVisual();
-            // 這裡可加音效、動畫、事件等
         }
 
         void UpdateVisual()
