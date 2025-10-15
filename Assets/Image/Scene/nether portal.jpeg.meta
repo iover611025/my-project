@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      nether portal_0: 2499558850384810379
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
