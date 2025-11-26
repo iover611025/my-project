@@ -34,6 +34,7 @@ namespace X
             {
                 heldItemImage.sprite = icon;
                 heldItemImage.enabled = true;
+                // 若使用透明或特殊 placeholder，需要確保 alpha 或 enabled 表示「有物品」
             }
         }
 
@@ -41,8 +42,9 @@ namespace X
         {
             if (heldItemImage != null)
             {
-                heldItemImage.sprite = defaultHeldItemSprite;
-                heldItemImage.enabled = true;
+                // 把握持區視為「空手」：移除 sprite 並關閉 Image，讓 IsEmptyHand 能正確判斷
+                heldItemImage.sprite = null;
+                heldItemImage.enabled = false;
             }
         }
     }
