@@ -17,6 +17,10 @@ namespace X
         public float fadeDuration = 0.5f; // 淡入/淡出時間
         public float blackStayDuration = 1.0f; // 黑幕停留時間
 
+        [Header("黑幕文字（可選）")]
+        public Text blackFadeText; // 黑幕上顯示的文字（可為 null）
+        public float textFadeDuration = 0.5f; // 文字淡入/淡出時間
+
         [Header("互動設定")]
         public bool blockInputDuringFade = true; // true：淡入時阻擋互動；false：淡入期間仍允許穿透點擊
 
@@ -29,8 +33,15 @@ namespace X
         private int _blackCanvasPrevOrder;
         private bool _isFading = false;
 
+        // 全域旗標：讓其他系統能檢查是否在任何 instance 正在過場
+        private static bool _globalIsFading = false;
+
         // 用來控制 Raycast 的 CanvasGroup（或利用 Image.raycastTarget）
         private CanvasGroup _blackCanvasGroup;
+
+        // 對外可讀取的狀態
+        public bool IsFading { get { return _isFading; } }
+        public static bool GlobalIsFading { get { return _globalIsFading; } }
 
         void Start()
         {
@@ -69,6 +80,14 @@ namespace X
                 }
             }
 
+            // 初始化黑幕文字（若有）
+            if (blackFadeText != null)
+            {
+                blackFadeText.gameObject.SetActive(true);
+                Color tcol = blackFadeText.color;
+                blackFadeText.color = new Color(tcol.r, tcol.g, tcol.b, 0f);
+            }
+
             // 初始化 UI 狀態：不要在 Start 自動觸發過場（直接設定初始面板）
             InitializePanels();
 
@@ -99,6 +118,34 @@ namespace X
             StartCoroutine(FadeAndSwitchPanel(fromPanel, toPanel));
         }
 
+        // 新增：黑幕 + 文字 轉場（外部可傳入文字）
+        public void FadeSwitchPanelWithText(GameObject fromPanel, GameObject toPanel, string message)
+        {
+            if (_isFading) return;
+            StartCoroutine(FadeAndSwitchPanelWithText(fromPanel, toPanel, message));
+        }
+
+        // 提供給外部查詢目前被顯示的 Panel（公開 wrapper）
+        public GameObject GetCurrentlyActivePanel()
+        {
+            return GetCurrentlyActivePanel_Internal();
+        }
+
+        // 兼容不同命名的呼叫
+        public GameObject GetCurrentActivePanel()
+        {
+            return GetCurrentlyActivePanel_Internal();
+        }
+
+        // 內部實作（原 private 名稱）
+        private GameObject GetCurrentlyActivePanel_Internal()
+        {
+            if (settingsPanel != null && settingsPanel.activeSelf) return settingsPanel;
+            if (mainMenuPanel != null && mainMenuPanel.activeSelf) return mainMenuPanel;
+            if (gamePanel != null && gamePanel.activeSelf) return gamePanel;
+            return null;
+        }
+
         private IEnumerator FadeAndSwitchPanel(GameObject fromPanel, GameObject toPanel)
         {
             if (blackFadeImage == null)
@@ -112,6 +159,7 @@ namespace X
             }
 
             _isFading = true;
+            _globalIsFading = true;
 
             // 暫時提升黑幕 Canvas 到最上層
             if (_blackCanvas != null)
@@ -163,6 +211,133 @@ namespace X
             blackFadeImage.color = new Color(c.r, c.g, c.b, 0f);
 
             _isFading = false;
+            _globalIsFading = false;
+        }
+
+        private IEnumerator FadeAndSwitchPanelWithText(GameObject fromPanel, GameObject toPanel, string message)
+        {
+            if (blackFadeImage == null)
+            {
+                // fallback: 直接切換並設定文字（若有）
+                if (blackFadeText != null)
+                {
+                    blackFadeText.text = message;
+                    blackFadeText.color = new Color(blackFadeText.color.r, blackFadeText.color.g, blackFadeText.color.b, 1f);
+                }
+                if (fromPanel != null) fromPanel.SetActive(false);
+                if (toPanel != null) toPanel.SetActive(true);
+                yield break;
+            }
+
+            _isFading = true;
+            _globalIsFading = true;
+
+            // 暫時提升黑幕 Canvas 到最上層
+            if (_blackCanvas != null)
+            {
+                _blackCanvas.overrideSorting = true;
+                _blackCanvas.sortingOrder = 1000;
+            }
+
+            blackFadeImage.gameObject.SetActive(true);
+
+            // 控制是否阻擋射線
+            if (_blackCanvasGroup != null)
+            {
+                _blackCanvasGroup.blocksRaycasts = blockInputDuringFade;
+                blackFadeImage.raycastTarget = blockInputDuringFade;
+            }
+
+            // 確保文字存在時初始化文字 alpha = 0 並設定訊息
+            if (blackFadeText != null)
+            {
+                blackFadeText.gameObject.SetActive(true);
+                blackFadeText.text = message ?? "";
+                Color tc = blackFadeText.color;
+                blackFadeText.color = new Color(tc.r, tc.g, tc.b, 0f);
+            }
+
+            // 1) 先淡入黑幕（完全不透明）
+            yield return StartCoroutine(FadeBlack(0f, 1f, fadeDuration));
+
+            // 2) 黑幕完全不透明後，再讓文字淡入到可見
+            if (blackFadeText != null)
+                yield return StartCoroutine(FadeText(0f, 1f, textFadeDuration));
+
+            // 3) 切換面板（在文字已經顯示的狀態下切換）
+            if (fromPanel != null) fromPanel.SetActive(false);
+            if (toPanel != null) toPanel.SetActive(true);
+            if (toPanel != null) lastActivePanel = toPanel;
+
+            // 4) 停留（使用 real-time）
+            yield return new WaitForSecondsRealtime(blackStayDuration);
+
+            // 5) 先淡出文字（文字完全淡出後才淡出黑幕）
+            if (blackFadeText != null)
+                yield return StartCoroutine(FadeText(1f, 0f, textFadeDuration));
+
+            // 6) 文字淡出完成後再淡出黑幕
+            yield return StartCoroutine(FadeBlack(1f, 0f, fadeDuration));
+
+            // 淡出後取消阻擋
+            if (_blackCanvasGroup != null)
+            {
+                _blackCanvasGroup.blocksRaycasts = false;
+                blackFadeImage.raycastTarget = false;
+            }
+
+            // 還原 Canvas 排序設定
+            if (_blackCanvas != null)
+            {
+                _blackCanvas.overrideSorting = _blackCanvasPrevOverride;
+                _blackCanvas.sortingOrder = _blackCanvasPrevOrder;
+            }
+
+            // 保持 blackFadeImage active 但 alpha=0；文字同樣設為 alpha=0
+            Color c = blackFadeImage.color;
+            blackFadeImage.color = new Color(c.r, c.g, c.b, 0f);
+            if (blackFadeText != null)
+            {
+                Color tc = blackFadeText.color;
+                blackFadeText.color = new Color(tc.r, tc.g, tc.b, 0f);
+            }
+
+            _isFading = false;
+            _globalIsFading = false;
+        }
+
+        // 幫助：同時啟動兩個 IEnumerator（其中一個可為 null）
+        private IEnumerator RunParallel(IEnumerator a, IEnumerator b)
+        {
+            if (a == null && b == null) yield break;
+            if (a == null)
+            {
+                yield return StartCoroutine(b);
+                yield break;
+            }
+            if (b == null)
+            {
+                yield return StartCoroutine(a);
+                yield break;
+            }
+
+            // 以兩個 coroutine 並行推進
+            bool aDone = false, bDone = false;
+            var aEnum = a;
+            var bEnum = b;
+            // 啟動 both
+            var aRoutine = StartCoroutine(Advance(aEnum, () => aDone = true));
+            var bRoutine = StartCoroutine(Advance(bEnum, () => bDone = true));
+            // 等待兩者完成
+            while (!aDone || !bDone)
+                yield return null;
+        }
+
+        // 進階：執行一個 IEnumerator 並在完成時呼叫 callback
+        private IEnumerator Advance(IEnumerator enumerator, System.Action onDone)
+        {
+            yield return StartCoroutine(enumerator);
+            onDone?.Invoke();
         }
 
         private IEnumerator FadeBlack(float from, float to, float duration)
@@ -181,13 +356,20 @@ namespace X
             blackFadeImage.color = new Color(baseColor.r, baseColor.g, baseColor.b, to);
         }
 
-        // 辅助：取得目前被顯示的 Panel（優先檢查設定、主選單、遊戲）
-        private GameObject GetCurrentlyActivePanel()
+        private IEnumerator FadeText(float from, float to, float duration)
         {
-            if (settingsPanel != null && settingsPanel.activeSelf) return settingsPanel;
-            if (mainMenuPanel != null && mainMenuPanel.activeSelf) return mainMenuPanel;
-            if (gamePanel != null && gamePanel.activeSelf) return gamePanel;
-            return null;
+            if (blackFadeText == null) yield break;
+
+            float t = 0f;
+            Color baseColor = new Color(blackFadeText.color.r, blackFadeText.color.g, blackFadeText.color.b, 0f);
+            while (t < duration)
+            {
+                t += Time.unscaledDeltaTime;
+                float a = Mathf.Lerp(from, to, Mathf.Clamp01(t / duration));
+                blackFadeText.color = new Color(baseColor.r, baseColor.g, baseColor.b, a);
+                yield return null;
+            }
+            blackFadeText.color = new Color(baseColor.r, baseColor.g, baseColor.b, to);
         }
 
         // -------- 新增：立即切換版本（無轉場） --------
@@ -335,7 +517,7 @@ namespace X
                 canvas.sortingOrder = order;
         }
 
-        // 關閉設定介面（返回遊戲）
+        // 閉設定介面（返回遊戲）
         public void BackToGame()
         {
             if (settingsPanel != null)

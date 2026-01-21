@@ -13,13 +13,6 @@ namespace X
             ShowRoom(currentRoomIndex);
         }
 
-        void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.A))
-                SwitchRoom(-1);
-            if (Input.GetKeyDown(KeyCode.D))
-                SwitchRoom(1);
-        }
 
         public void SwitchRoom(int direction)
         {
@@ -32,11 +25,21 @@ namespace X
             }
         }
 
+        // 新增：允許外部直接指定索引切換（RoomUIManager 會呼叫它以同步實際房間）
+        public void SetRoomIndex(int index)
+        {
+            if (rooms == null || rooms.Length == 0) return;
+            int newIndex = Mathf.Clamp(index, 0, rooms.Length - 1);
+            if (newIndex != currentRoomIndex)
+            {
+                currentRoomIndex = newIndex;
+                ShowRoom(currentRoomIndex);
+            }
+        }
+
         void ShowRoom(int index)
         {
-            for (int i = 0; i < rooms.Length; i++)
-                if (rooms[i] != null)
-                    rooms[i].SetActive(i == index);
+            RoomHelper.ActivateOnly(rooms, index);
         }
 
         // 進入新房子時可呼叫此方法重設房間
