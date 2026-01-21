@@ -851,24 +851,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6c8fd35dda4f9847a5c28ff5bdfeff6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slots:
-  - {fileID: 1257466714}
-  - {fileID: 1415141717}
-  - {fileID: 948488114}
-  - {fileID: 1768990737}
-  - {fileID: 1917057480}
-  - {fileID: 840222622}
-  - {fileID: 159669678}
-  - {fileID: 1867394890}
-  - {fileID: 2071072681}
-  - {fileID: 1891805068}
-  heldItemImage: {fileID: 563566568}
-  canvas: {fileID: 140565328}
-  panelToMove: {fileID: 95239719}
-  moveDistanceX: 350
-  moveDuration: 0.25
-  expandToggleUI: {fileID: 1394317236}
-  rotateToggleOnExpand: 1
 --- !u!1 &151328971
 GameObject:
   m_ObjectHideFlags: 0
@@ -3182,7 +3164,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 8474597899118252077, guid: 5ea776a5ccfa419408f8e4da4d546e5d, type: 3}
+  m_Sprite: {fileID: 8171718631541358868, guid: ffd1a81b6ed94754a952a5400ed03341, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -6151,8 +6133,8 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
---- !u!212 &1238153065
   m_IsActive: 0
+--- !u!212 &1238153065
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6343,6 +6325,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
+  m_IsActive: 0
 --- !u!212 &1243373636
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6350,7 +6333,6 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1243373635}
-  m_IsActive: 0
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -11956,4 +11938,3 @@ SceneRoots:
   - {fileID: 209666999}
   - {fileID: 1633968052}
   - {fileID: 30491387}
-  - {fileID: 1130401993}
