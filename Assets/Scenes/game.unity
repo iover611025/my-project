@@ -926,6 +926,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6c8fd35dda4f9847a5c28ff5bdfeff6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slots: []
+  heldItemImage: {fileID: 0}
+  canvas: {fileID: 0}
+  panelToMove: {fileID: 0}
+  moveDistanceX: -200
+  moveDuration: 0.25
+  expandToggleUI: {fileID: 0}
+  rotateToggleOnExpand: 1
 --- !u!1 &151328971
 GameObject:
   m_ObjectHideFlags: 0
@@ -4724,7 +4732,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &799962252
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5630,7 +5638,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &974825907
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6006,7 +6014,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &1032754632
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6787,7 +6795,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &1238153065
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6979,7 +6987,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &1243373636
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -8764,7 +8772,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &1515112011
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -9433,7 +9441,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &1667515834
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -9613,7 +9621,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &1715993621
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -9703,7 +9711,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &1716294621
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -9971,7 +9979,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!223 &1757709807
 Canvas:
   m_ObjectHideFlags: 0
@@ -11443,7 +11451,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &1978666149
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -11911,7 +11919,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2022489449
 RectTransform:
   m_ObjectHideFlags: 0
