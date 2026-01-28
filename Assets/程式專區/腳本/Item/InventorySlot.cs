@@ -12,8 +12,13 @@ namespace X
         [HideInInspector] public int slotIndex;
         [HideInInspector] public InventoryUI owner;
 
+
         // root image（slot 背景）參考，用於避免不小心把根 image alpha 設為 0
         private Image _rootImage;
+
+        // debug text
+        private Text _debugText;
+        private int _lastDebugId = int.MinValue;
 
         void Reset()
         {
@@ -39,6 +44,38 @@ namespace X
             // 若 iconImage 未指派，嘗試 Reset 的邏輯一次
             if (iconImage == null)
                 Reset();
+
+        }
+
+        void Update()
+        {
+            if (_debugText == null)
+
+            if (_debugText != null && !_debugText.gameObject.activeSelf)
+                _debugText.gameObject.SetActive(true);
+
+            int currentId = (itemData != null) ? itemData.id : -1;
+            // 將 id==0 視為 empty（預設/空手）
+            bool isEmpty = (itemData == null) || (currentId == 0);
+            int displayId = isEmpty ? -1 : currentId;
+
+            if (displayId != _lastDebugId)
+            {
+                _lastDebugId = displayId;
+                if (_debugText != null)
+                    _debugText.text = displayId >= 0 ? $"ID:{displayId}" : "empty";
+
+#if UNITY_EDITOR
+                Debug.Log($"[InventorySlot] slotIndex={slotIndex} name={gameObject.name} itemId={(displayId >= 0 ? displayId.ToString() : "null/empty")}");
+#endif
+            }
+        }
+
+
+        // 新增判斷：若 itemData 為 null 或 id==0，視為空 slot
+        public bool IsEmpty()
+        {
+            return itemData == null || itemData.id == 0;
         }
 
         public void SetIcon(Sprite icon)

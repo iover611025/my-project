@@ -56,9 +56,10 @@ namespace X
                     return;
                 }
 
-                Sprite heldIcon = null;
-                if (inventoryUI != null && inventoryUI.heldItemImage != null)
-                    heldIcon = inventoryUI.heldItemImage.sprite;
+                // 優先透過 InventoryUI 的 API 取得握持資料
+                ItemData heldData = null;
+                if (inventoryUI != null)
+                    heldData = inventoryUI.GetHeldItemData();
 
                 bool emptyHand = IsEmptyHand(inventoryUI);
 
@@ -68,8 +69,8 @@ namespace X
                     return;
                 }
 
-                var itemData = itemDatabase.items.Find(x => x.icon == heldIcon);
-                if (itemData != null && itemData.id == requiredItemId)
+                // 以 heldData 的 id 判斷（更可靠），並把 id==0 視為空手/預設
+                if (heldData != null && heldData.id != 0 && heldData.id == requiredItemId)
                 {
                     doorToggle.OnClick(); // 開門
                     isOpen = true;
@@ -122,15 +123,11 @@ namespace X
             }
         }
 
+        // 改為使用 InventoryUI 提供的 IsHeldEmpty 判斷（會把 id==0 視為空手）
         private bool IsEmptyHand(InventoryUI inv)
         {
             if (inv == null) return true;
-            var img = inv.heldItemImage;
-            if (img == null) return true;
-            if (!img.enabled) return true;
-            if (img.sprite == null) return true;
-            if (img.color.a <= 0.01f) return true;
-            return false;
+            return inv.IsHeldEmpty();
         }
 
         private IEnumerator FadeAndSwitchPanelSimple()

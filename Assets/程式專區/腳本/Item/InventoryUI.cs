@@ -134,7 +134,14 @@ namespace X
             if (heldItemImage.sprite == null) return true;
             if (heldItemImage.color.a <= 0.01f) return true;
             if (_heldItemData == null) return true;
+            if (_heldItemData.id == 0) return true; // id==0 視為空手/預設
             return false;
+        }
+
+        // 新增：外部可取得目前握持的 ItemData（若為空則回傳 null，id==0 表示預設/空）
+        public ItemData GetHeldItemData()
+        {
+            return _heldItemData;
         }
 
         // 可在 Inspector 右鍵呼叫：列印目前 slot 詳細狀態
@@ -152,7 +159,8 @@ namespace X
                     continue;
                 }
                 var d = s.itemData;
-                Debug.Log($"  slot[{i}] name={s.gameObject.name} itemData={(d!=null? d.itemName + $"(id={d.id})" : "null")}");
+                string itemDesc = (d != null && d.id != 0) ? d.itemName + $"(id={d.id})" : "null/empty";
+                Debug.Log($"  slot[{i}] name={s.gameObject.name} itemData={itemDesc}");
             }
         }
 
@@ -254,7 +262,7 @@ namespace X
             Vector2 targetPos = _originalAnchoredPos + (expand ? new Vector2(moveDistanceX, 0f) : Vector2.zero);
 
             Vector3 startToggleEuler = expandToggleUI != null ? expandToggleUI.localEulerAngles : Vector3.zero;
-            Vector3 targetToggleEuler = _toggleOriginalEuler + (expand && rotateToggleOnExpand ? new Vector3(0f, 0f, -90f) : Vector3.zero);
+            Vector3 targetToggleEuler = _toggleOriginalEuler + (expand && rotateToggleOnExpand ? new Vector3(0f, 0f, -90f) : new Vector3(0f, 0f, 0f));
 
             float elapsed = 0f;
             float dur = Mathf.Max(0.0001f, moveDuration);
@@ -266,8 +274,16 @@ namespace X
                 // smooth step for nicer motion
                 float s = Mathf.SmoothStep(0f, 1f, t);
                 panelToMove.anchoredPosition = Vector2.LerpUnclamped(startPos, targetPos, s);
+
                 if (expandToggleUI != null && rotateToggleOnExpand)
-                    expandToggleUI.localEulerAngles = Vector3.LerpUnclamped(startToggleEuler, targetToggleEuler, s);
+                {
+                    // 使用 Mathf.LerpAngle 進行最短角度插值，避免 -90 -> 0 經過 +270 的長路徑
+                    float x = Mathf.LerpAngle(startToggleEuler.x, targetToggleEuler.x, s);
+                    float y = Mathf.LerpAngle(startToggleEuler.y, targetToggleEuler.y, s);
+                    float z = Mathf.LerpAngle(startToggleEuler.z, targetToggleEuler.z, s);
+                    expandToggleUI.localEulerAngles = new Vector3(x, y, z);
+                }
+
                 yield return null;
             }
 
@@ -321,6 +337,60 @@ namespace X
             }
         }
 
+        // UI Button or EventTrigger 可以綁到這個以清除/分配握持
+        public void OnHeldAreaClick()
+        {
+            // 若握持為空 -> 清除（與原行為一致）
+            if (IsHeldEmpty())
+            {
+                ClearHeldItem();
+                if (Debug.isDebugBuild) Debug.Log("[InventoryUI] OnHeldAreaClick: cleared held item");
+                return;
+            }
+
+            // 若握持有有效道具（id != 0），嘗試分配到第一個空 slot（視 id==0 為空格）
+            if (_heldItemData != null && _heldItemData.id != 0)
+            {
+                bool placed = TryAddToFirstEmpty(_heldItemData);
+                if (placed)
+                {
+                    if (Debug.isDebugBuild) Debug.Log($"[InventoryUI] OnHeldAreaClick: placed held item '{_heldItemData.itemName}' (id {_heldItemData.id}) into first empty slot");
+                    ClearHeldItem();
+                    return;
+                }
+                else
+                {
+                    // 無可分配空間：依需求輸出診斷資訊
+                    Debug.LogWarning("[InventoryUI] OnHeldAreaClick: 物品欄沒有可分配空間。列出目前 slots 與是否為空：");
+                    if (slots == null)
+                    {
+                        Debug.Log("[InventoryUI] slots = null");
+                    }
+                    else
+                    {
+                        Debug.Log($"[InventoryUI] slots.Count = {slots.Count}");
+                        for (int i = 0; i < slots.Count; i++)
+                        {
+                            var s = slots[i];
+                            if (s == null)
+                            {
+                                Debug.Log($"  slot[{i}] = null");
+                                continue;
+                            }
+                            bool empty = s.IsEmpty();
+                            var d = s.itemData;
+                            string desc = empty ? "empty" : (d != null ? $"{d.itemName}(id={d.id})" : "non-null but not empty?");
+                            Debug.Log($"  slot[{i}] name={s.gameObject.name} empty={empty} itemData={desc}");
+                        }
+                    }
+                    return;
+                }
+            }
+
+            // 若握持為預設/空 (id==0) 或其他不預期情況，直接清除
+            ClearHeldItem();
+        }
+
         // pickup.cs 呼這個把道具放入第一個空 slot
         // 回傳 true 表示接受此道具（包含已安置、放入握持區或已排程展開後加入）
         public bool AddItemToSlot(ItemData itemData)
@@ -338,7 +408,7 @@ namespace X
                 for (int i = 0; i < slots.Count; i++)
                 {
                     var s = slots[i];
-                    bool empty = s == null || s.itemData == null;
+                    bool empty = s == null || s.IsEmpty();
                     Debug.Log($"  slot[{i}] = {(s==null? "null" : s.gameObject.name)} empty={empty}");
                 }
             }
@@ -393,11 +463,11 @@ namespace X
             {
                 var s = ordered[i];
                 if (s == null) continue;
-                bool empty = s.itemData == null;
+                bool empty = s.IsEmpty();
                 if (empty)
                 {
                     s.itemData = itemData;
-                    s.SetIcon(itemData.icon);
+                    s.SetIcon(itemData != null && itemData.id != 0 ? itemData.icon : null);
                     if (Debug.isDebugBuild) Debug.Log($"[InventoryUI] Added item '{itemData.itemName}' (id {itemData.id}) to slot {i} name={s.gameObject.name}");
                     return true;
                 }
@@ -415,7 +485,7 @@ namespace X
             if (!_isExpanded)
                 StartCoroutine(AnimateExpand(true));
 
-            // 等待展開動畫完成（加上一點 margin）
+            // 等待展開動畫完成（加了一點 margin）
             yield return new WaitForSecondsRealtime(Mathf.Max(0.01f, moveDuration + 0.05f));
 
             // 再次嘗試加入（展開後某些 hidden slot 可能會被啟用）
@@ -440,26 +510,22 @@ namespace X
         }
 
         // UI Button or EventTrigger 可以綁到這個以清除握持
-        public void OnHeldAreaClick()
-        {
-            ClearHeldItem();
-            if (Debug.isDebugBuild) Debug.Log("[InventoryUI] OnHeldAreaClick: cleared held item");
-        }
+        // public void OnHeldAreaClick() 已改為支援分配邏輯
 
         // ---- Drag API called from InventorySlot ----
         public void OnSlotClicked(InventorySlot slot)
         {
             if (slot == null) return;
 
-            // 若握持區有物品 => 與 slot 交換
-            if (_heldItemData != null)
+            // 若握持區有物品 => 與 slot 交換（使用 IsHeldEmpty 判斷，id==0 視為空手）
+            if (!IsHeldEmpty())
             {
                 // swap
                 ItemData temp = slot.itemData;
                 slot.itemData = _heldItemData;
-                slot.SetIcon(slot.itemData != null ? slot.itemData.icon : null);
+                slot.SetIcon(slot.itemData != null && slot.itemData.id != 0 ? slot.itemData.icon : null);
 
-                if (temp != null)
+                if (temp != null && temp.id != 0)
                 {
                     SetHeldItem(temp.icon, temp);
                 }
@@ -470,10 +536,10 @@ namespace X
                 return;
             }
 
-            // 若握持區空，slot 有 item，則把 slot 的 item 拿起放到握持區
-            if (slot.itemData != null)
+            // 若握持區空，slot 有 item（且非 id==0），則把 slot 的 item 拿起放到握持區
+            if (slot != null && !slot.IsEmpty())
             {
-                SetHeldItem(slot.itemData.icon, slot.itemData);
+                SetHeldItem(slot.itemData != null ? slot.itemData.icon : null, slot.itemData);
                 slot.itemData = null;
                 slot.SetIcon(null);
             }
@@ -485,7 +551,7 @@ namespace X
 
         public void OnSlotBeginDrag(InventorySlot slot, PointerEventData eventData)
         {
-            if (slot == null || slot.itemData == null) return;
+            if (slot == null || slot.IsEmpty()) return;
             if (canvas == null)
             {
                 Debug.LogWarning("[InventoryUI] Canvas 未指定，無法拖放");
