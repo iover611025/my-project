@@ -927,12 +927,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slots: []
-  heldItemImage: {fileID: 0}
-  canvas: {fileID: 0}
-  panelToMove: {fileID: 0}
-  moveDistanceX: -200
+  heldItemImage: {fileID: 563566568}
+  canvas: {fileID: 140565328}
+  panelToMove: {fileID: 140565329}
+  moveDistanceX: 350
   moveDuration: 0.25
-  expandToggleUI: {fileID: 0}
+  expandToggleUI: {fileID: 1394317236}
   rotateToggleOnExpand: 1
 --- !u!1 &151328971
 GameObject:
@@ -6139,7 +6139,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::X.PanelActivator
   panelToOpen: {fileID: 2033632714}
-  panelToClose: {fileID: 0}
+  panelToClose: {fileID: 78969383}
   openOnly: 0
 --- !u!114 &1036353324
 MonoBehaviour:
