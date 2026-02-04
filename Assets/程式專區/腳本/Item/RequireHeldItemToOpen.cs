@@ -115,6 +115,9 @@ namespace X
                         else
                             StartCoroutine(FadeAndSwitchPanelWithTextLocal(transitionMessage));
                     }
+
+                    // 重置門狀態（讓回到此大場景時門可再使用）
+                    ResetDoorStateAfterUse();
                 }
                 else
                 {
@@ -128,6 +131,27 @@ namespace X
         {
             if (inv == null) return true;
             return inv.IsHeldEmpty();
+        }
+
+        // 將門重置為未開（供在啟動轉場後調用）
+        private void ResetDoorStateAfterUse()
+        {
+            // 將內部旗標還原，允許再次使用
+            isOpen = false;
+
+            // 若有 ToggleUIObject，強制把其狀態與圖片設為「關閉」
+            if (doorToggle != null)
+            {
+                doorToggle.isOpen = false;
+                // 嘗試更新視覺（直接透過 Image 更新，避免存取 private API）
+                var img = doorToggle.GetComponent<UnityEngine.UI.Image>();
+                if (img != null && doorToggle.closedSprite != null)
+                {
+                    img.sprite = doorToggle.closedSprite;
+                }
+            }
+
+            if (Debug.isDebugBuild) Debug.Log("[RequireHeldItemToOpen] ResetDoorStateAfterUse: door state reset so it can be used again after returning.");
         }
 
         private IEnumerator FadeAndSwitchPanelSimple()
