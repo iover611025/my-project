@@ -44,6 +44,13 @@ namespace X
         {
             if (isTransitioning) return; // 轉場期間禁止輸入
 
+            // 新增：當 PanelActivator 正在顯示 returnImage（等待玩家點擊返回）時，禁止 A/D 切換
+            if (PanelActivator.IsBlockingInput)
+            {
+                if (enableDebugLogs) Debug.Log("[RoomUIManager] Update: input blocked by PanelActivator (returnImage shown)");
+                return;
+            }
+
             // 若 UICoverManager 正在播放黑幕過場，也禁止輸入（避免快速按鍵穿透）
             if ((uiCoverManager != null && uiCoverManager.IsFading) || UICoverManager.GlobalIsFading) return;
 
@@ -70,7 +77,7 @@ namespace X
             }
         }
 
-        // 方向 -1 或 +1
+        // 方向 -1 或 +1（已改為循環）
         public void SwitchRoom(int direction)
         {
             var panels = GetCurrentPanels();
@@ -84,7 +91,10 @@ namespace X
             int activeIndex = GetActivePanelIndex(panels);
             int baseIndex = activeIndex >= 0 ? activeIndex : currentRoomIndex;
 
-            int newIndex = Mathf.Clamp(baseIndex + direction, 0, panels.Length - 1);
+            int n = panels.Length;
+            int raw = baseIndex + direction;
+            int newIndex = ((raw % n) + n) % n; // 正確處理負方向的循環
+
             if (newIndex != baseIndex)
             {
                 if (enableDebugLogs) Debug.Log($"[RoomUIManager] SwitchRoom: direction={direction} from={baseIndex} to={newIndex} (currentBigSceneIndex={currentBigSceneIndex})");
@@ -93,7 +103,7 @@ namespace X
             }
             else if (enableDebugLogs)
             {
-                Debug.Log($"[RoomUIManager] SwitchRoom: clamped to same index {baseIndex}");
+                Debug.Log($"[RoomUIManager] SwitchRoom: wrapped to same index {baseIndex}");
             }
         }
 

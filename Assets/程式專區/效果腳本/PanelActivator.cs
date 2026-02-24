@@ -10,6 +10,7 @@ namespace X
     /// 當該 Image 被點擊時會關閉剛啟用的 panel（並可選擇重新開啟 panelToClose）。
     /// 點擊啟用 panel 時會同時啟用 returnImage；點擊 returnImage 會關閉 panel 並關閉 returnImage。
     /// 新增：當 returnImage 出現時，可根據游標與 image 的垂直（Y 軸）距離改變透明度（游標越接近越不透明）。
+    /// 同時在 returnImage 顯示期間會阻擋全局 A/D 輸入（由 RoomUIManager 檢查 PanelActivator.IsBlockingInput）。
     /// </summary>
     public class PanelActivator : MonoBehaviour, IPointerClickHandler
     {
@@ -37,6 +38,9 @@ namespace X
         public float maxAlpha = 1f;
         [Tooltip("用來調整透明度隨距離變化的曲線，x=0(遠) -> x=1(近)")]
         public AnimationCurve proximityCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
+
+        // 當 returnImage 顯示且尚未點擊返回時，阻擋 RoomUIManager 的 A/D 輸入
+        public static bool IsBlockingInput { get; private set; } = false;
 
         // internal
         private Button _returnButton;
@@ -76,6 +80,9 @@ namespace X
                 SetReturnImageAlpha(minAlpha);
 
                 SubscribeReturn();
+
+                // 啟動全局輸入阻擋（RoomUIManager 會檢查此旗標）
+                IsBlockingInput = true;
             }
         }
 
@@ -133,6 +140,9 @@ namespace X
 
             // 取消訂閱，避免重複註冊或殘留 listener
             UnsubscribeReturn();
+
+            // 解除全局輸入阻擋
+            IsBlockingInput = false;
         }
 
         void Update()
@@ -183,11 +193,15 @@ namespace X
                 returnImage.gameObject.SetActive(false);
                 RestoreReturnImageColor();
             }
+
+            // 解除阻擋以防異常情況造成輸入鎖死
+            IsBlockingInput = false;
         }
 
         void OnDestroy()
         {
             UnsubscribeReturn();
+            IsBlockingInput = false;
         }
     }
 }

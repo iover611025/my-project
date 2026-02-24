@@ -17,7 +17,11 @@ namespace X
         public void SwitchRoom(int direction)
         {
             if (rooms == null || rooms.Length == 0) return;
-            int newIndex = Mathf.Clamp(currentRoomIndex + direction, 0, rooms.Length - 1);
+
+            int n = rooms.Length;
+            int newIndex = (currentRoomIndex + direction) % n;
+            if (newIndex < 0) newIndex += n;
+
             if (newIndex != currentRoomIndex)
             {
                 currentRoomIndex = newIndex;
