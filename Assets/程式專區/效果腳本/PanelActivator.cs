@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -6,202 +7,273 @@ namespace X
 {
     /// <summary>
     /// 點擊某個可互動物件時啟用指定 panel（可選同時關閉另一個 panel）。
-    /// 支援在 Inspector 指派一個 Image（或其上附加的 Button），
-    /// 當該 Image 被點擊時會關閉剛啟用的 panel（並可選擇重新開啟 panelToClose）。
-    /// 點擊啟用 panel 時會同時啟用 returnImage；點擊 returnImage 會關閉 panel 並關閉 returnImage。
-    /// 新增：當 returnImage 出現時，可根據游標與 image 的垂直（Y 軸）距離改變透明度（游標越接近越不透明）。
-    /// 同時在 returnImage 顯示期間會阻擋全局 A/D 輸入（由 RoomUIManager 檢查 PanelActivator.IsBlockingInput）。
+    /// 支援在 Inspector 指派一個「圖片返回」prefab，會在指定 parentPanel 生成該 prefab。
+    /// 點擊該 prefab 的按鈕會關閉指定的 panel（panelToCloseOnReturn；若未指定則使用 panelToClose）並銷毀該 prefab。
+    /// 也保留游標接近時調整透明度、輸入阻擋等行為，並支援顯示時機設定。
     /// </summary>
     public class PanelActivator : MonoBehaviour, IPointerClickHandler
     {
+        public enum ReturnShowTiming
+        {
+            Immediate,
+            AfterOpenDelay,
+            Manual
+        }
+
+        [Header("Panel 設定")]
         [Tooltip("要啟用的 Panel（GameObject）")]
         public GameObject panelToOpen;
-
         [Tooltip("可選：要關閉的 Panel（啟用時會被關閉，返回時可重新開啟）")]
         public GameObject panelToClose;
-
-        [Tooltip("點擊後是否只在啟用 panelToOpen 時呼叫 SetActive(true)（預設 true）")]
+        [Tooltip("點擊後是否只在啟用 panelToOpen 時呼叫 SetActive(true)")]
         public bool openOnly = true;
 
-        [Header("返回設定")]
-        [Tooltip("點擊 panelToOpen 後，指定此 Image 作為返回按鈕（若該 Image 沒有 Button 元件，會在執行時自動新增一個 Button）。")]
-        public Image returnImage;
+        [Header("Return Prefab（新的行為）")]
+        [Tooltip("要生成的『圖片返回』Prefab（必須包含 Image，建議有 Button）")]
+        public GameObject returnPrefab;
+        [Tooltip("生成 returnPrefab 的父物件（通常是要顯示此返回按鈕的 Panel 的 Transform）")]
+        public Transform returnParentPanel;
+        [Tooltip("點擊返回時要關閉的 Panel（若為 null 則使用 panelToClose）")]
+        public GameObject panelToCloseOnReturn;
+
+        [Header("Return 顯示時機")]
+        public ReturnShowTiming returnShowTiming = ReturnShowTiming.Immediate;
+        [Tooltip("在使用 AfterOpenDelay 時的延遲（秒）")]
+        public float returnShowDelay = 0.08f;
 
         [Header("游標接近顯示設定")]
         [Tooltip("當游標在垂直方向（Y）距離 returnImage 中心小於此值時開始顯示（像素，screen space）")]
         public float revealRadius = 200f;
-        [Tooltip("最小透明度（出現時的初始透明度）")]
-        [Range(0f, 1f)]
-        public float minAlpha = 0f;
-        [Tooltip("游標完全接近時的最大透明度")]
-        [Range(0f, 1f)]
-        public float maxAlpha = 1f;
+        [Range(0f, 1f)] public float minAlpha = 0f;
+        [Range(0f, 1f)] public float maxAlpha = 1f;
         [Tooltip("用來調整透明度隨距離變化的曲線，x=0(遠) -> x=1(近)")]
         public AnimationCurve proximityCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
 
-        // 當 returnImage 顯示且尚未點擊返回時，阻擋 RoomUIManager 的 A/D 輸入
-        public static bool IsBlockingInput { get; private set; } = false;
+        [Header("多層支援")]
+        [Tooltip("點擊返回後是否自動銷毀生成的 prefab（通常為 true）")]
+        public bool destroyReturnPrefabOnClick = true;
 
-        // internal
-        private Button _returnButton;
-        private bool _subscribedToReturn = false;
-        private Color _origReturnColor = Color.white;
+        // 多層阻擋計數（支持多個 activator 疊加）
+        private static int s_blockingCount = 0;
+        public static bool IsBlockingInput { get { return s_blockingCount > 0; } }
+
+        // internal runtime references
+        private GameObject _spawnedReturnObj;
+        private Image _spawnedReturnImage;
+        private Button _spawnedReturnButton;
+        private Coroutine _delayedShowCoroutine;
+        private Color _origReturnColor;
         private bool _hasOrigColor = false;
+        private bool _subscribed = false;
 
         public void OnPointerClick(PointerEventData eventData)
         {
             if (panelToOpen != null)
-            {
                 panelToOpen.SetActive(true);
-            }
 
             if (panelToClose != null)
-            {
                 panelToClose.SetActive(false);
-            }
 
-            // 若有指定 returnImage，確保其可點擊、顯示並訂閱回調
-            if (returnImage != null)
+            // 決定何時顯示 return prefab
+            if (returnPrefab == null) return;
+
+            if (returnShowTiming == ReturnShowTiming.Immediate)
             {
-                EnsureReturnButton();
-
-                // 記錄原始 color（僅第一次）
-                if (!_hasOrigColor)
-                {
-                    _origReturnColor = returnImage.color;
-                    _hasOrigColor = true;
-                }
-
-                // 顯示 returnImage（可能初始為隱藏）
-                if (!returnImage.gameObject.activeSelf)
-                    returnImage.gameObject.SetActive(true);
-
-                // 初始設為 minAlpha（完全隱藏或低透明）
-                SetReturnImageAlpha(minAlpha);
-
-                SubscribeReturn();
-
-                // 啟動全局輸入阻擋（RoomUIManager 會檢查此旗標）
-                IsBlockingInput = true;
+                ShowReturnPrefab();
             }
-        }
-
-        private void EnsureReturnButton()
-        {
-            if (returnImage == null) return;
-
-            if (_returnButton == null)
+            else if (returnShowTiming == ReturnShowTiming.AfterOpenDelay)
             {
-                // 先嘗試取得已存在的 Button
-                _returnButton = returnImage.GetComponent<Button>();
-                // 若沒有，新增一個 Button 使 Image 可點擊
-                if (_returnButton == null)
-                {
-                    _returnButton = returnImage.gameObject.AddComponent<Button>();
-                    // 設定 Button 的過場顏色為不改變（避免自動高亮改變外觀）
-                    var colors = _returnButton.colors;
-                    colors.highlightedColor = colors.normalColor;
-                    colors.pressedColor = colors.normalColor;
-                    colors.selectedColor = colors.normalColor;
-                    _returnButton.colors = colors;
-                }
+                if (_delayedShowCoroutine != null) StopCoroutine(_delayedShowCoroutine);
+                _delayedShowCoroutine = StartCoroutine(ShowReturnAfterDelay(returnShowDelay));
+            }
+            else
+            {
+                // Manual: 不自動顯示
             }
         }
 
-        private void SubscribeReturn()
+        private IEnumerator ShowReturnAfterDelay(float delay)
         {
-            if (_returnButton == null || _subscribedToReturn) return;
-            _returnButton.onClick.AddListener(OnReturnClicked);
-            _subscribedToReturn = true;
+            yield return new WaitForSecondsRealtime(Mathf.Max(0f, delay));
+            _delayedShowCoroutine = null;
+            ShowReturnPrefab();
         }
 
-        private void UnsubscribeReturn()
+        // 公開：手動顯示（Manual 模式使用）
+        public void ShowReturnPrefab()
         {
-            if (_returnButton == null || !_subscribedToReturn) return;
-            _returnButton.onClick.RemoveListener(OnReturnClicked);
-            _subscribedToReturn = false;
+            if (returnPrefab == null) return;
+
+            // 若已經生成則不重複生成
+            if (_spawnedReturnObj != null) return;
+
+            Transform parent = returnParentPanel;
+            if (parent == null)
+            {
+                // fallback：若 panelToOpen 有 RectTransform，則放入其內
+                if (panelToOpen != null)
+                    parent = panelToOpen.transform;
+                else
+                    parent = null;
+            }
+
+            _spawnedReturnObj = Instantiate(returnPrefab, parent, false);
+            // 將放到父物件最上層
+            if (parent != null)
+                _spawnedReturnObj.transform.SetAsLastSibling();
+
+            // Debug: 記錄是哪個物件產生了這個 prefab
+            string prefabName = returnPrefab != null ? returnPrefab.name : "null";
+            string ownerName = this.gameObject != null ? this.gameObject.name : "null";
+            string spawnedName = _spawnedReturnObj != null ? _spawnedReturnObj.name : "null";
+            string parentName = parent != null ? parent.name : "null";
+            Debug.Log($"[PanelActivator] Spawned returnPrefab '{prefabName}' by '{ownerName}' -> spawnedObj='{spawnedName}' parent='{parentName}'");
+
+            // 找 Image 與 Button
+            _spawnedReturnImage = _spawnedReturnObj.GetComponentInChildren<Image>();
+            _spawnedReturnButton = _spawnedReturnObj.GetComponentInChildren<Button>();
+
+            if (_spawnedReturnImage != null && !_hasOrigColor)
+            {
+                _origReturnColor = _spawnedReturnImage.color;
+                _hasOrigColor = true;
+            }
+
+            // 初始透明度
+            if (_spawnedReturnImage != null)
+            {
+                SetSpawnedReturnAlpha(minAlpha);
+            }
+
+            // 若沒有 Button 則新增一個透明 Button 於根物件上讓它可點擊
+            if (_spawnedReturnButton == null)
+            {
+                _spawnedReturnButton = _spawnedReturnObj.GetComponent<Button>();
+                if (_spawnedReturnButton == null)
+                    _spawnedReturnButton = _spawnedReturnObj.AddComponent<Button>();
+                var cols = _spawnedReturnButton.colors;
+                cols.highlightedColor = cols.normalColor;
+                cols.pressedColor = cols.normalColor;
+                cols.selectedColor = cols.normalColor;
+                _spawnedReturnButton.colors = cols;
+            }
+
+            SubscribeSpawnedReturn();
+
+            // 增加阻擋計數
+            s_blockingCount = Mathf.Max(0, s_blockingCount) + 1;
         }
 
-        private void OnReturnClicked()
+        private void SubscribeSpawnedReturn()
         {
-            // 當 return 被點擊時，關閉剛開啟的 panel，並可選擇重新開啟 panelToClose（若有）
+            if (_spawnedReturnButton == null || _subscribed) return;
+            _spawnedReturnButton.onClick.AddListener(OnSpawnedReturnClicked);
+            _subscribed = true;
+        }
+
+        private void UnsubscribeSpawnedReturn()
+        {
+            if (_spawnedReturnButton == null || !_subscribed) return;
+            _spawnedReturnButton.onClick.RemoveListener(OnSpawnedReturnClicked);
+            _subscribed = false;
+        }
+
+        private void OnSpawnedReturnClicked()
+        {
+            // 關閉要關閉的 panel（優先使用 panelToCloseOnReturn，否則使用 panelToClose）
+            GameObject toClose = panelToCloseOnReturn != null ? panelToCloseOnReturn : panelToClose;
+            if (toClose != null)
+                toClose.SetActive(false);
+
+            // 如果 panelToOpen 也要關閉（維持原本行為）
             if (panelToOpen != null)
                 panelToOpen.SetActive(false);
 
-            if (panelToClose != null)
-                panelToClose.SetActive(true);
+            // 清理 listener
+            UnsubscribeSpawnedReturn();
 
-            // 隱藏 returnImage 並還原色彩
-            if (returnImage != null && returnImage.gameObject.activeSelf)
+            // 銷毀 prefab（若設定）
+            if (destroyReturnPrefabOnClick && _spawnedReturnObj != null)
             {
-                returnImage.gameObject.SetActive(false);
-                RestoreReturnImageColor();
+                Destroy(_spawnedReturnObj);
             }
 
-            // 取消訂閱，避免重複註冊或殘留 listener
-            UnsubscribeReturn();
-
-            // 解除全局輸入阻擋
-            IsBlockingInput = false;
+            // 調整阻擋計數
+            s_blockingCount = Mathf.Max(0, s_blockingCount - 1);
         }
 
         void Update()
         {
-            // 當 returnImage 顯示時，根據游標垂直距離調整 alpha（只考慮 Y 軸）
-            if (returnImage != null && returnImage.gameObject.activeInHierarchy)
-            {
-                var rt = returnImage.rectTransform;
+            if (_spawnedReturnImage == null || _spawnedReturnObj == null || !_spawnedReturnObj.activeInHierarchy) return;
 
-                // 取得 returnImage 在螢幕座標的中心
-                Vector2 screenCenter = RectTransformUtility.WorldToScreenPoint(returnImage.canvas?.worldCamera, rt.position);
+            // 取得 spawned image 在螢幕座標中心
+            Camera cam = null;
+            if (_spawnedReturnImage != null && _spawnedReturnImage.canvas != null)
+                cam = _spawnedReturnImage.canvas.worldCamera;
+            Vector2 screenCenter = RectTransformUtility.WorldToScreenPoint(cam, _spawnedReturnImage.rectTransform.position);
+            Vector2 mouse = Input.mousePosition;
 
-                Vector2 mouse = Input.mousePosition;
+            float distY = Mathf.Abs(mouse.y - screenCenter.y);
+            float t = Mathf.Clamp01(1f - (distY / Mathf.Max(0.0001f, revealRadius)));
+            float eval = proximityCurve != null ? proximityCurve.Evaluate(t) : t;
+            float alpha = Mathf.Lerp(minAlpha, maxAlpha, eval);
 
-                // 只計算 Y 軸的絕對距離（避免游標偏離 X 軸造成影響）
-                float distY = Mathf.Abs(mouse.y - screenCenter.y);
-
-                // 把垂直距離映射到 0..1（0 = 遠、大於 revealRadius 為 0；1 = 在中心）
-                float t = Mathf.Clamp01(1f - (distY / Mathf.Max(0.0001f, revealRadius)));
-                float eval = proximityCurve != null ? proximityCurve.Evaluate(t) : t;
-                float alpha = Mathf.Lerp(minAlpha, maxAlpha, eval);
-
-                SetReturnImageAlpha(alpha);
-            }
+            SetSpawnedReturnAlpha(alpha);
         }
 
-        private void SetReturnImageAlpha(float a)
+        private void SetSpawnedReturnAlpha(float a)
         {
-            if (returnImage == null) return;
-            Color c = returnImage.color;
+            if (_spawnedReturnImage == null) return;
+            Color c = _spawnedReturnImage.color;
             c.a = Mathf.Clamp01(a);
-            returnImage.color = c;
+            _spawnedReturnImage.color = c;
         }
 
-        private void RestoreReturnImageColor()
+        private void RestoreSpawnedReturnColor()
         {
-            if (returnImage == null) return;
+            if (_spawnedReturnImage == null) return;
             if (_hasOrigColor)
-                returnImage.color = _origReturnColor;
+                _spawnedReturnImage.color = _origReturnColor;
         }
 
         void OnDisable()
         {
-            // 確保在物件被停用或場景切換時移除 listener 並隱藏 returnImage，並還原色彩
-            UnsubscribeReturn();
-            if (returnImage != null && returnImage.gameObject.activeSelf)
+            // 停止 delay coroutine
+            if (_delayedShowCoroutine != null)
             {
-                returnImage.gameObject.SetActive(false);
-                RestoreReturnImageColor();
+                StopCoroutine(_delayedShowCoroutine);
+                _delayedShowCoroutine = null;
             }
 
-            // 解除阻擋以防異常情況造成輸入鎖死
-            IsBlockingInput = false;
+            // 清理 spawned return（若存在）
+            if (_spawnedReturnObj != null)
+            {
+                UnsubscribeSpawnedReturn();
+                if (destroyReturnPrefabOnClick)
+                    Destroy(_spawnedReturnObj);
+                else
+                    _spawnedReturnObj.SetActive(false);
+                _spawnedReturnObj = null;
+                _spawnedReturnImage = null;
+                _spawnedReturnButton = null;
+            }
+
+            // 保險：調整阻擋計數（避免鎖死）
+            s_blockingCount = Mathf.Max(0, s_blockingCount - 1);
         }
 
         void OnDestroy()
         {
-            UnsubscribeReturn();
-            IsBlockingInput = false;
+            UnsubscribeSpawnedReturn();
+            if (_spawnedReturnObj != null)
+            {
+                if (destroyReturnPrefabOnClick)
+                    Destroy(_spawnedReturnObj);
+                else
+                    _spawnedReturnObj.SetActive(false);
+            }
+            // 保險：清理計數
+            s_blockingCount = Mathf.Max(0, s_blockingCount - 1);
         }
     }
 }

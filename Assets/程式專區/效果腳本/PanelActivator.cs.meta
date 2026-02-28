@@ -1,2 +1,16 @@
 fileFormatVersion: 2
 guid: 5be27ae2ffa5ec64ea4c6f3a3bce34fe
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - panelToOpen: {instanceID: 0}
+  - panelToClose: {instanceID: 0}
+  - returnPrefab: {fileID: 2583643597927217743, guid: de4e1e28e1737154f9a6c6bf26adb30e, type: 3}
+  - returnParentPanel: {instanceID: 0}
+  - panelToCloseOnReturn: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

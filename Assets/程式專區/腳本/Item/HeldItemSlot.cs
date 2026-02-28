@@ -22,11 +22,6 @@ namespace X
                 if (inv != null)
                     inv.OnHeldAreaClick();
             }
-
-            var clueBook = Object.FindFirstObjectByType<ClueBookManager>();
-            if (clueBook != null)
-                // 將 RegisterClue 改為 UnlockSection，因為 ClueBookManager 只有 UnlockSection 方法
-                clueBook.UnlockSection("家", "發現了神秘鑰匙");
         }
     }
 }
