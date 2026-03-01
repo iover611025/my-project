@@ -31,8 +31,8 @@ namespace X
         [Header("Return Prefab（新的行為）")]
         [Tooltip("要生成的『圖片返回』Prefab（必須包含 Image，建議有 Button）")]
         public GameObject returnPrefab;
-        [Tooltip("生成 returnPrefab 的父物件（通常是要顯示此返回按鈕的 Panel 的 Transform）")]
-        public Transform returnParentPanel;
+        [Tooltip("生成 returnPrefab 的父 Canvas（若留空，會嘗試使用 panelToOpen 所在的 Canvas，或場景中第一個 Canvas）")]
+        public Canvas returnParentCanvas;
         [Tooltip("點擊返回時要關閉的 Panel（若為 null 則使用 panelToClose）")]
         public GameObject panelToCloseOnReturn;
 
@@ -107,29 +107,32 @@ namespace X
             // 若已經生成則不重複生成
             if (_spawnedReturnObj != null) return;
 
-            Transform parent = returnParentPanel;
-            if (parent == null)
+            // 決定 parent：優先使用 returnParentCanvas（已存在的 Canvas），若空則嘗試使用 panelToOpen 的 Canvas，再 fallback 到場景第一個 Canvas，最後使用 panelToOpen.transform
+            Transform parent;
+            Canvas targetCanvas = returnParentCanvas;
+            if (targetCanvas == null && panelToOpen != null)
             {
-                // fallback：若 panelToOpen 有 RectTransform，則放入其內
-                if (panelToOpen != null)
-                    parent = panelToOpen.transform;
-                else
-                    parent = null;
+                targetCanvas = panelToOpen.GetComponentInParent<Canvas>();
+            }
+            if (targetCanvas == null)
+            {
+                targetCanvas = FindAnyObjectByType<Canvas>();
             }
 
+            if (targetCanvas != null)
+                parent = targetCanvas.transform;
+            else if (panelToOpen != null)
+                parent = panelToOpen.transform;
+            else
+                parent = null;
+
             _spawnedReturnObj = Instantiate(returnPrefab, parent, false);
-            // 將放到父物件最上層
+
+            // 若 prefab 是 UI 元件且我們把它放到 Canvas 下，確保其 RectTransform 保持 local transform（Instantiate(..., parent, false) 已處理）
             if (parent != null)
                 _spawnedReturnObj.transform.SetAsLastSibling();
 
-            // Debug: 記錄是哪個物件產生了這個 prefab
-            string prefabName = returnPrefab != null ? returnPrefab.name : "null";
-            string ownerName = this.gameObject != null ? this.gameObject.name : "null";
-            string spawnedName = _spawnedReturnObj != null ? _spawnedReturnObj.name : "null";
-            string parentName = parent != null ? parent.name : "null";
-            Debug.Log($"[PanelActivator] Spawned returnPrefab '{prefabName}' by '{ownerName}' -> spawnedObj='{spawnedName}' parent='{parentName}'");
-
-            // 找 Image 與 Button
+            // 找 Image 與 Button（在 spawned prefab 的子物件中搜尋）
             _spawnedReturnImage = _spawnedReturnObj.GetComponentInChildren<Image>();
             _spawnedReturnButton = _spawnedReturnObj.GetComponentInChildren<Button>();
 
@@ -200,6 +203,11 @@ namespace X
 
             // 調整阻擋計數
             s_blockingCount = Mathf.Max(0, s_blockingCount - 1);
+
+            // reset local refs
+            _spawnedReturnObj = null;
+            _spawnedReturnImage = null;
+            _spawnedReturnButton = null;
         }
 
         void Update()
@@ -207,10 +215,7 @@ namespace X
             if (_spawnedReturnImage == null || _spawnedReturnObj == null || !_spawnedReturnObj.activeInHierarchy) return;
 
             // 取得 spawned image 在螢幕座標中心
-            Camera cam = null;
-            if (_spawnedReturnImage != null && _spawnedReturnImage.canvas != null)
-                cam = _spawnedReturnImage.canvas.worldCamera;
-            Vector2 screenCenter = RectTransformUtility.WorldToScreenPoint(cam, _spawnedReturnImage.rectTransform.position);
+            Vector2 screenCenter = RectTransformUtility.WorldToScreenPoint(_spawnedReturnImage.canvas?.worldCamera, _spawnedReturnImage.rectTransform.position);
             Vector2 mouse = Input.mousePosition;
 
             float distY = Mathf.Abs(mouse.y - screenCenter.y);

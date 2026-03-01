@@ -12,10 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fcdab51c3d97d24584e152fd6fe7923, type: 3}
   m_Name: ItemDatabase
   m_EditorClassIdentifier: 
-  items:
-  - id: 1
-    itemName: "\u6E2C\u8A661"
-    icon: {fileID: 2499558850384810379, guid: 2111c87591712c94a9d9353f2eeb338e, type: 3}
-  - id: 2
-    itemName: "\u6E2C\u8A662"
-    icon: {fileID: -4627667529323195352, guid: db800ec853f15c541a7461eca03b9317, type: 3}
+  items: []

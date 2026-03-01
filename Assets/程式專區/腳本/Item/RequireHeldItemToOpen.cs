@@ -63,66 +63,76 @@ namespace X
 
                 bool emptyHand = IsEmptyHand(inventoryUI);
 
-                if (emptyHand)
-                {
-                    Debug.Log("[RequireHeldItemToOpen] 請先握持正確的道具！");
-                    return;
-                }
+                // 取得 held id（若 heldData 為 null，視為 0）
+                int heldId = heldData != null ? heldData.id : 0;
 
-                // 以 heldData 的 id 判斷（更可靠），並把 id==0 視為空手/預設
-                if (heldData != null && heldData.id != 0 && heldData.id == requiredItemId)
+                // 當 requiredItemId 為 0 時，允許空手（heldId == 0）開門
+                if (requiredItemId == 0)
                 {
-                    doorToggle.OnClick(); // 開門
-                    isOpen = true;
-                    Debug.Log("[RequireHeldItemToOpen] 門已開啟！");
-                }
-                else
-                {
-                    Debug.Log("[RequireHeldItemToOpen] 握持的不是正確的道具，無法開門！");
-                }
-            }
-            else
-            {
-                // 門已開啟，僅允許空手切換場景
-                if (_isSwitching)
-                {
-                    Debug.Log("[RequireHeldItemToOpen] 已在切換中，忽略點擊");
-                    return;
-                }
-
-                if (IsEmptyHand(inventoryUI))
-                {
-                    _isSwitching = true;
-                    _shouldEnterBigScene = true;
-
-                    if (uiCoverManager != null)
+                    if (heldId == 0)
                     {
-                        if (transitionType == TransitionType.Simple)
-                        {
-                            uiCoverManager.FadeSwitchPanel(currentPanel, nextPanel);
-                            StartCoroutine(WaitCoverComplete(false));
-                        }
-                        else
-                        {
-                            uiCoverManager.FadeSwitchPanelWithText(currentPanel, nextPanel, transitionMessage);
-                            StartCoroutine(WaitCoverComplete(true));
-                        }
+                        // 改為只「開門」，不要呼叫會切換的 OnClick
+                        doorToggle.SetOpen(true); // 開門（不切回）
+                        isOpen = true;
+                        Debug.Log("[RequireHeldItemToOpen] 門已開啟！（空手）");
                     }
                     else
                     {
-                        if (transitionType == TransitionType.Simple)
-                            StartCoroutine(FadeAndSwitchPanelSimple());
-                        else
-                            StartCoroutine(FadeAndSwitchPanelWithTextLocal(transitionMessage));
+                        Debug.Log("[RequireHeldItemToOpen] 需要空手才能開門！");
                     }
-
-                    // 重置門狀態（讓回到此大場景時門可再使用）
-                    ResetDoorStateAfterUse();
                 }
                 else
                 {
-                    Debug.Log("[RequireHeldItemToOpen] 仍持有物品，無法切換場景");
+                    // 以 heldData 的 id 判斷（更可靠），並把 id==0 視為空手/預設
+                    if (heldId != 0 && heldId == requiredItemId)
+                    {
+                        // 改為只「開門」，不要呼叫會切換的 OnClick
+                        doorToggle.SetOpen(true); // 開門（不切回）
+                        isOpen = true;
+                        Debug.Log("[RequireHeldItemToOpen] 門已開啟！");
+                    }
+                    else
+                    {
+                        // 若真的是空手，給出更明確訊息
+                        if (emptyHand)
+                            Debug.Log("[RequireHeldItemToOpen] 請先握持正確的道具！");
+                        else
+                            Debug.Log("[RequireHeldItemToOpen] 握持的不是正確的道具，無法開門！");
+                    }
                 }
+            }
+
+            if (IsEmptyHand(inventoryUI))
+            {
+                _isSwitching = true;
+                _shouldEnterBigScene = true;
+
+                if (uiCoverManager != null)
+                {
+                    if (transitionType == TransitionType.Simple)
+                    {
+                        uiCoverManager.FadeSwitchPanel(currentPanel, nextPanel);
+                        StartCoroutine(WaitCoverComplete(false));
+                    }
+                    else
+                    {
+                        uiCoverManager.FadeSwitchPanelWithText(currentPanel, nextPanel, transitionMessage);
+                        StartCoroutine(WaitCoverComplete(true));
+                    }
+                }
+                else
+                {
+                    if (transitionType == TransitionType.Simple)
+                        StartCoroutine(FadeAndSwitchPanelSimple());
+                    else
+                        StartCoroutine(FadeAndSwitchPanelWithTextLocal(transitionMessage));
+                }
+
+                // 重置門狀態（讓回到此大場景時門可再使用）
+            }
+            else
+            {
+                Debug.Log("[RequireHeldItemToOpen] 仍持有物品，無法切換場景");
             }
         }
 
@@ -133,26 +143,6 @@ namespace X
             return inv.IsHeldEmpty();
         }
 
-        // 將門重置為未開（供在啟動轉場後調用）
-        private void ResetDoorStateAfterUse()
-        {
-            // 將內部旗標還原，允許再次使用
-            isOpen = false;
-
-            // 若有 ToggleUIObject，強制把其狀態與圖片設為「關閉」
-            if (doorToggle != null)
-            {
-                doorToggle.isOpen = false;
-                // 嘗試更新視覺（直接透過 Image 更新，避免存取 private API）
-                var img = doorToggle.GetComponent<UnityEngine.UI.Image>();
-                if (img != null && doorToggle.closedSprite != null)
-                {
-                    img.sprite = doorToggle.closedSprite;
-                }
-            }
-
-            if (Debug.isDebugBuild) Debug.Log("[RequireHeldItemToOpen] ResetDoorStateAfterUse: door state reset so it can be used again after returning.");
-        }
 
         private IEnumerator FadeAndSwitchPanelSimple()
         {
