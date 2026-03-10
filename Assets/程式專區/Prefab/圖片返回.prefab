@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 4947062130409758140}
   - component: {fileID: 8134535244800285541}
   - component: {fileID: 2312896725386172243}
-  - component: {fileID: 4616061337286380293}
   m_Layer: 5
   m_Name: "\u5716\u7247\u8FD4\u56DE"
   m_TagString: Untagged
@@ -35,7 +34,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 960, y: -34}
+  m_AnchoredPosition: {x: 960, y: -68}
   m_SizeDelta: {x: 1920, y: 128.42065}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &8134535244800285541
@@ -76,16 +75,3 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4616061337286380293
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2583643597927217743}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c75f07e8818080541acc1d18dcf40411, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::X.ReturnFlag
-  id: 

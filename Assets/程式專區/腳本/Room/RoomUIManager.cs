@@ -45,7 +45,7 @@ namespace X
             if (isTransitioning) return; // 轉場期間禁止輸入
 
             // 新增：當 PanelActivator 正在顯示 returnImage（等待玩家點擊返回）時，禁止 A/D 切換
-            if (PanelActivator.IsBlockingInput)
+            if (UIPanelManager.Instance != null && UIPanelManager.Instance.IsBlockingInput)
             {
                 if (enableDebugLogs) Debug.Log("[RoomUIManager] Update: input blocked by PanelActivator (returnImage shown)");
                 return;
