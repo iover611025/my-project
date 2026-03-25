@@ -15,5 +15,8 @@ namespace X
         public int id;
         public string itemName;
         public Sprite icon;
+
+        [TextArea(3, 10)] // 讓 Inspector 顯示較大的文字輸入框
+        public string pickupDescription; // 新增：自訂的拾取提示文本
     }
 }

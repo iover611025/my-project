@@ -16,10 +16,10 @@ namespace X
                 return;
             }
             var data = itemDatabase.items.Find(x => x.id == itemID);
-            if (data != null)
+            if (data != null )
             {
                 var inventoryUI = Object.FindFirstObjectByType<InventoryUI>();
-                if (inventoryUI != null)
+                if (inventoryUI != null && inventoryUI.IsHeldEmpty())
                 {
                     Debug.Log($"[Pickup] Found InventoryUI '{inventoryUI.gameObject.name}'. heldEmpty={inventoryUI.IsHeldEmpty()} slotsCount={inventoryUI.slots?.Count ?? 0}");
                     // 如果玩家目前握持著物品，禁止再次撿取
@@ -32,6 +32,12 @@ namespace X
                     bool accepted = inventoryUI.AddItemToSlot(data);
                     if (accepted)
                     {
+                        // --- 新增：顯示拾取通知 ---
+                        if (PickupNotificationUI.Instance != null)
+                        {
+                            PickupNotificationUI.Instance.ShowNotification(data);
+                        }
+
                         // 只有在 Inventory 接受（或排程）時才移除場上物件
                         Destroy(gameObject);
                     }
@@ -46,5 +52,6 @@ namespace X
                 }
             }
         }
+
     }
 }

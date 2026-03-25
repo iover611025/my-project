@@ -12,4 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fcdab51c3d97d24584e152fd6fe7923, type: 3}
   m_Name: ItemDatabase
   m_EditorClassIdentifier: 
-  items: []
+  items:
+  - id: 1
+    itemName: "\u6E2C\u8A66\u7528\u7269\u54C1"
+    icon: {fileID: 6332329370788150423, guid: 448181262b4de0e4495929176e3a918b, type: 3}
+    pickupDescription: "\u9019\u662F\u6E2C\u8A66\u7528\u7269\u54C1\u3002id1"
+  - id: 2
+    itemName: "\u6E2C\u8A66\u7528\u7269\u54C12"
+    icon: {fileID: 6301193770947412646, guid: e317b5a3eb08ddc40aa700c2cf57f049, type: 3}
+    pickupDescription: "\u9019\u662F\u6E2C\u8A66\u7528\u7269\u54C1\u3002id2"
