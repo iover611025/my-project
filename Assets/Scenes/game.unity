@@ -968,13 +968,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 140565325}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d6c8fd35dda4f9847a5c28ff5bdfeff6, type: 3}
+  m_Script: {fileID: 11500000, guid: 9778cd3c18a18054fb897c533bc64633, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slots: []
+  slots:
+  - {fileID: 1257466714}
+  - {fileID: 1415141717}
+  - {fileID: 948488114}
+  - {fileID: 1768990737}
+  - {fileID: 1917057480}
+  - {fileID: 840222622}
+  - {fileID: 159669678}
+  - {fileID: 1867394890}
+  - {fileID: 2071072681}
+  - {fileID: 1891805068}
   heldItemImage: {fileID: 563566568}
   canvas: {fileID: 140565328}
-  panelToMove: {fileID: 140565329}
+  panelToMove: {fileID: 95239719}
   moveDistanceX: 350
   moveDuration: 0.25
   expandToggleUI: {fileID: 1394317236}
@@ -4430,7 +4440,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -9006719504933905132, guid: 0d2fe99df42ebb74d9b59bcda5e7f31c, type: 3}
+  m_Sprite: {fileID: 5393269472221191225, guid: dab68bb8adf6bc54694cb748f4fe6d21, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -9147,7 +9157,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!223 &1313453715
 Canvas:
   m_ObjectHideFlags: 0
