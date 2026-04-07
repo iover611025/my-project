@@ -608,7 +608,61 @@ namespace X
                 }
             }
         }
+        public void TransitionToBigScene(int sceneId, int roomIndex)
+        {
+            // 1. 找到對應的大場景資料
+            int sceneIdx = bigScenes.FindIndex(s => s.id == sceneId);
+            if (sceneIdx == -1)
+            {
+                Debug.LogError($"[RoomUIManager] 找不到 ID 為 {sceneId} 的大場景");
+                return;
+            }
 
+            currentBigSceneIndex = sceneIdx;
+            currentRoomIndex = roomIndex;
+            BigScene data = bigScenes[sceneIdx];
+
+            // 2. 更新 RoomManager 的實體物件陣列 (關鍵修正)
+            if (roomManager != null)
+            {
+                // 直接更換 RoomManager 的 rooms 來源
+                roomManager.rooms = data.worldRooms;
+                // 強制執行一次顯示邏輯
+                roomManager.SetRoomIndex(roomIndex);
+            }
+
+            // 3. 更新 UI 面板顯示
+            RoomHelper.ActivateOnly(data.roomPanels, roomIndex);
+
+            if (enableDebugLogs)
+                Debug.Log($"[RoomUIManager] 已切換至大場景: {data.sceneName}, 房間索引: {roomIndex}");
+        }
+        public void SyncByPanel(GameObject targetPanel)
+        {
+            if (targetPanel == null) return;
+
+            for (int i = 0; i < bigScenes.Count; i++)
+            {
+                for (int j = 0; j < bigScenes[i].roomPanels.Length; j++)
+                {
+                    if (bigScenes[i].roomPanels[j].gameObject == targetPanel)
+                    {
+                        currentBigSceneIndex = i;
+                        currentRoomIndex = j;
+
+                        // 同步實體房間物件陣列
+                        if (roomManager != null)
+                        {
+                            roomManager.rooms = bigScenes[i].worldRooms; // 更新陣列來源
+                            roomManager.SetRoomIndex(j); // 切換到對應房間
+                        }
+
+                        if (enableDebugLogs) Debug.Log($"已自動同步至：{bigScenes[i].sceneName} 房間 {j}");
+                        return;
+                    }
+                }
+            }
+        }
         // 新增：檢查 Inspector 設定（在 Start 呼叫）
         private void ValidateConfiguration()
         {

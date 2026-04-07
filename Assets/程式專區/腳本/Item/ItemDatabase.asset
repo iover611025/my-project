@@ -21,3 +21,15 @@ MonoBehaviour:
     itemName: "\u6E2C\u8A66\u7528\u7269\u54C12"
     icon: {fileID: 6301193770947412646, guid: e317b5a3eb08ddc40aa700c2cf57f049, type: 3}
     pickupDescription: "\u9019\u662F\u6E2C\u8A66\u7528\u7269\u54C1\u3002id2"
+  - id: 3
+    itemName: "\u93DF\u5B50"
+    icon: {fileID: -8506639700735706188, guid: a039cf9a409847c408a882b9ad3dc2de, type: 3}
+    pickupDescription: "\u8FB2\u8015\u7528\u5177"
+  - id: 4
+    itemName: "\u6F86\u6C34\u5668"
+    icon: {fileID: 4152558759406508731, guid: 2316185c4c0311043bed29f5f7eab231, type: 3}
+    pickupDescription: "\u8FB2\u8015\u7528\u5177"
+  - id: 5
+    itemName: "\u7A2E\u5B50"
+    icon: {fileID: 4152558759406508731, guid: 2316185c4c0311043bed29f5f7eab231, type: 3}
+    pickupDescription: "\u9AA8\u7C89"
