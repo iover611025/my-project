@@ -2932,7 +2932,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 40}
-  m_SizeDelta: {x: 1233.4414, y: 201.04291}
+  m_SizeDelta: {x: 1233.4414, y: 201.0429}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &383476167
 GameObject:
@@ -4275,12 +4275,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
-  m_UiScaleMode: 1
+  m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 1920, y: 1080}
+  m_ReferenceResolution: {x: 800, y: 600}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0.5
+  m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -5145,9 +5145,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 566975283}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 0.2
+  m_MaxValue: 0.5
   m_WholeNumbers: 0
-  m_Value: 0.1
+  m_Value: 0.25
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -7192,7 +7192,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::X.PanelActivator
   panelToOpen: {fileID: 78969383}
-  disableSwayOnOpen: 0
+  disableSwayOnOpen: 1
   returnPrefab: {fileID: 2583643597927217743, guid: de4e1e28e1737154f9a6c6bf26adb30e, type: 3}
   returnParentCanvas: {fileID: 684454320}
   revealRadius: 200
@@ -8784,7 +8784,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::X.PanelActivator
   panelToOpen: {fileID: 800155789}
-  disableSwayOnOpen: 1
+  disableSwayOnOpen: 0
   returnPrefab: {fileID: 2583643597927217743, guid: de4e1e28e1737154f9a6c6bf26adb30e, type: 3}
   returnParentCanvas: {fileID: 684454320}
   revealRadius: 200
@@ -11386,7 +11386,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::X.PanelActivator
   panelToOpen: {fileID: 203849552}
-  disableSwayOnOpen: 0
+  disableSwayOnOpen: 1
   returnPrefab: {fileID: 2583643597927217743, guid: de4e1e28e1737154f9a6c6bf26adb30e, type: 3}
   returnParentCanvas: {fileID: 684454320}
   revealRadius: 200
@@ -11549,7 +11549,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::X.PanelActivator
   panelToOpen: {fileID: 254453885}
-  disableSwayOnOpen: 1
+  disableSwayOnOpen: 0
   returnPrefab: {fileID: 2583643597927217743, guid: de4e1e28e1737154f9a6c6bf26adb30e, type: 3}
   returnParentCanvas: {fileID: 684454320}
   revealRadius: 200
@@ -11915,7 +11915,7 @@ GameObject:
   - component: {fileID: 1567057442}
   - component: {fileID: 1567057441}
   m_Layer: 0
-  m_Name: "\u82B1\u76C6\u62FE\u53D6\u5340\u57DF"
+  m_Name: "\u82B1\u76C6\u4E92\u52D5\u5340\u57DF (1)"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12333,7 +12333,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1666800416
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12673,7 +12673,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::X.PanelActivator
   panelToOpen: {fileID: 1666800415}
-  disableSwayOnOpen: 1
+  disableSwayOnOpen: 0
   returnPrefab: {fileID: 2583643597927217743, guid: de4e1e28e1737154f9a6c6bf26adb30e, type: 3}
   returnParentCanvas: {fileID: 684454320}
   revealRadius: 200
@@ -14073,7 +14073,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::X.PanelActivator
   panelToOpen: {fileID: 882413787}
-  disableSwayOnOpen: 1
+  disableSwayOnOpen: 0
   returnPrefab: {fileID: 2583643597927217743, guid: de4e1e28e1737154f9a6c6bf26adb30e, type: 3}
   returnParentCanvas: {fileID: 684454320}
   revealRadius: 200
@@ -15678,7 +15678,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2002995710
 RectTransform:
   m_ObjectHideFlags: 0
@@ -15740,7 +15740,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!223 &2002995713
 Canvas:
   m_ObjectHideFlags: 0

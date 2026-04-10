@@ -76,7 +76,7 @@ namespace X
             if (_history.Count > 0)
             {
                 var next = _history.Peek();
-                next.panel.SetActive(true); // 確保它是開啟的
+                next.panel.SetActive(true);
                 if (next.panel.TryGetComponent<CanvasGroup>(out var cg))
                 {
                     cg.interactable = true;
@@ -85,10 +85,15 @@ namespace X
             }
             else
             {
-                // 全部退出了，隱藏返回按鈕
+                // --- 這裡是最關鍵的修改處 ---
+                // 當全部 Panel 都關閉，回到主場景時，恢復攝影機晃動
+                if (CameraFollowMouse.Instance != null)
+                {
+                    CameraFollowMouse.Instance.SetSwayActive(true);
+                }
+
                 if (_activeReturnObj != null) _activeReturnObj.SetActive(false);
                 IsBlockingInput = false;
-
             }
         }
 
