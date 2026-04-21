@@ -104,6 +104,10 @@ namespace X
 
             if (IsEmptyHand(inventoryUI))
             {
+                if (DialogueManager.Instance != null)
+                {
+                    DialogueManager.Instance.ForceCloseDialogue();
+                }
                 _isSwitching = true;
                 _shouldEnterBigScene = true;
 

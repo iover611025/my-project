@@ -26,6 +26,13 @@ namespace X
 
         public void PushPanel(GameObject panel, PanelActivator settings)
         {
+            // --- 新增：當放大檢視或開啟子面板時，強制關閉對話框 ---
+            if (DialogueManager.Instance != null)
+            {
+                DialogueManager.Instance.ForceCloseDialogue();
+            }
+            // ----------------------------------------------------
+
             // 如果堆疊中有前一個，先把它「凍結」
             IsBlockingInput = true;
             if (_history.Count > 0)
@@ -69,29 +76,24 @@ namespace X
         {
             if (_history.Count == 0) return;
 
+            // --- 新增：當玩家點擊返回（Fade按鈕）時，立即關閉對話框 ---
+            if (DialogueManager.Instance != null)
+            {
+                DialogueManager.Instance.ForceCloseDialogue();
+            }
+            // -------------------------------------------------------
+
             var last = _history.Pop();
             last.panel.SetActive(false);
 
-            // 如果還有下一層，恢復它
+            // ... (其餘原有的 PopPanel 邏輯，包含恢復攝影機晃動等)
             if (_history.Count > 0)
             {
-                var next = _history.Peek();
-                next.panel.SetActive(true);
-                if (next.panel.TryGetComponent<CanvasGroup>(out var cg))
-                {
-                    cg.interactable = true;
-                    cg.blocksRaycasts = true;
-                }
+                // ...
             }
             else
             {
-                // --- 這裡是最關鍵的修改處 ---
-                // 當全部 Panel 都關閉，回到主場景時，恢復攝影機晃動
-                if (CameraFollowMouse.Instance != null)
-                {
-                    CameraFollowMouse.Instance.SetSwayActive(true);
-                }
-
+                if (CameraFollowMouse.Instance != null) CameraFollowMouse.Instance.SetSwayActive(true);
                 if (_activeReturnObj != null) _activeReturnObj.SetActive(false);
                 IsBlockingInput = false;
             }

@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 
 namespace X
 {
+
     public class PanelActivator : MonoBehaviour, IPointerClickHandler
     {
         [Header("Panel 設定")]
@@ -22,20 +23,19 @@ namespace X
         [Range(0f, 1f)] public float maxAlpha = 1f;
         public AnimationCurve proximityCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
 
+        // 確保命名空間正確，並加入判斷
+
         public void OnPointerClick(PointerEventData eventData)
         {
             if (panelToOpen == null) return;
 
-            // 開啟面板時關閉晃動
-            if (CameraFollowMouse.Instance != null)
+            // 執行關閉晃動
+            if (disableSwayOnOpen && CameraFollowMouse.Instance != null)
             {
                 CameraFollowMouse.Instance.SetSwayActive(false);
             }
 
             UIPanelManager.Instance.PushPanel(panelToOpen, this);
         }
-
-        // 提示：你需要在 UIPanelManager 的 PopPanel (關閉 UI) 時，
-        // 重新將 CameraFollowMouse.Instance.isSwaying 設為 true。
     }
 }

@@ -115,13 +115,22 @@ namespace X
         public void FadeSwitchPanel(GameObject fromPanel, GameObject toPanel)
         {
             if (_isFading) return;
+
+            // --- 新增：開始轉場時強制關閉對話框 ---
+            if (DialogueManager.Instance != null) DialogueManager.Instance.ForceCloseDialogue();
+            // ------------------------------------
+
             StartCoroutine(FadeAndSwitchPanel(fromPanel, toPanel));
         }
 
-        // 新增：黑幕 + 文字 轉場（外部可傳入文字）
         public void FadeSwitchPanelWithText(GameObject fromPanel, GameObject toPanel, string message)
         {
             if (_isFading) return;
+
+            // --- 新增：開始轉場時強制關閉對話框 ---
+            if (DialogueManager.Instance != null) DialogueManager.Instance.ForceCloseDialogue();
+            // ------------------------------------
+
             StartCoroutine(FadeAndSwitchPanelWithText(fromPanel, toPanel, message));
         }
 
@@ -518,15 +527,23 @@ namespace X
         }
 
         // 閉設定介面（返回遊戲）
+        // 在 UICoverManager.cs 內
         public void BackToGame()
         {
+            // --- 新增：從設定或其他全螢幕介面返回遊戲時，清除對話框 ---
+            if (DialogueManager.Instance != null)
+            {
+                DialogueManager.Instance.ForceCloseDialogue();
+            }
+            // -------------------------------------------------------
+
             if (settingsPanel != null)
                 settingsPanel.SetActive(false);
 
             if (gamePanel != null)
             {
                 gamePanel.SetActive(true);
-                SetPanelOrder(gamePanel, 2); // 確保遊戲介面在最上層
+                SetPanelOrder(gamePanel, 2);
             }
 
             lastActivePanel = gamePanel;
