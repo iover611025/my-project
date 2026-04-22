@@ -970,10 +970,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 140565325}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d6c8fd35dda4f9847a5c28ff5bdfeff6, type: 3}
+  m_Script: {fileID: 11500000, guid: 9778cd3c18a18054fb897c533bc64633, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  slots: []
+  m_EditorClassIdentifier: Assembly-CSharp::X.InventoryUI
+  slots:
+  - {fileID: 1257466714}
+  - {fileID: 1415141717}
+  - {fileID: 948488114}
+  - {fileID: 1768990737}
+  - {fileID: 1917057480}
+  - {fileID: 840222622}
+  - {fileID: 159669678}
+  - {fileID: 1867394890}
+  - {fileID: 2071072681}
+  - {fileID: 1891805068}
   heldItemImage: {fileID: 563566568}
   canvas: {fileID: 354886729}
   panelToMove: {fileID: 95239719}
@@ -4095,7 +4105,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ac7ec792d3894045837a1c524a16e5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventoryUI: {fileID: 140565330}
+  inventoryUI: {fileID: 0}
 --- !u!1 &566975282
 GameObject:
   m_ObjectHideFlags: 0
@@ -15946,7 +15956,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   requiredItemId: 0
-  inventoryUI: {fileID: 140565330}
+  inventoryUI: {fileID: 0}
   doorToggle: {fileID: 1986722458}
   itemDatabase: {fileID: 11400000, guid: 4656d66e0406add4d996b89a05d3cceb, type: 2}
   currentPanel: {fileID: 2135464529}
@@ -16209,7 +16219,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   requiredItemId: 0
-  inventoryUI: {fileID: 140565330}
+  inventoryUI: {fileID: 0}
   doorToggle: {fileID: 2022489454}
   itemDatabase: {fileID: 11400000, guid: 4656d66e0406add4d996b89a05d3cceb, type: 2}
   currentPanel: {fileID: 294275976}
