@@ -3,24 +3,43 @@ using UnityEngine.EventSystems;
 
 namespace X
 {
-    public class HeldItemSlot : MonoBehaviour, IPointerClickHandler
+    // 繼承 Enter 和 Exit 介面來偵測滑鼠懸停
+    public class HeldItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
         public InventoryUI inventoryUI;
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            // 呼叫 InventoryUI 的 OnHeldAreaClick（包含分配邏輯與診斷），
-            // 避免直接 ClearHeldItem 導致握持物件消失而未嘗試分配。
             if (inventoryUI != null)
             {
                 inventoryUI.OnHeldAreaClick();
             }
-            else
+        }
+
+        // 當滑鼠移入握持區
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (inventoryUI == null) return;
+
+            // 取得目前握持的資料
+            ItemData heldData = inventoryUI.GetHeldItemData();
+
+            // 如果手上真的有東西，且不是在拖拽中，就顯示提示
+            if (heldData != null && heldData.id != 0 && !eventData.dragging)
             {
-                // fallback：若未指派 InventoryUI，仍保留原本清除行為避免 null 例外
-                var inv = GetComponentInParent<InventoryUI>();
-                if (inv != null)
-                    inv.OnHeldAreaClick();
+                if (InventoryTooltip.Instance != null)
+                {
+                    InventoryTooltip.Instance.Show(heldData.itemName, heldData.pickupDescription);
+                }
+            }
+        }
+
+        // 當滑鼠移出握持區
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if (InventoryTooltip.Instance != null)
+            {
+                InventoryTooltip.Instance.Hide();
             }
         }
     }

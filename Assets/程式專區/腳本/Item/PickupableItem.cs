@@ -5,16 +5,21 @@ namespace X
 {
     public class PickupableItem : MonoBehaviour, IPointerClickHandler
     {
-        public int itemID;               // 只需在Inspector填id
-        public ItemDatabase itemDatabase; // 拖進資料表ScriptableObject
+        // 定義拾取模式
+        public enum PickupRequirement
+        {
+            Default,    // 預設：若有空位就進背包，沒空位就拿在手上
+            MustBeEmpty // 必須空手：玩家手上不能握有任何東西才能拾取
+        }
 
-        // 新增：可選需求 — 玩家必須握持指定道具才能觸發撿取
+        [Header("基礎設定")]
+        public int itemID;
+        public ItemDatabase itemDatabase;
+        public PickupRequirement pickupRequirement = PickupRequirement.Default;
+
         [Header("可選：需握持指定道具才能撿取")]
-        [Tooltip("啟用後，玩家必須握持 requiredHeldItemId 指定的道具才能撿取此場景物件")]
         public bool requireHeldItem = false;
-        [Tooltip("若 requireHeldItem=true，填入需要握持的道具 id")]
         public int requiredHeldItemId = 0;
-        [Tooltip("當撿取成功時是否消耗玩家當前握持的道具（會呼叫 InventoryUI.ClearHeldItem）")]
         public bool consumeHeldItemOnPickup = false;
 
         public void OnPointerClick(PointerEventData eventData)
@@ -24,63 +29,61 @@ namespace X
                 Debug.LogWarning("請先將ItemDatabase拖進PickupableItem腳本的itemDatabase欄位！");
                 return;
             }
+
             var data = itemDatabase.items.Find(x => x.id == itemID);
-            if (data != null )
+            if (data == null) return;
+
+            var inventoryUI = Object.FindFirstObjectByType<InventoryUI>();
+            if (inventoryUI == null) return;
+
+            // --- 新增：檢查「必須空手」的邏輯 ---
+            if (pickupRequirement == PickupRequirement.MustBeEmpty)
             {
-                var inventoryUI = Object.FindFirstObjectByType<InventoryUI>();
-                if (inventoryUI == null)
+                if (!inventoryUI.IsHeldEmpty())
                 {
-                    Debug.LogWarning("[Pickup] 沒有找到 InventoryUI，無法加入物品欄。");
+                    Debug.Log($"[Pickup] {gameObject.name} 太重或太特殊，你必須先放下手上的東西才能撿起它。");
                     return;
                 }
+            }
 
-                // 若設定需要握持指定道具，檢查當前握持是否符合
-                if (requireHeldItem)
+            // 原有的「需握持特定道具」邏輯
+            if (requireHeldItem)
+            {
+                var held = inventoryUI.GetHeldItemData();
+                if (held == null || held.id != requiredHeldItemId)
                 {
-                    var held = inventoryUI.GetHeldItemData();
-                    if (held == null || held.id != requiredHeldItemId)
-                    {
-                        if (inventoryUI.IsHeldEmpty())
-                            Debug.Log("[Pickup] 需要握持正確的道具才能撿取此物件！");
-                        else
-                            Debug.Log("[Pickup] 握持的不是正確的道具，無法撿取此物件！");
-                        return;
-                    }
-                }
-                else
-                {
-                    // 原行為：若玩家目前握持著物品，禁止再次撿取
-                    if (!inventoryUI.IsHeldEmpty())
-                    {
-                        Debug.Log("[Pickup] 目前握持著物品，無法撿取新的物品，請先放置手上物品到物品欄。");
-                        return;
-                    }
-                }
-
-                bool accepted = inventoryUI.AddItemToSlot(data);
-                if (accepted)
-                {
-                    // --- 新增：顯示拾取通知 ---
-                    if (PickupNotificationUI.Instance != null)
-                    {
-                        PickupNotificationUI.Instance.ShowNotification(data);
-                    }
-
-                    // 如果設定要消耗握持道具，且玩家確實握著（requireHeldItem 模式下），則清除握持
-                    if (consumeHeldItemOnPickup && inventoryUI.GetHeldItemData() != null && inventoryUI.GetHeldItemData().id != 0)
-                    {
-                        inventoryUI.ClearHeldItem();
-                    }
-
-                    // 只有在 Inventory 接受（或排程）時才移除場上物件
-                    Destroy(gameObject);
-                }
-                else
-                {
-                    Debug.LogWarning("[Pickup] Inventory 未接受此道具，保留場上物件。");
+                    Debug.Log("[Pickup] 握持的不是正確的道具，無法撿取！");
+                    return;
                 }
             }
+            // 原有的「預設限制」：如果不是要求特定道具，且目前手上拿著東西，預設不給撿新的
+            // (這部分保留了你原有的邏輯，但與 MustBeEmpty 有所區隔)
+            else if (pickupRequirement == PickupRequirement.Default)
+            {
+                if (!inventoryUI.IsHeldEmpty())
+                {
+                    Debug.Log("[Pickup] 目前握持著物品，請先將手上物品放回物品欄。");
+                    return;
+                }
+            }
+
+            // 執行拾取動作
+            ExecutePickup(inventoryUI, data);
         }
 
+        private void ExecutePickup(InventoryUI inventoryUI, ItemData data)
+        {
+            bool accepted = inventoryUI.AddItemToSlot(data);
+            if (accepted)
+            {
+                if (PickupNotificationUI.Instance != null)
+                    PickupNotificationUI.Instance.ShowNotification(data);
+
+                if (consumeHeldItemOnPickup && !inventoryUI.IsHeldEmpty())
+                    inventoryUI.ClearHeldItem();
+
+                Destroy(gameObject);
+            }
+        }
     }
 }

@@ -13,6 +13,10 @@ namespace X
         public GameObject dialoguePrefab;
         public Transform uiParent;
 
+        [Header("固定位置設定")]
+        // 在 Inspector 設定對話框出現的固定座標 (例如 0, -400)
+        public Vector2 fixedPosition = new Vector2(0, -400);
+
         private RectTransform dialogRT;
         private CanvasGroup canvasGroup;
         private TextMeshProUGUI textDisplay;
@@ -27,29 +31,31 @@ namespace X
         private void InitPrefab()
         {
             if (dialoguePrefab == null || uiParent == null) return;
-
             GameObject go = Instantiate(dialoguePrefab, uiParent);
             dialogRT = go.GetComponent<RectTransform>();
             canvasGroup = go.GetComponent<CanvasGroup>();
             textDisplay = go.GetComponentInChildren<TextMeshProUGUI>();
 
-            // 自動加上 Button 功能，讓玩家點擊對話框本身就能關閉
             Button btn = go.GetComponent<Button>();
             if (btn == null) btn = go.AddComponent<Button>();
-            btn.transition = Selectable.Transition.None; // 鏽湖風格通常不需要按鈕跳色
+            btn.transition = Selectable.Transition.None;
             btn.onClick.AddListener(ForceCloseDialogue);
 
             canvasGroup.alpha = 0;
             canvasGroup.blocksRaycasts = false;
+
+            // 初始化時就位移到固定位置
+            dialogRT.anchoredPosition = fixedPosition;
         }
 
-        // 核心顯示方法：接收文字、時間、以及座標
-        public void ShowDialogue(string message, float duration, Vector2 position)
+        // 修改：讓原本的 ShowDialogue 支援「不傳入座標就使用固定位置」
+        public void ShowDialogue(string message, float duration, Vector2? position = null)
         {
             if (currentFlow != null) StopCoroutine(currentFlow);
 
-            // 設定位置 (相對於 UI 錨點)
-            if (dialogRT != null) dialogRT.anchoredPosition = position;
+            // 如果有傳座標就用傳入的，沒有就用 fixedPosition
+            if (dialogRT != null)
+                dialogRT.anchoredPosition = position ?? fixedPosition;
 
             textDisplay.text = message;
             currentFlow = StartCoroutine(DialogueProcess(duration));
@@ -59,15 +65,11 @@ namespace X
         {
             canvasGroup.blocksRaycasts = true;
             yield return Fade(1f, 0.2f);
-
-            // 這裡等待自訂的時間長度
             yield return new WaitForSeconds(duration);
-
             yield return Fade(0f, 0.4f);
             canvasGroup.blocksRaycasts = false;
         }
 
-        // 當切換場景、按下返回、或點擊對話框時呼叫
         public void ForceCloseDialogue()
         {
             if (currentFlow != null) StopCoroutine(currentFlow);

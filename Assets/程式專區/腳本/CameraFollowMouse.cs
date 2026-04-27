@@ -36,5 +36,6 @@ namespace X
         }
 
         public void SetSwayActive(bool active) => isSwaying = active;
+        public void SetSwayAmount(float val) => moveAmount = val;
     }
 }

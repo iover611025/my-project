@@ -13,14 +13,24 @@ namespace X
         public float displayDuration = 2.5f;
 
         [Header("位置設定")]
-        [Tooltip("相對於 Canvas 中心的位置 (X, Y)")]
+        public bool useFixedPosition = true; // 勾選則使用固定位置
+
+        [Tooltip("若不使用固定位置，則使用此座標")]
         public Vector2 targetPosition = new Vector2(0, -350);
 
         public void OnPointerClick(PointerEventData eventData)
         {
             if (DialogueManager.Instance != null)
             {
-                DialogueManager.Instance.ShowDialogue(content, displayDuration, targetPosition);
+                if (useFixedPosition)
+                {
+                    // 傳入 null，讓 Manager 使用預設座標
+                    DialogueManager.Instance.ShowDialogue(content, displayDuration, null);
+                }
+                else
+                {
+                    DialogueManager.Instance.ShowDialogue(content, displayDuration, targetPosition);
+                }
             }
         }
     }

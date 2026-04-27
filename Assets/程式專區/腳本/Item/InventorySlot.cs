@@ -5,133 +5,71 @@ using UnityEngine.EventSystems;
 namespace X
 {
     [RequireComponent(typeof(Image))]
-    public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
+    public class InventorySlot : MonoBehaviour,
+        IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler,
+        IPointerEnterHandler, IPointerExitHandler // 新增懸停介面
     {
         public Image iconImage;
         [HideInInspector] public ItemData itemData;
         [HideInInspector] public int slotIndex;
         [HideInInspector] public InventoryUI owner;
 
-
-        // root image（slot 背景）參考，用於避免不小心把根 image alpha 設為 0
         private Image _rootImage;
 
-        // debug text
-        private Text _debugText;
-        private int _lastDebugId = int.MinValue;
-
-        void Reset()
-        {
-            // 嘗試自動找出子物件的 icon Image，避免誤用 slot 根節點的 Image（會導致整個slot被隱藏）
-            var imgs = GetComponentsInChildren<Image>(true);
-            _rootImage = GetComponent<Image>();
-            iconImage = null;
-            foreach (var img in imgs)
-            {
-                if (img == _rootImage) continue;
-                iconImage = img;
-                break;
-            }
-            if (iconImage == null)
-                iconImage = _rootImage;
-        }
+        // --- 新增：供 InventoryUI 檢查格子是否為空 ---
+        public bool IsEmpty => itemData == null || itemData.id == 0;
 
         void Awake()
         {
-            // 確保 root image 參考
-            if (_rootImage == null)
-                _rootImage = GetComponent<Image>();
-            // 若 iconImage 未指派，嘗試 Reset 的邏輯一次
-            if (iconImage == null)
-                Reset();
-
+            if (_rootImage == null) _rootImage = GetComponent<Image>();
+            // 如果 iconImage 沒指派，預設使用自身的 Image
+            if (iconImage == null) iconImage = _rootImage;
         }
 
-        void Update()
+        // --- 修正：這是 InventoryUI 真正呼叫的方法 ---
+        public void UpdateSlot(Sprite icon, ItemData data = null)
         {
-            if (_debugText == null)
-
-            if (_debugText != null && !_debugText.gameObject.activeSelf)
-                _debugText.gameObject.SetActive(true);
-
-            int currentId = (itemData != null) ? itemData.id : -1;
-            // 將 id==0 視為 empty（預設/空手）
-            bool isEmpty = (itemData == null) || (currentId == 0);
-            int displayId = isEmpty ? -1 : currentId;
-
-            if (displayId != _lastDebugId)
-            {
-                _lastDebugId = displayId;
-                if (_debugText != null)
-                    _debugText.text = displayId >= 0 ? $"ID:{displayId}" : "empty";
-
-#if UNITY_EDITOR
-                Debug.Log($"[InventorySlot] slotIndex={slotIndex} name={gameObject.name} itemId={(displayId >= 0 ? displayId.ToString() : "null/empty")}");
-#endif
-            }
-        }
-
-
-        // 新增判斷：若 itemData 為 null 或 id==0，視為空 slot
-        public bool IsEmpty()
-        {
-            return itemData == null || itemData.id == 0;
-        }
-
-        public void SetIcon(Sprite icon)
-        {
-            if (iconImage == null) return;
-
-            // 若 iconImage 是根節點（代表此 slot 沒有獨立的 icon 子物件），
-            // 我們只改變 sprite，不把整個 Image 的 alpha 設為 0（避免隱藏背景）
-            bool isRoot = iconImage == _rootImage;
+            itemData = data;
 
             if (icon == null)
             {
-                if (isRoot)
-                {
-                    // 清除 sprite，但保留顏色/alpha（背景仍可見）
-                    iconImage.sprite = null;
-                }
-                else
-                {
-                    // 若有獨立 icon，使用 alpha 隱藏 icon
-                    iconImage.sprite = null;
-                    var c = iconImage.color;
-                    iconImage.color = new Color(c.r, c.g, c.b, 0f);
-                }
+                iconImage.sprite = null;
+                var c = iconImage.color;
+                iconImage.color = new Color(c.r, c.g, c.b, 0f); // 隱藏圖示
             }
             else
             {
-                // 設定 sprite 並顯示
                 iconImage.sprite = icon;
                 var c = iconImage.color;
-                iconImage.color = new Color(c.r, c.g, c.b, 1f);
+                iconImage.color = new Color(c.r, c.g, c.b, 1f); // 顯示圖示
             }
         }
 
-        public void OnPointerClick(PointerEventData eventData)
+        // --- 核心功能：滑鼠懸停顯示描述 ---
+        public void OnPointerEnter(PointerEventData eventData)
         {
-            if (owner == null) return;
-            owner.OnSlotClicked(this);
+            // 只有當格子有物品時才顯示
+            if (!IsEmpty && !eventData.dragging)
+            {
+                if (InventoryTooltip.Instance != null)
+                {
+                    // 改用專屬的 InventoryTooltip
+                    InventoryTooltip.Instance.Show(itemData.itemName, itemData.pickupDescription);
+                }
+            }
         }
 
-        public void OnBeginDrag(PointerEventData eventData)
+        public void OnPointerExit(PointerEventData eventData)
         {
-            if (owner == null) return;
-            owner.OnSlotBeginDrag(this, eventData);
+            if (InventoryTooltip.Instance != null)
+            {
+                InventoryTooltip.Instance.Hide();
+            }
         }
-
-        public void OnDrag(PointerEventData eventData)
-        {
-            if (owner == null) return;
-            owner.OnSlotDrag(this, eventData);
-        }
-
-        public void OnEndDrag(PointerEventData eventData)
-        {
-            if (owner == null) return;
-            owner.OnSlotEndDrag(this, eventData);
-        }
+        // 原有邏輯保持不變
+        public void OnPointerClick(PointerEventData eventData) { if (owner != null) owner.OnSlotClicked(this); }
+        public void OnBeginDrag(PointerEventData eventData) { if (owner != null) owner.OnSlotBeginDrag(this, eventData); }
+        public void OnDrag(PointerEventData eventData) { if (owner != null) owner.OnSlotDrag(this, eventData); }
+        public void OnEndDrag(PointerEventData eventData) { if (owner != null) owner.OnSlotEndDrag(this, eventData); }
     }
 }
