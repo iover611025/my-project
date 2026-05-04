@@ -111,18 +111,48 @@ namespace X
 
         private IEnumerator AnimateExpand(bool expand)
         {
+            if (panelToMove == null) yield break; // 防呆機制
             _isAnimating = true;
-            Vector2 targetPos = _originalAnchoredPos + (expand ? new Vector2(moveDistanceX, 0f) : Vector2.zero);
-            float elapsed = 0f;
-            Vector2 startPos = panelToMove.anchoredPosition;
 
-            while (elapsed < moveDuration)
+            // --- 1. 計算位移目標 ---
+            Vector2 startPos = panelToMove.anchoredPosition;
+            Vector2 targetPos = _originalAnchoredPos + (expand ? new Vector2(moveDistanceX, 0f) : Vector2.zero);
+
+            // --- 2. 計算旋轉目標 ---
+            // 這裡假設展開時旋轉 -90 度（向左旋轉），收合時回到 0 度
+            float startRotation = expandToggleUI != null ? expandToggleUI.localEulerAngles.z : 0f;
+            float targetRotation = expand && rotateToggleOnExpand ? 90f : 0f;
+
+            float elapsed = 0f;
+            float dur = Mathf.Max(0.001f, moveDuration); // 避免除以 0
+
+            while (elapsed < dur)
             {
-                elapsed += Time.unscaledDeltaTime;
-                panelToMove.anchoredPosition = Vector2.Lerp(startPos, targetPos, elapsed / moveDuration);
+                elapsed += Time.unscaledDeltaTime; // 使用 unscaledDeltaTime 確保暫停時 UI 仍能運作
+                float t = Mathf.Clamp01(elapsed / dur);
+
+                // 使用 SmoothStep 讓動畫具備加速與減速的平滑感（加法邏輯）
+                float curvedT = Mathf.SmoothStep(0f, 1f, t);
+
+                // 更新位置
+                panelToMove.anchoredPosition = Vector2.Lerp(startPos, targetPos, curvedT);
+
+                // 更新旋轉 (關鍵修正點)
+                if (expandToggleUI != null && rotateToggleOnExpand)
+                {
+                    // 使用 Mathf.LerpAngle 處理角度插值，確保旋轉方向正確
+                    float currentZ = Mathf.LerpAngle(startRotation, targetRotation, curvedT);
+                    expandToggleUI.localEulerAngles = new Vector3(0, 0, currentZ);
+                }
+
                 yield return null;
             }
+
+            // 確保最後數值精確
             panelToMove.anchoredPosition = targetPos;
+            if (expandToggleUI != null && rotateToggleOnExpand)
+                expandToggleUI.localEulerAngles = new Vector3(0, 0, targetRotation);
+
             _isExpanded = expand;
             _isAnimating = false;
         }
