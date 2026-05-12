@@ -33,3 +33,11 @@ MonoBehaviour:
     itemName: "\u7A2E\u5B50"
     icon: {fileID: 4152558759406508731, guid: 2316185c4c0311043bed29f5f7eab231, type: 3}
     pickupDescription: "\u9AA8\u7C89"
+  - id: 6
+    itemName: "\u8AFE\u7DAD\u62C9\u5FBD\u7AE0"
+    icon: {fileID: 9114602465550532365, guid: bb86970a25257c4418af4f6f73dd3c4a, type: 3}
+    pickupDescription: "\u5FBD\u7AE0"
+  - id: 7
+    itemName: "\u5531\u7247\u788E\u7247"
+    icon: {fileID: -6098513788859635399, guid: 3c13f0ae2612ef144b9efe9fc439c2f3, type: 3}
+    pickupDescription: "\u5531\u7247\u788E\u6389"
