@@ -28,6 +28,21 @@ namespace X
 
         private bool isTransitioning = false; // 轉場中禁止輸入
 
+        public static RoomUIManager Instance { get; private set; }
+
+        void Awake()
+        {
+            // 確保場景中只有一個 RoomUIManager 實例
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
+
         void OnEnable()
         {
             if (enableDebugLogs) Debug.Log("[RoomUIManager] OnEnable");
