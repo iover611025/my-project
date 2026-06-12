@@ -163,7 +163,7 @@ MonoBehaviour:
     CustomLookAtTarget: 0
   Lens:
     FieldOfView: 40
-    OrthographicSize: 5.35
+    OrthographicSize: 4.98
     NearClipPlane: 0.1
     FarClipPlane: 5000
     Dutch: 0
@@ -4600,7 +4600,7 @@ Camera:
   far clip plane: 5000
   field of view: 40
   orthographic: 1
-  orthographic size: 5.35
+  orthographic size: 4.98
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -7142,8 +7142,8 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: CameraFollowMouse, Assembly-CSharp
+      - m_Target: {fileID: 9793147}
+        m_TargetAssemblyTypeName: X.CameraFollowMouse, Assembly-CSharp
         m_MethodName: SetSwayAmount
         m_Mode: 0
         m_Arguments:
