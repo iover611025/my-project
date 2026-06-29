@@ -156,8 +156,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u5C0D\u8A71\u6846\u6E2C\u8A66\u6E2C\u8A66\u6E2C\u8A66"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0071d3480a8253d408f998d5668693f2, type: 2}
-  m_sharedMaterial: {fileID: 8943398317293304497, guid: 0071d3480a8253d408f998d5668693f2, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 4a6f7294fd1d7af438aea8d3e17c5cc2, type: 2}
+  m_sharedMaterial: {fileID: -5894997467271640437, guid: 4a6f7294fd1d7af438aea8d3e17c5cc2, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
