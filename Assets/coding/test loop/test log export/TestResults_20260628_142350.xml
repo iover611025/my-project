@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="5" result="Passed" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-06-28 06:23:47Z" end-time="2026-06-28 06:23:47Z" duration="0.0448993">
+  <test-suite type="TestSuite" id="1015" name="My project" fullname="My project" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-06-28 06:23:47Z" end-time="2026-06-28 06:23:47Z" duration="0.044899" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1007" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/a0911/OneDrive/文件/GitHub/my-project/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-06-28 06:23:47Z" end-time="2026-06-28 06:23:47Z" duration="0.032332" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="33316" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1008" name="X" fullname="X" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-06-28 06:23:47Z" end-time="2026-06-28 06:23:47Z" duration="0.030636" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1009" name="Tests" fullname="X.Tests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-06-28 06:23:47Z" end-time="2026-06-28 06:23:47Z" duration="0.029255" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestFixture" id="1001" name="VideoLoopEditModeTest" fullname="X.Tests.VideoLoopEditModeTest" classname="X.Tests.VideoLoopEditModeTest" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-06-28 06:23:47Z" end-time="2026-06-28 06:23:47Z" duration="0.027167" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1004" name="Teleporter_WithVideoType_NullVideoPlayer_ShouldNotPlay" fullname="X.Tests.VideoLoopEditModeTest.Teleporter_WithVideoType_NullVideoPlayer_ShouldNotPlay" methodname="Teleporter_WithVideoType_NullVideoPlayer_ShouldNotPlay" classname="X.Tests.VideoLoopEditModeTest" runstate="Runnable" seed="158226712" result="Passed" start-time="2026-06-28 06:23:47Z" end-time="2026-06-28 06:23:47Z" duration="0.008928" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1005" name="Teleporter_WithVideoType_VideoPlayerHasNoClip_ShouldNotPlay" fullname="X.Tests.VideoLoopEditModeTest.Teleporter_WithVideoType_VideoPlayerHasNoClip_ShouldNotPlay" methodname="Teleporter_WithVideoType_VideoPlayerHasNoClip_ShouldNotPlay" classname="X.Tests.VideoLoopEditModeTest" runstate="Runnable" seed="1842297460" result="Passed" start-time="2026-06-28 06:23:47Z" end-time="2026-06-28 06:23:47Z" duration="0.001209" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1006" name="Teleporter_WrongTransitionType_VideoPlayerAssigned_ShouldNotTriggerVideo" fullname="X.Tests.VideoLoopEditModeTest.Teleporter_WrongTransitionType_VideoPlayerAssigned_ShouldNotTriggerVideo" methodname="Teleporter_WrongTransitionType_VideoPlayerAssigned_ShouldNotTriggerVideo" classname="X.Tests.VideoLoopEditModeTest" runstate="Runnable" seed="463657765" result="Passed" start-time="2026-06-28 06:23:47Z" end-time="2026-06-28 06:23:47Z" duration="0.000374" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1003" name="VideoLoopTestScript_InitializesWithCorrectDefaultValues" fullname="X.Tests.VideoLoopEditModeTest.VideoLoopTestScript_InitializesWithCorrectDefaultValues" methodname="VideoLoopTestScript_InitializesWithCorrectDefaultValues" classname="X.Tests.VideoLoopEditModeTest" runstate="Runnable" seed="430649987" result="Passed" start-time="2026-06-28 06:23:47Z" end-time="2026-06-28 06:23:47Z" duration="0.000447" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1002" name="VideoPlayer_IsLoopingProperty_CanBeSetAndRetrieved" fullname="X.Tests.VideoLoopEditModeTest.VideoPlayer_IsLoopingProperty_CanBeSetAndRetrieved" methodname="VideoPlayer_IsLoopingProperty_CanBeSetAndRetrieved" classname="X.Tests.VideoLoopEditModeTest" runstate="Runnable" seed="1898136174" result="Passed" start-time="2026-06-28 06:23:47Z" end-time="2026-06-28 06:23:47Z" duration="0.000406" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Saving results to: C:/Users/a0911/AppData/LocalLow/CrossRoad/My project\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

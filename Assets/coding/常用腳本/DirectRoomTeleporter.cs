@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 using System.Collections;
 
 namespace X
@@ -8,7 +9,7 @@ namespace X
     {
         public static DirectRoomTeleporter Instance { get; private set; }
 
-        public enum TransitionType { Simple, WithText }
+        public enum TransitionType { Simple, WithText, WithVideo }
 
         [Header("轉場類型設定")]
         public TransitionType transitionType = TransitionType.Simple;
@@ -22,6 +23,14 @@ namespace X
         [Header("黑幕文字元件（選填）")]
         public Text blackFadeText;
         public float textFadeDuration = 0.4f;
+
+        [Header("影片轉場元件（選填）")]
+        public VideoPlayer transitionVideoPlayer;
+        public float videoSceneSwitchDelay = 1.0f;
+
+        [Header("轉場時要隱藏的UI物件（選填）")]
+        [Tooltip("在黑幕完全遮蔽時，會暫時關閉這些UI物件，避免畫面穿幫")]
+        public GameObject[] uiElementsToHide;
 
         [Header("目標傳送設定")]
         [SerializeField] private int targetBigSceneId;    // 畫面上現有的欄位
@@ -43,6 +52,10 @@ namespace X
             {
                 blackFadeText.gameObject.SetActive(false);
                 Color tc = blackFadeText.color; tc.a = 0f; blackFadeText.color = tc;
+            }
+            if (transitionVideoPlayer != null)
+            {
+                transitionVideoPlayer.gameObject.SetActive(false);
             }
         }
 
@@ -66,17 +79,50 @@ namespace X
                 blackFadeImage.gameObject.SetActive(true);
                 yield return StartCoroutine(FadeImageAlpha(blackFadeImage, 0f, 1f, fadeDuration));
             }
+            
+            if (uiElementsToHide != null)
+            {
+                foreach (var ui in uiElementsToHide)
+                {
+                    if (ui != null) ui.SetActive(false);
+                }
+            }
             if (transitionType == TransitionType.WithText && blackFadeText != null)
             {
                 blackFadeText.text = transitionMessage;
                 blackFadeText.gameObject.SetActive(true);
                 yield return StartCoroutine(FadeTextAlpha(blackFadeText, 0f, 1f, textFadeDuration));
             }
+            else if (transitionType == TransitionType.WithVideo && transitionVideoPlayer != null)
+            {
+                transitionVideoPlayer.gameObject.SetActive(true);
+                transitionVideoPlayer.Play();
+                
+                float timeout = 5f;
+                while (!transitionVideoPlayer.isPlaying && timeout > 0)
+                {
+                    timeout -= Time.deltaTime;
+                    yield return null;
+                }
+                
+                yield return new WaitForSeconds(videoSceneSwitchDelay);
+            }
 
             // 核心切換
             RoomUIManager.Instance.TransitionToBigScene(sceneId, roomIndex);
 
-            yield return new WaitForSeconds(blackStayDuration);
+            if (transitionType == TransitionType.WithVideo && transitionVideoPlayer != null)
+            {
+                while (transitionVideoPlayer.isPlaying)
+                {
+                    yield return null;
+                }
+                transitionVideoPlayer.gameObject.SetActive(false);
+            }
+            else
+            {
+                yield return new WaitForSeconds(blackStayDuration);
+            }
 
             if (blackFadeText != null && blackFadeText.gameObject.activeSelf)
             {
