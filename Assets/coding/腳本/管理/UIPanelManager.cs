@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -96,6 +96,75 @@ namespace X
                 if (CameraFollowMouse.Instance != null) CameraFollowMouse.Instance.SetSwayActive(true);
                 if (_activeReturnObj != null) _activeReturnObj.SetActive(false);
                 IsBlockingInput = false;
+            }
+        }
+
+        /// <summary>
+        /// 供外部腳本呼叫：強制關閉所有已開啟的面板並清理 Return 按鈕。
+        /// 用於面板被外部邏輯（如解謎成功、條件達成等）直接關閉時，
+        /// 確保 UIPanelManager 的堆疊與 UI 狀態保持同步。
+        /// </summary>
+        public void ForceCloseAllPanels()
+        {
+            // 關閉對話框
+            if (DialogueManager.Instance != null)
+            {
+                DialogueManager.Instance.ForceCloseDialogue();
+            }
+
+            // 逐一關閉堆疊中所有面板
+            while (_history.Count > 0)
+            {
+                var state = _history.Pop();
+                if (state.panel != null)
+                {
+                    state.panel.SetActive(false);
+                }
+            }
+
+            // 隱藏 Return 按鈕
+            if (_activeReturnObj != null)
+            {
+                _activeReturnObj.SetActive(false);
+            }
+
+            // 恢復攝影機晃動
+            if (CameraFollowMouse.Instance != null)
+            {
+                CameraFollowMouse.Instance.SetSwayActive(true);
+            }
+
+            // 解除輸入阻擋
+            IsBlockingInput = false;
+        }
+
+        /// <summary>
+        /// 替換堆疊頂層的面板（不改變堆疊深度）。
+        /// 適用於：放大畫面中透過道具互動切換物件狀態時
+        /// （例如：花盆「初始」→「種子」），讓 Return 按鈕指向新面板，
+        /// 玩家點擊 Return 能正確關閉新面板並返回房間。
+        /// </summary>
+        public void ReplaceTopPanel(GameObject newPanel)
+        {
+            if (_history.Count == 0 || newPanel == null) return;
+
+            // 取出舊的頂層（面板已經被外部關閉了，只需更新堆疊記錄）
+            var oldState = _history.Pop();
+
+            // 確保舊面板已關閉
+            if (oldState.panel != null && oldState.panel.activeSelf)
+            {
+                oldState.panel.SetActive(false);
+            }
+
+            // 開啟新面板並推入堆疊（沿用原本的 settings，保留 return 設定）
+            newPanel.SetActive(true);
+            _history.Push(new PanelState { panel = newPanel, settings = oldState.settings });
+
+            // 確保 Return 按鈕維持在最前層
+            if (_activeReturnObj != null)
+            {
+                _activeReturnObj.transform.SetAsLastSibling();
             }
         }
 

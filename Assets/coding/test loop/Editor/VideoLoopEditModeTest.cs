@@ -127,5 +127,12 @@ namespace X.Tests
             Object.DestroyImmediate(go);
             Object.DestroyImmediate(vpGo);
         }
+
+        // ===== DirectRoomTeleporter - EventSystem Freeze tests =====
+        // 注意：由於 Unity 限制，在 Edit Mode 下強制指派 EventSystem.current 會報錯 
+        // "Failed setting EventSystem.current to unknown EventSystem Selected: No module"
+        // 且 InputModule 的生命週期無法在 Edit Mode 正常初始化。
+        // 因此凍結功能 (EventSystem.current.enabled = false) 無法在 Edit Mode 透過單元測試驗證，
+        // 建議透過 Play Mode Test 或手動測試來驗證此功能。
     }
 }

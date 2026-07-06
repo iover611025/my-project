@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic; // 引入集合命名空間以支援 List
 
@@ -21,6 +21,10 @@ namespace X
         
         [Tooltip("成功後要關閉的多個物件 (若列表為空，則預設關閉自身)")]
         public List<GameObject> objectsToDisable = new List<GameObject>(); 
+
+        [Header("放大畫面替換 (選項)")]
+        [Tooltip("如果在放大畫面中互動，且互動後想『保持放大狀態但換一個面板』，請將新面板拖入此處，它會接管 Return 按鈕。")]
+        public GameObject newZoomPanelToReplace;
 
         private InventoryUI inventoryUI;
 
@@ -83,12 +87,19 @@ namespace X
                         {
                             uiManager.SyncByPanel(panel);
                         }
-                        Debug.Log($"[Trigger] 互動成功：已開啟面板 {panel.name}");
+                        Debug.Log($"[Trigger] 互動成功：已開啟物件 {panel.name}");
                     }
                 }
             }
 
-            // 3. 批次關閉指定物件（如迷霧、鎖、拉桿等）
+            // 3. 處理放大面板的替換
+            if (newZoomPanelToReplace != null && UIPanelManager.Instance != null && UIPanelManager.Instance.IsBlockingInput)
+            {
+                UIPanelManager.Instance.ReplaceTopPanel(newZoomPanelToReplace);
+                Debug.Log($"[Trigger] 已替換放大面板為：{newZoomPanelToReplace.name}");
+            }
+
+            // 4. 批次關閉指定物件（如迷霧、鎖、拉桿等）
             if (objectsToDisable != null && objectsToDisable.Count > 0)
             {
                 foreach (GameObject obj in objectsToDisable)

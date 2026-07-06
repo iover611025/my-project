@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Passed" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-07-04 10:43:20Z" end-time="2026-07-04 10:43:20Z" duration="0.519267">
+  <test-suite type="TestSuite" id="1042" name="CrossRoad" fullname="CrossRoad" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-07-04 10:43:20Z" end-time="2026-07-04 10:43:20Z" duration="0.519267" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1003" name="Assembly-CSharp.dll" fullname="C:/Users/a0911/OneDrive/文件/GitHub/my-project/Library/ScriptAssemblies/Assembly-CSharp.dll" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-07-04 10:43:20Z" end-time="2026-07-04 10:43:20Z" duration="0.506274" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="31740" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1004" name="X" fullname="X" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-07-04 10:43:20Z" end-time="2026-07-04 10:43:20Z" duration="0.498963" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1005" name="Tests" fullname="X.Tests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-07-04 10:43:20Z" end-time="2026-07-04 10:43:20Z" duration="0.492162" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1006" name="PlayMode" fullname="X.Tests.PlayMode" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-07-04 10:43:20Z" end-time="2026-07-04 10:43:20Z" duration="0.485623" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1001" name="TeleporterPlayModeTest" fullname="X.Tests.PlayMode.TeleporterPlayModeTest" classname="X.Tests.PlayMode.TeleporterPlayModeTest" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-07-04 10:43:20Z" end-time="2026-07-04 10:43:20Z" duration="0.473137" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1002" name="Teleporter_DuringTransition_ShouldDisableEventSystem_FreezeInteraction" fullname="X.Tests.PlayMode.TeleporterPlayModeTest.Teleporter_DuringTransition_ShouldDisableEventSystem_FreezeInteraction" methodname="Teleporter_DuringTransition_ShouldDisableEventSystem_FreezeInteraction" classname="X.Tests.PlayMode.TeleporterPlayModeTest" runstate="Runnable" seed="1310313114" result="Passed" start-time="2026-07-04 10:43:20Z" end-time="2026-07-04 10:43:20Z" duration="0.455019" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[RoomUIManager] OnEnable
+[RoomUIManager] Start currentBigSceneIndex=0 currentRoomIndex=0
+[RoomUIManager] no bigScenes configured.
+[RoomUIManager] ShowRoom: no panels to show
+[RoomUIManager] 找不到 ID 為 1 的大場景
+Saving results to: C:/Users/a0911/AppData/LocalLow/404 Not Found/CrossRoad\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

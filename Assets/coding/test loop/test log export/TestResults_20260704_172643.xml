@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="20" result="Failed(Child)" total="20" passed="19" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.0288267">
+  <test-suite type="TestSuite" id="1034" name="CrossRoad" fullname="CrossRoad" runstate="Runnable" testcasecount="20" result="Failed" site="Child" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.028827" total="20" passed="19" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1023" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/a0911/OneDrive/文件/GitHub/my-project/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="20" result="Failed" site="Child" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.021605" total="20" passed="19" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="3476" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1024" name="X" fullname="X" runstate="Runnable" testcasecount="20" result="Failed" site="Child" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.018074" total="20" passed="19" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1025" name="Tests" fullname="X.Tests" runstate="Runnable" testcasecount="20" result="Failed" site="Child" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.016037" total="20" passed="19" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestFixture" id="1001" name="SwipeUpToSwitchObjectTests" fullname="X.Tests.SwipeUpToSwitchObjectTests" classname="X.Tests.SwipeUpToSwitchObjectTests" runstate="Runnable" testcasecount="14" result="Passed" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.004574" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1015" name="DefaultFadeDuration_ShouldBeOne" fullname="X.Tests.SwipeUpToSwitchObjectTests.DefaultFadeDuration_ShouldBeOne" methodname="DefaultFadeDuration_ShouldBeOne" classname="X.Tests.SwipeUpToSwitchObjectTests" runstate="Runnable" seed="761837010" result="Passed" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.000224" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1014" name="DefaultSwipeThreshold_ShouldBePointZeroFive" fullname="X.Tests.SwipeUpToSwitchObjectTests.DefaultSwipeThreshold_ShouldBePointZeroFive" methodname="DefaultSwipeThreshold_ShouldBePointZeroFive" classname="X.Tests.SwipeUpToSwitchObjectTests" runstate="Runnable" seed="562441056" result="Passed" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.000099" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1013" name="OnPointerUp_EmptyObjectArray_ShouldNotSwitch" fullname="X.Tests.SwipeUpToSwitchObjectTests.OnPointerUp_EmptyObjectArray_ShouldNotSwitch" methodname="OnPointerUp_EmptyObjectArray_ShouldNotSwitch" classname="X.Tests.SwipeUpToSwitchObjectTests" runstate="Runnable" seed="179183843" result="Passed" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.000072" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1012" name="OnPointerUp_SingleObjectArray_ShouldNotSwitch" fullname="X.Tests.SwipeUpToSwitchObjectTests.OnPointerUp_SingleObjectArray_ShouldNotSwitch" methodname="OnPointerUp_SingleObjectArray_ShouldNotSwitch" classname="X.Tests.SwipeUpToSwitchObjectTests" runstate="Runnable" seed="837537702" result="Passed" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.000096" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1011" name="OnPointerUp_WhenIsFadingTrue_ShouldNotChangeCurrentIndex" fullname="X.Tests.SwipeUpToSwitchObjectTests.OnPointerUp_WhenIsFadingTrue_ShouldNotChangeCurrentIndex" methodname="OnPointerUp_WhenIsFadingTrue_ShouldNotChangeCurrentIndex" classname="X.Tests.SwipeUpToSwitchObjectTests" runstate="Runnable" seed="1619296119" result="Passed" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.000118" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1010" name="PointerDrag_ValidSwipeUp_ShouldTriggerSwitch" fullname="X.Tests.SwipeUpToSwitchObjectTests.PointerDrag_ValidSwipeUp_ShouldTriggerSwitch" methodname="PointerDrag_ValidSwipeUp_ShouldTriggerSwitch" classname="X.Tests.SwipeUpToSwitchObjectTests" runstate="Runnable" seed="190175217" result="Passed" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.000167" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1004" name="Start_AddsCanvasGroupToAllObjects" fullname="X.Tests.SwipeUpToSwitchObjectTests.Start_AddsCanvasGroupToAllObjects" methodname="Start_AddsCanvasGroupToAllObjects" classname="X.Tests.SwipeUpToSwitchObjectTests" runstate="Runnable" seed="798961239" result="Passed" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.000186" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1002" name="Start_FirstObjectActive_CurrentIndexIsZero" fullname="X.Tests.SwipeUpToSwitchObjectTests.Start_FirstObjectActive_CurrentIndexIsZero" methodname="Start_FirstObjectActive_CurrentIndexIsZero" classname="X.Tests.SwipeUpToSwitchObjectTests" runstate="Runnable" seed="59923689" result="Passed" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.000124" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1003" name="Start_ThirdObjectActive_CurrentIndexIsTwo" fullname="X.Tests.SwipeUpToSwitchObjectTests.Start_ThirdObjectActive_CurrentIndexIsTwo" methodname="Start_ThirdObjectActive_CurrentIndexIsTwo" classname="X.Tests.SwipeUpToSwitchObjectTests" runstate="Runnable" seed="137650071" result="Passed" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.000100" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1007" name="SwipeDetection_DeltaYAboveThreshold_ShouldTriggerSwitch" fullname="X.Tests.SwipeUpToSwitchObjectTests.SwipeDetection_DeltaYAboveThreshold_ShouldTriggerSwitch" methodname="SwipeDetection_DeltaYAboveThreshold_ShouldTriggerSwitch" classname="X.Tests.SwipeUpToSwitchObjectTests" runstate="Runnable" seed="1859860310" result="Passed" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.000024" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1008" name="SwipeDetection_DeltaYBelowThreshold_ShouldNotTriggerSwitch" fullname="X.Tests.SwipeUpToSwitchObjectTests.SwipeDetection_DeltaYBelowThreshold_ShouldNotTriggerSwitch" methodname="SwipeDetection_DeltaYBelowThreshold_ShouldNotTriggerSwitch" classname="X.Tests.SwipeUpToSwitchObjectTests" runstate="Runnable" seed="613760399" result="Passed" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.000020" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1009" name="SwipeDetection_NegativeDeltaY_ShouldNotTriggerSwitch" fullname="X.Tests.SwipeUpToSwitchObjectTests.SwipeDetection_NegativeDeltaY_ShouldNotTriggerSwitch" methodname="SwipeDetection_NegativeDeltaY_ShouldNotTriggerSwitch" classname="X.Tests.SwipeUpToSwitchObjectTests" runstate="Runnable" seed="1157944020" result="Passed" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.000016" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1005" name="SwitchToNextObject_FromLastIndex_WrapsAroundToZero" fullname="X.Tests.SwipeUpToSwitchObjectTests.SwitchToNextObject_FromLastIndex_WrapsAroundToZero" methodname="SwitchToNextObject_FromLastIndex_WrapsAroundToZero" classname="X.Tests.SwipeUpToSwitchObjectTests" runstate="Runnable" seed="2090313032" result="Passed" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.000143" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1006" name="SwitchToNextObject_FromMiddleIndex_IncrementsCorrectly" fullname="X.Tests.SwipeUpToSwitchObjectTests.SwitchToNextObject_FromMiddleIndex_IncrementsCorrectly" methodname="SwitchToNextObject_FromMiddleIndex_IncrementsCorrectly" classname="X.Tests.SwipeUpToSwitchObjectTests" runstate="Runnable" seed="645700675" result="Passed" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.000118" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1016" name="VideoLoopEditModeTest" fullname="X.Tests.VideoLoopEditModeTest" classname="X.Tests.VideoLoopEditModeTest" runstate="Runnable" testcasecount="6" result="Failed" site="Child" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.009339" total="6" passed="5" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-case id="1022" name="Teleporter_DuringTransition_ShouldDisableEventSystem_FreezeInteraction" fullname="X.Tests.VideoLoopEditModeTest.Teleporter_DuringTransition_ShouldDisableEventSystem_FreezeInteraction" methodname="Teleporter_DuringTransition_ShouldDisableEventSystem_FreezeInteraction" classname="X.Tests.VideoLoopEditModeTest" runstate="Runnable" seed="1761853849" result="Failed" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.000428" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <failure>
+                <message><![CDATA[  在轉場流程開始時，EventSystem 應該被設為 false，以凍結玩家點擊互動。
+  Expected: False
+  But was:  True
+]]></message>
+                <stack-trace><![CDATA[at X.Tests.VideoLoopEditModeTest.Teleporter_DuringTransition_ShouldDisableEventSystem_FreezeInteraction () [0x00091] in C:\Users\a0911\OneDrive\文件\GitHub\my-project\Assets\coding\test loop\Editor\VideoLoopEditModeTest.cs:170
+]]></stack-trace>
+              </failure>
+            </test-case>
+            <test-case id="1019" name="Teleporter_WithVideoType_NullVideoPlayer_ShouldNotPlay" fullname="X.Tests.VideoLoopEditModeTest.Teleporter_WithVideoType_NullVideoPlayer_ShouldNotPlay" methodname="Teleporter_WithVideoType_NullVideoPlayer_ShouldNotPlay" classname="X.Tests.VideoLoopEditModeTest" runstate="Runnable" seed="707799388" result="Passed" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.000112" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1020" name="Teleporter_WithVideoType_VideoPlayerHasNoClip_ShouldNotPlay" fullname="X.Tests.VideoLoopEditModeTest.Teleporter_WithVideoType_VideoPlayerHasNoClip_ShouldNotPlay" methodname="Teleporter_WithVideoType_VideoPlayerHasNoClip_ShouldNotPlay" classname="X.Tests.VideoLoopEditModeTest" runstate="Runnable" seed="810754210" result="Passed" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.000092" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1021" name="Teleporter_WrongTransitionType_VideoPlayerAssigned_ShouldNotTriggerVideo" fullname="X.Tests.VideoLoopEditModeTest.Teleporter_WrongTransitionType_VideoPlayerAssigned_ShouldNotTriggerVideo" methodname="Teleporter_WrongTransitionType_VideoPlayerAssigned_ShouldNotTriggerVideo" classname="X.Tests.VideoLoopEditModeTest" runstate="Runnable" seed="144690325" result="Passed" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.000118" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1018" name="VideoLoopTestScript_InitializesWithCorrectDefaultValues" fullname="X.Tests.VideoLoopEditModeTest.VideoLoopTestScript_InitializesWithCorrectDefaultValues" methodname="VideoLoopTestScript_InitializesWithCorrectDefaultValues" classname="X.Tests.VideoLoopEditModeTest" runstate="Runnable" seed="897700625" result="Passed" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.000072" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1017" name="VideoPlayer_IsLoopingProperty_CanBeSetAndRetrieved" fullname="X.Tests.VideoLoopEditModeTest.VideoPlayer_IsLoopingProperty_CanBeSetAndRetrieved" methodname="VideoPlayer_IsLoopingProperty_CanBeSetAndRetrieved" classname="X.Tests.VideoLoopEditModeTest" runstate="Runnable" seed="1034147777" result="Passed" start-time="2026-07-04 09:26:42Z" end-time="2026-07-04 09:26:42Z" duration="0.000042" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Saving results to: C:/Users/a0911/AppData/LocalLow/404 Not Found/CrossRoad\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

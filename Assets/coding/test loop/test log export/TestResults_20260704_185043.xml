@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="6" result="Passed" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-07-04 10:50:38Z" end-time="2026-07-04 10:50:40Z" duration="1.8442987">
+  <test-suite type="TestSuite" id="1047" name="CrossRoad" fullname="CrossRoad" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-07-04 10:50:38Z" end-time="2026-07-04 10:50:40Z" duration="1.844299" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1039" name="Assembly-CSharp.dll" fullname="C:/Users/a0911/OneDrive/文件/GitHub/my-project/Library/ScriptAssemblies/Assembly-CSharp.dll" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-07-04 10:50:39Z" end-time="2026-07-04 10:50:40Z" duration="1.833261" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="31740" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1040" name="X" fullname="X" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-07-04 10:50:39Z" end-time="2026-07-04 10:50:40Z" duration="1.822839" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1041" name="Tests" fullname="X.Tests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-07-04 10:50:39Z" end-time="2026-07-04 10:50:40Z" duration="1.817569" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1042" name="PlayMode" fullname="X.Tests.PlayMode" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-07-04 10:50:39Z" end-time="2026-07-04 10:50:40Z" duration="1.812567" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1031" name="SwipeUpToSwitchObjectPlayModeTest" fullname="X.Tests.PlayMode.SwipeUpToSwitchObjectPlayModeTest" classname="X.Tests.PlayMode.SwipeUpToSwitchObjectPlayModeTest" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-07-04 10:50:39Z" end-time="2026-07-04 10:50:40Z" duration="1.359212" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1034" name="SwipeUp_AfterFadeComplete_IsFadingShouldBeFalse" fullname="X.Tests.PlayMode.SwipeUpToSwitchObjectPlayModeTest.SwipeUp_AfterFadeComplete_IsFadingShouldBeFalse" methodname="SwipeUp_AfterFadeComplete_IsFadingShouldBeFalse" classname="X.Tests.PlayMode.SwipeUpToSwitchObjectPlayModeTest" runstate="Runnable" seed="522894576" result="Passed" start-time="2026-07-04 10:50:39Z" end-time="2026-07-04 10:50:39Z" duration="0.437897" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1032" name="SwipeUp_AfterFadeComplete_ObjectsSwitchCorrectly" fullname="X.Tests.PlayMode.SwipeUpToSwitchObjectPlayModeTest.SwipeUp_AfterFadeComplete_ObjectsSwitchCorrectly" methodname="SwipeUp_AfterFadeComplete_ObjectsSwitchCorrectly" classname="X.Tests.PlayMode.SwipeUpToSwitchObjectPlayModeTest" runstate="Runnable" seed="49528441" result="Passed" start-time="2026-07-04 10:50:39Z" end-time="2026-07-04 10:50:39Z" duration="0.426427" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1033" name="SwipeUp_DuringFade_IsFadingShouldBeTrue" fullname="X.Tests.PlayMode.SwipeUpToSwitchObjectPlayModeTest.SwipeUp_DuringFade_IsFadingShouldBeTrue" methodname="SwipeUp_DuringFade_IsFadingShouldBeTrue" classname="X.Tests.PlayMode.SwipeUpToSwitchObjectPlayModeTest" runstate="Runnable" seed="1102934062" result="Passed" start-time="2026-07-04 10:50:39Z" end-time="2026-07-04 10:50:39Z" duration="0.023746" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1036" name="SwipeUp_FromLastObject_WrapsAroundToFirst" fullname="X.Tests.PlayMode.SwipeUpToSwitchObjectPlayModeTest.SwipeUp_FromLastObject_WrapsAroundToFirst" methodname="SwipeUp_FromLastObject_WrapsAroundToFirst" classname="X.Tests.PlayMode.SwipeUpToSwitchObjectPlayModeTest" runstate="Runnable" seed="656498644" result="Passed" start-time="2026-07-04 10:50:39Z" end-time="2026-07-04 10:50:40Z" duration="0.424566" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1035" name="SwipeUp_WhileIsFading_SecondSwipeShouldBeIgnored" fullname="X.Tests.PlayMode.SwipeUpToSwitchObjectPlayModeTest.SwipeUp_WhileIsFading_SecondSwipeShouldBeIgnored" methodname="SwipeUp_WhileIsFading_SecondSwipeShouldBeIgnored" classname="X.Tests.PlayMode.SwipeUpToSwitchObjectPlayModeTest" runstate="Runnable" seed="1067084075" result="Passed" start-time="2026-07-04 10:50:40Z" end-time="2026-07-04 10:50:40Z" duration="0.029742" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1037" name="TeleporterPlayModeTest" fullname="X.Tests.PlayMode.TeleporterPlayModeTest" classname="X.Tests.PlayMode.TeleporterPlayModeTest" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-07-04 10:50:40Z" end-time="2026-07-04 10:50:40Z" duration="0.447532" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1038" name="Teleporter_DuringTransition_ShouldDisableEventSystem_FreezeInteraction" fullname="X.Tests.PlayMode.TeleporterPlayModeTest.Teleporter_DuringTransition_ShouldDisableEventSystem_FreezeInteraction" methodname="Teleporter_DuringTransition_ShouldDisableEventSystem_FreezeInteraction" classname="X.Tests.PlayMode.TeleporterPlayModeTest" runstate="Runnable" seed="630052500" result="Passed" start-time="2026-07-04 10:50:40Z" end-time="2026-07-04 10:50:40Z" duration="0.441584" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[RoomUIManager] OnEnable
+[RoomUIManager] Start currentBigSceneIndex=0 currentRoomIndex=0
+[RoomUIManager] no bigScenes configured.
+[RoomUIManager] ShowRoom: no panels to show
+[RoomUIManager] 找不到 ID 為 1 的大場景
+Saving results to: C:/Users/a0911/AppData/LocalLow/404 Not Found/CrossRoad\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

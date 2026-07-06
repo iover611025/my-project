@@ -74,6 +74,14 @@ namespace X
         private IEnumerator TeleportRoutine(int sceneId, int roomIndex)
         {
             _isSwitching = true;
+            
+            // 鎖定玩家點擊互動，防止轉場期間亂按
+            var currentEventSystem = UnityEngine.EventSystems.EventSystem.current;
+            if (currentEventSystem != null)
+            {
+                currentEventSystem.enabled = false;
+            }
+
             if (blackFadeImage != null)
             {
                 blackFadeImage.gameObject.SetActive(true);
@@ -134,6 +142,13 @@ namespace X
                 yield return StartCoroutine(FadeImageAlpha(blackFadeImage, 1f, 0f, fadeDuration));
                 blackFadeImage.gameObject.SetActive(false);
             }
+
+            // 恢復玩家點擊互動
+            if (currentEventSystem != null)
+            {
+                currentEventSystem.enabled = true;
+            }
+
             _isSwitching = false;
         }
 
