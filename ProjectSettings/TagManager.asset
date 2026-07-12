@@ -11,9 +11,9 @@ TagManager:
   - 
   - Water
   - UI
-  - wall
-  - floor
-  - side wall
+  - 
+  - 
+  - 
   - 
   - 
   - 
@@ -40,6 +40,9 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: CloseUp
+    uniqueID: 4077718769
     locked: 0
   m_RenderingLayers:
   - Default
