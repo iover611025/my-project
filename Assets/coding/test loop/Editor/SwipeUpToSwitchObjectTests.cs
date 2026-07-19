@@ -1,4 +1,4 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -366,5 +366,150 @@ namespace X.Tests
 
             Object.DestroyImmediate(root);
         }
+    
+        // ════════════════════════════════════════════════════════════════════
+        // 7. 滑動方向測試 (SwipeDirection)
+        // ════════════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// 預設滑動方向應為 BottomToTop。
+        /// </summary>
+        [Test]
+        public void DefaultSwipeDirection_ShouldBeBottomToTop()
+        {
+            var root = new GameObject("SwipeUpSwitcher_Dir_Default");
+            var switcher = root.AddComponent<SwipeUpToSwitchObject>();
+
+            Assert.AreEqual(SwipeDirection.BottomToTop, switcher.swipeDirection,
+                "預設 swipeDirection 應為 BottomToTop。");
+
+            Object.DestroyImmediate(root);
+        }
+
+        /// <summary>
+        /// BottomToTop 模式：Y 正值超過 threshold 應觸發切換。
+        /// </summary>
+        [Test]
+        public void SwipeDirection_BottomToTop_PositiveDeltaY_ShouldTriggerSwitch()
+        {
+            var switcher = CreateSwitcher(3, activeIndex: 0);
+            switcher.swipeDirection = SwipeDirection.BottomToTop;
+            InvokePrivateMethod(switcher, "Start");
+
+            switcher.OnPointerDown(new PointerEventData(null) { position = new Vector2(0, 0) });
+            float threshold = Screen.height * switcher.swipeThresholdRatio;
+            switcher.OnPointerUp(new PointerEventData(null) { position = new Vector2(0, threshold + 10f) });
+
+            bool isFading = GetPrivateField<bool>(switcher, "isFading");
+            Assert.IsTrue(isFading, "BottomToTop 模式下，Y 正值超閾值應觸發切換。");
+
+            Object.DestroyImmediate(switcher.gameObject);
+            foreach (var go in switcher.targetObjects) Object.DestroyImmediate(go);
+        }
+
+        /// <summary>
+        /// BottomToTop 模式：Y 負值（往下滑）不應觸發切換。
+        /// </summary>
+        [Test]
+        public void SwipeDirection_BottomToTop_NegativeDeltaY_ShouldNotTriggerSwitch()
+        {
+            var switcher = CreateSwitcher(3, activeIndex: 0);
+            switcher.swipeDirection = SwipeDirection.BottomToTop;
+            InvokePrivateMethod(switcher, "Start");
+
+            switcher.OnPointerDown(new PointerEventData(null) { position = new Vector2(0, 200f) });
+            switcher.OnPointerUp(new PointerEventData(null) { position = new Vector2(0, 0f) }); // Y 減少 = 往下
+
+            bool isFading = GetPrivateField<bool>(switcher, "isFading");
+            Assert.IsFalse(isFading, "BottomToTop 模式下，往下滑不應觸發切換。");
+
+            Object.DestroyImmediate(switcher.gameObject);
+            foreach (var go in switcher.targetObjects) Object.DestroyImmediate(go);
+        }
+
+        /// <summary>
+        /// TopToBottom 模式：Y 負值（往下滑）超過 threshold 應觸發切換。
+        /// </summary>
+        [Test]
+        public void SwipeDirection_TopToBottom_NegativeDeltaY_ShouldTriggerSwitch()
+        {
+            var switcher = CreateSwitcher(3, activeIndex: 0);
+            switcher.swipeDirection = SwipeDirection.TopToBottom;
+            InvokePrivateMethod(switcher, "Start");
+
+            float threshold = Screen.height * switcher.swipeThresholdRatio;
+            switcher.OnPointerDown(new PointerEventData(null) { position = new Vector2(0, threshold + 10f) });
+            switcher.OnPointerUp(new PointerEventData(null) { position = new Vector2(0, 0f) }); // 往下滑
+
+            bool isFading = GetPrivateField<bool>(switcher, "isFading");
+            Assert.IsTrue(isFading, "TopToBottom 模式下，往下滑超閾值應觸發切換。");
+
+            Object.DestroyImmediate(switcher.gameObject);
+            foreach (var go in switcher.targetObjects) Object.DestroyImmediate(go);
+        }
+
+        /// <summary>
+        /// LeftToRight 模式：X 正值超過 threshold 應觸發切換。
+        /// </summary>
+        [Test]
+        public void SwipeDirection_LeftToRight_PositiveDeltaX_ShouldTriggerSwitch()
+        {
+            var switcher = CreateSwitcher(3, activeIndex: 0);
+            switcher.swipeDirection = SwipeDirection.LeftToRight;
+            InvokePrivateMethod(switcher, "Start");
+
+            switcher.OnPointerDown(new PointerEventData(null) { position = new Vector2(0, 0) });
+            float threshold = Screen.width * switcher.swipeThresholdRatio;
+            switcher.OnPointerUp(new PointerEventData(null) { position = new Vector2(threshold + 10f, 0) });
+
+            bool isFading = GetPrivateField<bool>(switcher, "isFading");
+            Assert.IsTrue(isFading, "LeftToRight 模式下，X 正值超閾值應觸發切換。");
+
+            Object.DestroyImmediate(switcher.gameObject);
+            foreach (var go in switcher.targetObjects) Object.DestroyImmediate(go);
+        }
+
+        /// <summary>
+        /// RightToLeft 模式：X 負值（往左滑）超過 threshold 應觸發切換。
+        /// </summary>
+        [Test]
+        public void SwipeDirection_RightToLeft_NegativeDeltaX_ShouldTriggerSwitch()
+        {
+            var switcher = CreateSwitcher(3, activeIndex: 0);
+            switcher.swipeDirection = SwipeDirection.RightToLeft;
+            InvokePrivateMethod(switcher, "Start");
+
+            float threshold = Screen.width * switcher.swipeThresholdRatio;
+            switcher.OnPointerDown(new PointerEventData(null) { position = new Vector2(threshold + 10f, 0) });
+            switcher.OnPointerUp(new PointerEventData(null) { position = new Vector2(0f, 0) }); // 往左滑
+
+            bool isFading = GetPrivateField<bool>(switcher, "isFading");
+            Assert.IsTrue(isFading, "RightToLeft 模式下，往左滑超閾值應觸發切換。");
+
+            Object.DestroyImmediate(switcher.gameObject);
+            foreach (var go in switcher.targetObjects) Object.DestroyImmediate(go);
+        }
+
+        /// <summary>
+        /// LeftToRight 模式：往上滑（Y 移動）不應觸發切換。
+        /// </summary>
+        [Test]
+        public void SwipeDirection_LeftToRight_VerticalSwipe_ShouldNotTriggerSwitch()
+        {
+            var switcher = CreateSwitcher(3, activeIndex: 0);
+            switcher.swipeDirection = SwipeDirection.LeftToRight;
+            InvokePrivateMethod(switcher, "Start");
+
+            float threshold = Screen.height * switcher.swipeThresholdRatio;
+            switcher.OnPointerDown(new PointerEventData(null) { position = new Vector2(0, 0) });
+            switcher.OnPointerUp(new PointerEventData(null) { position = new Vector2(0, threshold + 10f) }); // 只有 Y 移動
+
+            bool isFading = GetPrivateField<bool>(switcher, "isFading");
+            Assert.IsFalse(isFading, "LeftToRight 模式下，垂直滑動不應觸發切換。");
+
+            Object.DestroyImmediate(switcher.gameObject);
+            foreach (var go in switcher.targetObjects) Object.DestroyImmediate(go);
+        }
     }
 }
+
