@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -646,7 +646,20 @@ namespace X
                 roomManager.SetRoomIndex(roomIndex);
             }
 
-            // 3. 更新 UI 面板顯示
+            // 3. 關閉舊大場景的所有 UI 面板（避免舊場景殘留在畫面上）
+            for (int i = 0; i < bigScenes.Count; i++)
+            {
+                if (i == sceneIdx) continue; // 跳過目標場景
+                var other = bigScenes[i];
+                if (other == null || other.roomPanels == null) continue;
+                foreach (var rt in other.roomPanels)
+                {
+                    if (rt != null && rt.gameObject.activeSelf)
+                        rt.gameObject.SetActive(false);
+                }
+            }
+
+            // 4. 更新 UI 面板顯示（僅開啟目標大場景的指定房間）
             RoomHelper.ActivateOnly(data.roomPanels, roomIndex);
 
             if (enableDebugLogs)
