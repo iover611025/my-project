@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -174,27 +174,44 @@ namespace X
             if (_heldItemData != null && TryAddToFirstEmpty(_heldItemData)) ClearHeldItem();
         }
 
-        public bool AddItemToSlot(ItemData itemData)
+        public bool AddItemToSlot(ItemData itemData, int qty = 1)
         {
             if (itemData == null) return false;
-            if (TryAddToFirstEmpty(itemData)) return true;
+            if (TryAddToFirstEmpty(itemData, qty)) return true;
             if (IsHeldEmpty()) { SetHeldItem(itemData.icon, itemData); return true; }
             return false;
         }
 
-        private bool TryAddToFirstEmpty(ItemData itemData)
+        private bool TryAddToFirstEmpty(ItemData itemData, int qty = 1)
         {
             var ordered = GetAssignmentOrder();
             foreach (var s in ordered)
             {
                 if (s != null && s.IsEmpty)
                 {
-                    // 修正 2: 傳入 icon 與 data
-                    s.UpdateSlot(itemData.icon, itemData);
+                    // 傳入 icon、data 與數量
+                    s.UpdateSlot(itemData.icon, itemData, qty);
                     return true;
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// 預先檢查背包（格子 + 握持區）是否有足夠的空格可放入 slotCount 筆物品。
+        /// 用於多物品一次拾取時，確保全部能放入再執行。
+        /// </summary>
+        public bool HasEnoughSpace(int slotCount)
+        {
+            if (slotCount <= 0) return true;
+            int emptyCount = 0;
+            if (slots != null)
+            {
+                foreach (var s in slots)
+                    if (s != null && s.IsEmpty) emptyCount++;
+            }
+            if (IsHeldEmpty()) emptyCount++; // 握持區也算一個空位
+            return emptyCount >= slotCount;
         }
 
         public void OnSlotClicked(InventorySlot slot)

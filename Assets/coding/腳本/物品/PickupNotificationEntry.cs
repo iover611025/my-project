@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
@@ -18,12 +18,16 @@ namespace X
         /// <summary>
         /// 初始化提示內容
         /// </summary>
-        public void Setup(ItemData data)
+        public void Setup(ItemData data, int qty = 1)
         {
             if (data == null) return;
 
-            // 設定名稱與描述[cite: 8]
-            if (itemNameText != null) itemNameText.text = $"獲得了 {data.itemName}";
+            // 設定名稱與描述（數量 > 1 時顯示 x N）
+            if (itemNameText != null)
+            {
+                string qtyLabel = qty > 1 ? $" x{qty}" : "";
+                itemNameText.text = $"獲得了 {data.itemName}{qtyLabel}";
+            }
             if (descriptionText != null)
             {
                 descriptionText.text = data.pickupDescription;

@@ -226,7 +226,17 @@ namespace X
             if (panelRoot != null) { _uiBuilt = true; return; }
 
             // 取得（或建立）Canvas
-            Canvas canvas = FindFirstObjectByType<Canvas>();
+            // ⚠ 必須找 ScreenSpaceOverlay 的頂層 Canvas，避免掛到房間 Panel 的子 Canvas 上，
+            //   導致 RoomUIManager 切換場景時用 SetActive(false) 把 DevPanel 一起關掉。
+            Canvas canvas = null;
+            foreach (var c in FindObjectsByType<Canvas>(FindObjectsSortMode.None))
+            {
+                if (c.renderMode == RenderMode.ScreenSpaceOverlay && c.transform.parent == null)
+                {
+                    canvas = c;
+                    break;
+                }
+            }
             if (canvas == null)
             {
                 var cgo = new GameObject("DevPanelCanvas");

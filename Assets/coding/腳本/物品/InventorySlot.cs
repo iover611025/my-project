@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using TMPro;
 
 namespace X
 {
@@ -10,7 +11,10 @@ namespace X
         IPointerEnterHandler, IPointerExitHandler // 新增懸停介面
     {
         public Image iconImage;
+        [Tooltip("（選填）顯示數量的 TextMeshPro 元件，不指定則不顯示數量")]
+        public TextMeshProUGUI quantityText; // 數量標籤，如「x3」
         [HideInInspector] public ItemData itemData;
+        [HideInInspector] public int quantity = 1; // 此格子存放的數量
         [HideInInspector] public int slotIndex;
         [HideInInspector] public InventoryUI owner;
 
@@ -27,9 +31,10 @@ namespace X
         }
 
         // --- 修正：這是 InventoryUI 真正呼叫的方法 ---
-        public void UpdateSlot(Sprite icon, ItemData data = null)
+        public void UpdateSlot(Sprite icon, ItemData data = null, int qty = 1)
         {
             itemData = data;
+            quantity = (data == null || data.id == 0) ? 0 : Mathf.Max(1, qty);
 
             if (icon == null)
             {
@@ -42,6 +47,14 @@ namespace X
                 iconImage.sprite = icon;
                 var c = iconImage.color;
                 iconImage.color = new Color(c.r, c.g, c.b, 1f); // 顯示圖示
+            }
+
+            // 更新數量標籤
+            if (quantityText != null)
+            {
+                bool showQty = data != null && data.id != 0 && quantity > 1;
+                quantityText.text = showQty ? $"x{quantity}" : "";
+                quantityText.gameObject.SetActive(showQty);
             }
         }
 
