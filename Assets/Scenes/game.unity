@@ -8717,7 +8717,7 @@ MonoBehaviour:
   objectsToEnableOnEnd:
   - {fileID: 1687608385}
   useBlackFade: 0
-  fadeInDuration: 0.3
+  fadeInDuration: 0.2
   blackStayDuration: 0.1
   fadeOutDuration: 0.3
   pausedDuringTimer: {fileID: 0}
@@ -25620,15 +25620,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::X.AutoDisableTimer
   triggerMode: 0
-  duration: 2
+  duration: 1
   isRepeating: 0
   targetObject: {fileID: 2063471574}
   objectsToEnableOnEnd:
   - {fileID: 283529249}
   useBlackFade: 1
   fadeInDuration: 0.3
-  blackStayDuration: 0.1
-  fadeOutDuration: 0.3
+  blackStayDuration: 0.2
+  fadeOutDuration: 0.4
   pausedDuringTimer: {fileID: 0}
   onTimerStart:
     m_PersistentCalls:
