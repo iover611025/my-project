@@ -61,6 +61,7 @@ namespace X
         // 動態生成的 UI 元素
         private GameObject _dynamicRoot;
         private bool _uiBuilt = false;
+        private Canvas _createdCanvas;
 
         // 傳送欄位（TMP InputField）
         private TMP_InputField _sceneIdInput;
@@ -95,6 +96,14 @@ namespace X
             // Inspector 縮放滑桿即時同步
             if (_dynamicRoot != null)
                 _dynamicRoot.transform.localScale = Vector3.one * panelScale;
+        }
+
+        void OnDestroy()
+        {
+            if (_createdCanvas != null && _createdCanvas.gameObject != null)
+            {
+                Destroy(_createdCanvas.gameObject);
+            }
         }
 
         // ─────────────────────────────────────────────
@@ -172,13 +181,13 @@ namespace X
 
         private ItemData GetSelectedItemData()
         {
-            if (_itemDropdown != null && itemDatabase != null)
+            if (_itemDropdown != null && itemDatabase != null && itemDatabase.items != null)
             {
                 int sel = _itemDropdown.value;
                 if (sel >= 0 && sel < itemDatabase.items.Count)
                     return itemDatabase.items[sel];
             }
-            if (_itemIdInput != null && itemDatabase != null)
+            if (_itemIdInput != null && itemDatabase != null && itemDatabase.items != null)
             {
                 if (int.TryParse(_itemIdInput.text, out int id))
                     return itemDatabase.items.Find(x => x.id == id);
@@ -192,7 +201,7 @@ namespace X
 
         private void RefreshItemDropdown()
         {
-            if (_itemDropdown == null || itemDatabase == null) return;
+            if (_itemDropdown == null || itemDatabase == null || itemDatabase.items == null) return;
             _itemDropdown.ClearOptions();
             var opts = new List<TMP_Dropdown.OptionData>();
             foreach (var item in itemDatabase.items)
@@ -225,26 +234,14 @@ namespace X
         {
             if (panelRoot != null) { _uiBuilt = true; return; }
 
-            // 取得（或建立）Canvas
-            // ⚠ 必須找 ScreenSpaceOverlay 的頂層 Canvas，避免掛到房間 Panel 的子 Canvas 上，
-            //   導致 RoomUIManager 切換場景時用 SetActive(false) 把 DevPanel 一起關掉。
-            Canvas canvas = null;
-            foreach (var c in FindObjectsByType<Canvas>(FindObjectsSortMode.None))
-            {
-                if (c.renderMode == RenderMode.ScreenSpaceOverlay && c.transform.parent == null)
-                {
-                    canvas = c;
-                    break;
-                }
-            }
-            if (canvas == null)
-            {
-                var cgo = new GameObject("DevPanelCanvas");
-                canvas = cgo.AddComponent<Canvas>();
-                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-                cgo.AddComponent<CanvasScaler>();
-                cgo.AddComponent<GraphicRaycaster>();
-            }
+            // 總是建立專屬的 Canvas，避免掛載到其他可能被關閉（SetActive(false)）或銷毀的 Canvas 上
+            var cgo = new GameObject("DevPanelCanvas");
+            var canvas = cgo.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = 9999; // 確保在所有 UI 之上顯示
+            cgo.AddComponent<CanvasScaler>();
+            cgo.AddComponent<GraphicRaycaster>();
+            _createdCanvas = canvas;
 
             // ── 根面板 ──────────────────────────────
             _dynamicRoot = new GameObject("DevPanel_Root");
@@ -283,7 +280,7 @@ namespace X
             AddSeparator(_dynamicRoot);
 
             AddLabel(_dynamicRoot, "▶ 拿取道具", 14, new Color(1f, 1f, 0.6f), 24f);
-            if (itemDatabase != null && itemDatabase.items.Count > 0)
+            if (itemDatabase != null && itemDatabase.items != null && itemDatabase.items.Count > 0)
             {
                 _itemDropdown = AddDropdown(_dynamicRoot);
                 RefreshItemDropdown();
