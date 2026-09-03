@@ -7,8 +7,6 @@ namespace X
 {
     public class DirectRoomTeleporter : MonoBehaviour
     {
-        public static DirectRoomTeleporter Instance { get; private set; }
-
         public enum TransitionType { Simple, WithText, WithVideo }
 
         [Header("轉場類型設定")]
@@ -40,9 +38,6 @@ namespace X
 
         void Awake()
         {
-            if (Instance == null) { Instance = this; }
-            else { Destroy(gameObject); return; }
-
             if (blackFadeImage != null)
             {
                 blackFadeImage.gameObject.SetActive(false);
@@ -57,11 +52,6 @@ namespace X
             {
                 transitionVideoPlayer.gameObject.SetActive(false);
             }
-        }
-
-        public static void Execute(int targetBigSceneId, int targetRoomIndex)
-        {
-            if (Instance != null) { Instance.StartTeleport(targetBigSceneId, targetRoomIndex); }
         }
 
         public void StartTeleport(int targetBigSceneId, int targetRoomIndex)

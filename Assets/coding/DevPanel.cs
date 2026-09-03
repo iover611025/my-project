@@ -138,12 +138,6 @@ namespace X
                 ShowFeedback($"✓ 傳送中 → 場景 {sceneId} 房間 {roomIndex}");
                 return;
             }
-            if (DirectRoomTeleporter.Instance != null)
-            {
-                DirectRoomTeleporter.Execute(sceneId, roomIndex);
-                ShowFeedback($"✓ 傳送中 → 場景 {sceneId} 房間 {roomIndex}");
-                return;
-            }
             if (roomUIManager != null)
             {
                 roomUIManager.TransitionToBigScene(sceneId, roomIndex);
