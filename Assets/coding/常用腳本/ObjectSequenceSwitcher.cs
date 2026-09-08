@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
@@ -187,6 +187,45 @@ namespace X
 
         /// <summary>當前序列內的物件索引</summary>
         public int CurrentObjectIndex => HasActiveSequence() ? sequences[activeSeqIndex].savedIndex : -1;
+
+        /// <summary>序列總數</summary>
+        public int SequenceCount => sequences.Count;
+
+        /// <summary>
+        /// 取得指定序列內的物件數量。
+        /// 供 ClueBookPageUnlocker 計算頁面範圍。
+        /// </summary>
+        public int GetObjectsCount(int seqIndex)
+        {
+            if (seqIndex < 0 || seqIndex >= sequences.Count) return 0;
+            return sequences[seqIndex].objects.Count;
+        }
+
+        /// <summary>
+        /// 隱藏或顯示指定序列的觸發按鈕（triggerObject）。
+        /// 供 ClueBookPageUnlocker 在頁籤尚未解鎖時呼叫。
+        /// </summary>
+        public void SetSequenceInteractable(int seqIndex, bool interactable)
+        {
+            if (seqIndex < 0 || seqIndex >= sequences.Count) return;
+            GameObject trigger = sequences[seqIndex].triggerObject;
+            if (trigger != null)
+                trigger.SetActive(interactable);
+        }
+
+        /// <summary>
+        /// 將指定序列的內部 savedIndex 跳至目標頁，並刷新顯示。
+        /// 供 ClueBookPageUnlocker 在翻頁跳過時直接控制目前頁面。
+        /// </summary>
+        public void JumpToPage(int seqIndex, int pageIndex)
+        {
+            if (seqIndex < 0 || seqIndex >= sequences.Count) return;
+            var seq = sequences[seqIndex];
+            if (pageIndex < 0 || pageIndex >= seq.objects.Count) return;
+            seq.savedIndex = pageIndex;
+            if (activeSeqIndex == seqIndex)
+                UpdateSequenceVisibility(seq);
+        }
 
         // ──────────────────────────────────────────────
         // 內部方法
