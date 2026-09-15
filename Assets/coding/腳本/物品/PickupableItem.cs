@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
@@ -37,8 +38,22 @@ namespace X
         public int requiredHeldItemId = 0;
         public bool consumeHeldItemOnPickup = false;
 
+        [Header("拾取後事件（可選）")]
+        [Tooltip("成功拾取後觸發，可在 Inspector 接任意 function（例如 GameStateManager.AddState）。")]
+        public UnityEvent onPickedUp;
+
+        [Header("對話框設定")]
+        [Tooltip("勾選後，點擊拾取時同物件上的 UIDialogueTrigger 將不會觸發。\n注意：此元件必須排在 UIDialogueTrigger 之前（Inspector 上方）才有效。")]
+        public bool suppressDialogueOnPickup = false;
+
         public void OnPointerClick(PointerEventData eventData)
         {
+            // 若啟用壓制，在拾取處理前先通知同物件的 UIDialogueTrigger 跳過這次點擊
+            if (suppressDialogueOnPickup)
+            {
+                var trigger = GetComponent<UIDialogueTrigger>();
+                if (trigger != null) trigger.SuppressNextClick();
+            }
             if (itemDatabase == null)
             {
                 Debug.LogWarning("[Pickup] 請先將 ItemDatabase 拖進 PickupableItem 腳本的 itemDatabase 欄位！");
@@ -124,6 +139,9 @@ namespace X
             // 4. 消耗握持道具（若有設定）
             if (consumeHeldItemOnPickup && !inventoryUI.IsHeldEmpty())
                 inventoryUI.ClearHeldItem();
+
+            // 5. 觸發拾取後事件
+            onPickedUp?.Invoke();
 
             Destroy(gameObject);
         }

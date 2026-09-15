@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
@@ -32,6 +32,14 @@ namespace X
         public TransitionType transitionType = TransitionType.Simple;
         public string transitionMessage = "";
 
+        [Header("解鎖條件（可選）")]
+        [Tooltip("在 GameStateManager 中必須全數存在的狀態名稱。留空表示無條件可使用。")]
+        public System.Collections.Generic.List<string> requiredUnlockStates = new System.Collections.Generic.List<string>();
+        [Tooltip("條件未達成時，透過 DialogueManager 顯示的提示訊息。")]
+        public string lockedMessage = "還沒辦法打開。";
+        [Tooltip("提示訊息的顯示時間（秒）。")]
+        public float lockedMessageDuration = 2f;
+
         private bool isOpen = false;
         private bool _isSwitching = false; // 防止重複切換
 
@@ -43,6 +51,22 @@ namespace X
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            // ── 解鎖條件檢查 ──────────────────────────────────────────────────
+            // 若設定了 requiredUnlockStates，且條件尚未全部達成，顯示提示並阻止後續邏輯。
+            if (requiredUnlockStates != null && requiredUnlockStates.Count > 0)
+            {
+                bool unlocked = GameStateManager.Instance != null &&
+                                GameStateManager.Instance.HasAllStates(requiredUnlockStates);
+                if (!unlocked)
+                {
+                    Debug.Log("[RequireHeldItemToOpen] 解鎖條件未達成，無法使用。");
+                    if (DialogueManager.Instance != null && !string.IsNullOrEmpty(lockedMessage))
+                        DialogueManager.Instance.ShowDialogue(lockedMessage, lockedMessageDuration);
+                    return;
+                }
+            }
+            // ─────────────────────────────────────────────────────────────────
+
             if (!isOpen)
             {
                 if (itemDatabase == null)
