@@ -44,5 +44,8 @@ TagManager:
   - name: CloseUp
     uniqueID: 4077718769
     locked: 0
+  - name: UI
+    uniqueID: 3936507255
+    locked: 0
   m_RenderingLayers:
   - Default
