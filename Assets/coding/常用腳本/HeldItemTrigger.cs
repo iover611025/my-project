@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using System.Collections.Generic; // 引入集合命名空間以支援 List
 
@@ -10,8 +11,8 @@ namespace X
     public class HeldItemTrigger : MonoBehaviour, IPointerClickHandler
     {
         [Header("互動設定")]
-        [Tooltip("需要握持的道具 ID")]
-        public int requiredItemId;      
+        [Tooltip("需要握持的道具 ID（可填多個，任一匹配即可觸發）")]
+        public List<int> requiredItemIds = new List<int>();
         [Tooltip("是否在互動成功後消耗（清空）該握持道具")]
         public bool consumeItem = true; 
 
@@ -25,6 +26,10 @@ namespace X
         [Header("放大畫面替換 (選項)")]
         [Tooltip("如果在放大畫面中互動，且互動後想『保持放大狀態但換一個面板』，請將新面板拖入此處，它會接管 Return 按鈕。")]
         public GameObject newZoomPanelToReplace;
+
+        [Header("觸發後事件（可選）")]
+        [Tooltip("成功觸發後執行，可在 Inspector 接任意 function（例如 GameStateManager.AddState）。")]
+        public UnityEvent onTriggered;
 
         private InventoryUI inventoryUI;
 
@@ -47,8 +52,8 @@ namespace X
             // 1. 取得目前玩家握持的道具資料
             ItemData heldItem = inventoryUI.GetHeldItemData();
 
-            // 2. 判斷 ID 是否符合機關需求
-            if (heldItem != null && heldItem.id == requiredItemId)
+            // 2. 判斷 ID 是否符合機關需求（任一 ID 匹配即可）
+            if (heldItem != null && requiredItemIds != null && requiredItemIds.Contains(heldItem.id))
             {
                 ExecuteTrigger();
             }
@@ -56,7 +61,10 @@ namespace X
             {
                 // 當不匹配時，給出友好的 Debug 提示
                 int currentHeldId = (heldItem != null) ? heldItem.id : 0;
-                Debug.Log($"[Trigger] 道具不匹配！需要 ID:{requiredItemId}，目前是 ID:{currentHeldId}");
+                string requiredList = (requiredItemIds != null && requiredItemIds.Count > 0)
+                    ? string.Join(", ", requiredItemIds)
+                    : "（未設定）";
+                Debug.Log($"[Trigger] 道具不匹配！需要 ID:[{requiredList}]，目前是 ID:{currentHeldId}");
             }
         }
 
@@ -111,6 +119,9 @@ namespace X
                     }
                 }
             }
+
+            // 5. 觸發後事件
+            onTriggered?.Invoke();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.Events;
@@ -52,6 +52,9 @@ namespace X
         [Header("自訂事件輸出")]
         [Tooltip("計時/觸發開始時產生的事件（可用來呼叫 ShakeFeedback 或播放音效）")]
         public UnityEvent onTimerStart;
+
+        [Tooltip("計時完畢（切換效果全部結束）時產生的事件")]
+        public UnityEvent onTimerEnd;
 
         // ── 黑幕用：獨立的 Canvas 與 Helper MonoBehaviour ──
         private FadeRunner _fadeRunner;
@@ -148,6 +151,7 @@ namespace X
                 }
 
                 _isProcessing = false;
+                onTimerEnd?.Invoke();
 
                 // 如果是點擊觸發且有包含計時模式，重新啟動計時器以重新倒數
                 if (!fromTimer && (triggerMode == TriggerMode.Timer || triggerMode == TriggerMode.Both))
@@ -186,6 +190,7 @@ namespace X
                 }
 
                 _isProcessing = false;
+                onTimerEnd?.Invoke();
             }
         }
 
