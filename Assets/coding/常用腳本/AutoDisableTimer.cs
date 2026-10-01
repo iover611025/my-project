@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.Events;
@@ -140,18 +140,22 @@ namespace X
                         fadeIn:    fadeInDuration,
                         stay:      blackStayDuration,
                         fadeOut:   fadeOutDuration,
-                        onMidpoint: () => targetObject.SetActive(!targetObject.activeSelf),
-                        onComplete: () => done = true
+                        onMidpoint: () =>
+                        {
+                            _isProcessing = false;
+                            onTimerEnd?.Invoke();
+                            targetObject.SetActive(!targetObject.activeSelf);
+                        },
+                        onComplete: () => { done = true; }
                     );
                     yield return new WaitUntil(() => done);
                 }
                 else
                 {
+                    _isProcessing = false;
+                    onTimerEnd?.Invoke();
                     targetObject.SetActive(!targetObject.activeSelf);
                 }
-
-                _isProcessing = false;
-                onTimerEnd?.Invoke();
 
                 // 如果是點擊觸發且有包含計時模式，重新啟動計時器以重新倒數
                 if (!fromTimer && (triggerMode == TriggerMode.Timer || triggerMode == TriggerMode.Both))
@@ -172,25 +176,26 @@ namespace X
                         fadeOut:   fadeOutDuration,
                         onMidpoint: () =>
                         {
+                            _isProcessing = false;
+                            onTimerEnd?.Invoke();
                             targetObject.SetActive(false);
                             if (objectsToEnableOnEnd != null)
                                 foreach (var obj in objectsToEnableOnEnd)
                                     if (obj != null) obj.SetActive(true);
                         },
-                        onComplete: () => done = true
+                        onComplete: () => { done = true; }
                     );
                     yield return new WaitUntil(() => done);
                 }
                 else
                 {
+                    _isProcessing = false;
+                    onTimerEnd?.Invoke();
                     targetObject.SetActive(false);
                     if (objectsToEnableOnEnd != null)
                         foreach (var obj in objectsToEnableOnEnd)
                             if (obj != null) obj.SetActive(true);
                 }
-
-                _isProcessing = false;
-                onTimerEnd?.Invoke();
             }
         }
 

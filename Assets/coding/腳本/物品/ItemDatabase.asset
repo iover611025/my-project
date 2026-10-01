@@ -39,13 +39,13 @@ MonoBehaviour:
     pickupDescription: "\u5FBD\u7AE0"
   - id: 7
     itemName: "\u5531\u7247\u788E\u72471"
-    icon: {fileID: -6098513788859635399, guid: 3c13f0ae2612ef144b9efe9fc439c2f3, type: 3}
+    icon: {fileID: -5418364216299966218, guid: 29129530d57a6d14e862fef63e270c49, type: 3}
     pickupDescription: "\u5531\u7247\u788E\u6389"
   - id: 8
     itemName: "\u5531\u7247\u788E\u72472"
-    icon: {fileID: -6098513788859635399, guid: 3c13f0ae2612ef144b9efe9fc439c2f3, type: 3}
+    icon: {fileID: 6135514190378194111, guid: 9c63a2518d78c1f45b9e34b723937853, type: 3}
     pickupDescription: "\u5531\u7247\u788E\u6389"
   - id: 9
     itemName: "\u5531\u7247\u788E\u72473"
-    icon: {fileID: -6098513788859635399, guid: 3c13f0ae2612ef144b9efe9fc439c2f3, type: 3}
+    icon: {fileID: 306347198828393010, guid: 387bdf8d0bc621d42bfae20ff45d65d2, type: 3}
     pickupDescription: "\u5531\u7247\u788E\u6389"

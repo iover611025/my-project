@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -506,6 +506,112 @@ namespace X.Tests
 
             bool isFading = GetPrivateField<bool>(switcher, "isFading");
             Assert.IsFalse(isFading, "LeftToRight 模式下，垂直滑動不應觸發切換。");
+
+            Object.DestroyImmediate(switcher.gameObject);
+            foreach (var go in switcher.targetObjects) Object.DestroyImmediate(go);
+        }
+
+        // ════════════════════════════════════════════════════════════════════
+        // 8. 對角線滑動方向測試 (BottomRightToTopLeft / BottomLeftToTopRight)
+        // ════════════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// BottomRightToTopLeft 模式：右下往左上（X 負、Y 正）超過閾值應觸發切換。
+        /// signedDelta = (-deltaX + deltaY) / 2，screenReference = 對角線長度 / 2
+        /// </summary>
+        [Test]
+        public void SwipeDirection_BottomRightToTopLeft_ValidDiagonalSwipe_ShouldTriggerSwitch()
+        {
+            var switcher = CreateSwitcher(3, activeIndex: 0);
+            switcher.swipeDirection = SwipeDirection.BottomRightToTopLeft;
+            InvokePrivateMethod(switcher, "Start");
+
+            float diagonal = Mathf.Sqrt(Screen.width * Screen.width + Screen.height * Screen.height) / 2f;
+            float threshold = diagonal * switcher.swipeThresholdRatio;
+
+            // 模擬從右下往左上滑：起點 X 大、Y 小，終點 X 小、Y 大
+            float swipeAmount = threshold + 20f;
+            switcher.OnPointerDown(new PointerEventData(null) { position = new Vector2(swipeAmount, 0f) });
+            switcher.OnPointerUp(new PointerEventData(null)   { position = new Vector2(0f, swipeAmount) });
+
+            bool isFading = GetPrivateField<bool>(switcher, "isFading");
+            Assert.IsTrue(isFading, "BottomRightToTopLeft 模式下，右下往左上滑超閾值應觸發切換。");
+
+            Object.DestroyImmediate(switcher.gameObject);
+            foreach (var go in switcher.targetObjects) Object.DestroyImmediate(go);
+        }
+
+        /// <summary>
+        /// BottomRightToTopLeft 模式：往反方向滑（左上往右下）不應觸發切換。
+        /// </summary>
+        [Test]
+        public void SwipeDirection_BottomRightToTopLeft_ReverseSwipe_ShouldNotTriggerSwitch()
+        {
+            var switcher = CreateSwitcher(3, activeIndex: 0);
+            switcher.swipeDirection = SwipeDirection.BottomRightToTopLeft;
+            InvokePrivateMethod(switcher, "Start");
+
+            float diagonal = Mathf.Sqrt(Screen.width * Screen.width + Screen.height * Screen.height) / 2f;
+            float threshold = diagonal * switcher.swipeThresholdRatio;
+
+            // 反方向：從左上往右下滑（deltaX > 0、deltaY < 0）
+            float swipeAmount = threshold + 20f;
+            switcher.OnPointerDown(new PointerEventData(null) { position = new Vector2(0f, swipeAmount) });
+            switcher.OnPointerUp(new PointerEventData(null)   { position = new Vector2(swipeAmount, 0f) });
+
+            bool isFading = GetPrivateField<bool>(switcher, "isFading");
+            Assert.IsFalse(isFading, "BottomRightToTopLeft 模式下，往反方向滑不應觸發切換。");
+
+            Object.DestroyImmediate(switcher.gameObject);
+            foreach (var go in switcher.targetObjects) Object.DestroyImmediate(go);
+        }
+
+        /// <summary>
+        /// BottomLeftToTopRight 模式：左下往右上（X 正、Y 正）超過閾值應觸發切換。
+        /// signedDelta = (deltaX + deltaY) / 2，screenReference = 對角線長度 / 2
+        /// </summary>
+        [Test]
+        public void SwipeDirection_BottomLeftToTopRight_ValidDiagonalSwipe_ShouldTriggerSwitch()
+        {
+            var switcher = CreateSwitcher(3, activeIndex: 0);
+            switcher.swipeDirection = SwipeDirection.BottomLeftToTopRight;
+            InvokePrivateMethod(switcher, "Start");
+
+            float diagonal = Mathf.Sqrt(Screen.width * Screen.width + Screen.height * Screen.height) / 2f;
+            float threshold = diagonal * switcher.swipeThresholdRatio;
+
+            // 模擬從左下往右上滑：起點 X 小、Y 小，終點 X 大、Y 大
+            float swipeAmount = threshold + 20f;
+            switcher.OnPointerDown(new PointerEventData(null) { position = new Vector2(0f, 0f) });
+            switcher.OnPointerUp(new PointerEventData(null)   { position = new Vector2(swipeAmount, swipeAmount) });
+
+            bool isFading = GetPrivateField<bool>(switcher, "isFading");
+            Assert.IsTrue(isFading, "BottomLeftToTopRight 模式下，左下往右上滑超閾值應觸發切換。");
+
+            Object.DestroyImmediate(switcher.gameObject);
+            foreach (var go in switcher.targetObjects) Object.DestroyImmediate(go);
+        }
+
+        /// <summary>
+        /// BottomLeftToTopRight 模式：往反方向滑（右上往左下）不應觸發切換。
+        /// </summary>
+        [Test]
+        public void SwipeDirection_BottomLeftToTopRight_ReverseSwipe_ShouldNotTriggerSwitch()
+        {
+            var switcher = CreateSwitcher(3, activeIndex: 0);
+            switcher.swipeDirection = SwipeDirection.BottomLeftToTopRight;
+            InvokePrivateMethod(switcher, "Start");
+
+            float diagonal = Mathf.Sqrt(Screen.width * Screen.width + Screen.height * Screen.height) / 2f;
+            float threshold = diagonal * switcher.swipeThresholdRatio;
+
+            // 反方向：從右上往左下滑（deltaX < 0、deltaY < 0）
+            float swipeAmount = threshold + 20f;
+            switcher.OnPointerDown(new PointerEventData(null) { position = new Vector2(swipeAmount, swipeAmount) });
+            switcher.OnPointerUp(new PointerEventData(null)   { position = new Vector2(0f, 0f) });
+
+            bool isFading = GetPrivateField<bool>(switcher, "isFading");
+            Assert.IsFalse(isFading, "BottomLeftToTopRight 模式下，往反方向滑不應觸發切換。");
 
             Object.DestroyImmediate(switcher.gameObject);
             foreach (var go in switcher.targetObjects) Object.DestroyImmediate(go);

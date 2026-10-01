@@ -14,7 +14,11 @@ public enum SwipeDirection
     /// <summary>由左往右滑</summary>
     LeftToRight,
     /// <summary>由右往左滑</summary>
-    RightToLeft
+    RightToLeft,
+    /// <summary>由右下往左上滑（對角線）</summary>
+    BottomRightToTopLeft,
+    /// <summary>由左下往右上滑（對角線）</summary>
+    BottomLeftToTopRight
 }
 
 public class SwipeUpToSwitchObject : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
@@ -99,6 +103,16 @@ public class SwipeUpToSwitchObject : MonoBehaviour, IPointerDownHandler, IPointe
                 // 手指由右往左：X 減少 → 取負值使其為正
                 signedDelta = -delta.x;
                 screenReference = Screen.width;
+                break;
+            case SwipeDirection.BottomRightToTopLeft:
+                // 手指由右下往左上：X 減少且 Y 增加 → 取兩軸正分量的平均
+                signedDelta = (-delta.x + delta.y) / 2f;
+                screenReference = Mathf.Sqrt(Screen.width * Screen.width + Screen.height * Screen.height) / 2f;
+                break;
+            case SwipeDirection.BottomLeftToTopRight:
+                // 手指由左下往右上：X 增加且 Y 增加 → 取兩軸正分量的平均
+                signedDelta = (delta.x + delta.y) / 2f;
+                screenReference = Mathf.Sqrt(Screen.width * Screen.width + Screen.height * Screen.height) / 2f;
                 break;
             default:
                 signedDelta = delta.y;

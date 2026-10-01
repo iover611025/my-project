@@ -19,6 +19,10 @@ namespace X
         [Header("拖放用 Canvas（必填）")]
         public Canvas canvas;
 
+        [Header("拖動範圍限制")]
+        [Tooltip("拖動物品時只能在此 RectTransform 範圍內移動（通常指向物品欄背景圖片）")]
+        public RectTransform dragBounds;
+
         [Header("展開 / 旋轉設定")]
         public RectTransform panelToMove;
         public float moveDistanceX = -200f;
@@ -245,6 +249,35 @@ namespace X
             if (_dragIcon == null) return;
             Vector2 pos;
             RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.transform as RectTransform, eventData.position, canvas.worldCamera, out pos);
+
+            // 限制拖動範圍在 dragBounds 內
+            if (dragBounds != null)
+            {
+                Vector3[] corners = new Vector3[4];
+                dragBounds.GetWorldCorners(corners);
+                // corners[0]=左下, corners[1]=左上, corners[2]=右上, corners[3]=右下
+
+                RectTransform canvasRect = canvas.transform as RectTransform;
+                Vector2 localBL, localTR;
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    canvasRect,
+                    RectTransformUtility.WorldToScreenPoint(canvas.worldCamera, corners[0]),
+                    canvas.worldCamera, out localBL);
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    canvasRect,
+                    RectTransformUtility.WorldToScreenPoint(canvas.worldCamera, corners[2]),
+                    canvas.worldCamera, out localTR);
+
+                // 確保 min < max（避免 Canvas 縮放造成反轉）
+                Vector2 boundsMin = new Vector2(Mathf.Min(localBL.x, localTR.x), Mathf.Min(localBL.y, localTR.y));
+                Vector2 boundsMax = new Vector2(Mathf.Max(localBL.x, localTR.x), Mathf.Max(localBL.y, localTR.y));
+
+                // 考慮拖動圖標的一半大小，讓圖標不超出邊界
+                Vector2 halfIcon = _dragIcon.rectTransform.sizeDelta * 0.5f;
+                pos.x = Mathf.Clamp(pos.x, boundsMin.x + halfIcon.x, boundsMax.x - halfIcon.x);
+                pos.y = Mathf.Clamp(pos.y, boundsMin.y + halfIcon.y, boundsMax.y - halfIcon.y);
+            }
+
             _dragIcon.rectTransform.anchoredPosition = pos;
         }
 
