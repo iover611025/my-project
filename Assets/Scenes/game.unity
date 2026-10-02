@@ -953,7 +953,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!223 &30718719
 Canvas:
   m_ObjectHideFlags: 0
@@ -2955,6 +2955,7 @@ RectTransform:
   - {fileID: 140565329}
   - {fileID: 2061508686}
   - {fileID: 191811816}
+  - {fileID: 1394317236}
   m_Father: {fileID: 354886726}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -5128,7 +5129,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &328795298
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5533,13 +5534,12 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 175972995}
   - {fileID: 703639750}
   - {fileID: 328795298}
   - {fileID: 1968908286}
   - {fileID: 1740788938}
   - {fileID: 684454323}
-  - {fileID: 1394317236}
+  - {fileID: 175972995}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -7228,7 +7228,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &468561289
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7242,7 +7242,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1395794120}
-  m_Father: {fileID: 1956399881}
+  m_Father: {fileID: 1313625852}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -8821,7 +8821,6 @@ MonoBehaviour:
   videoSceneSwitchDelay: 1
   uiElementsToHide:
   - {fileID: 175972994}
-  - {fileID: 1394317235}
   uiElementsToShow: []
   targetBigSceneId: 3
   targetRoomIndex: 0
@@ -11181,7 +11180,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &664768971
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11716,7 +11715,6 @@ MonoBehaviour:
   uiElementsToHide: []
   uiElementsToShow:
   - {fileID: 175972994}
-  - {fileID: 1394317235}
   targetBigSceneId: 4
   targetRoomIndex: 0
 --- !u!114 &701231911
@@ -12954,7 +12952,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5254902}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.27058825}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -14521,7 +14519,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5be27ae2ffa5ec64ea4c6f3a3bce34fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::X.PanelActivator
-  panelToOpen: {fileID: 468561288}
+  panelToOpen: {fileID: 1313625851}
   disableSwayOnOpen: 1
   returnPrefab: {fileID: 2583643597927217743, guid: de4e1e28e1737154f9a6c6bf26adb30e, type: 3}
   returnParentCanvas: {fileID: 684454320}
@@ -16176,7 +16174,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1270248844}
-  m_Father: {fileID: 1956399881}
+  m_Father: {fileID: 1313625852}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -18329,8 +18327,6 @@ GameObject:
   - component: {fileID: 1078323722}
   - component: {fileID: 1078323726}
   - component: {fileID: 1078323725}
-  - component: {fileID: 1078323724}
-  - component: {fileID: 1078323723}
   m_Layer: 5
   m_Name: "\u6EAB\u5BA4_\u66F8\u7C4D\u5C01\u9762"
   m_TagString: Untagged
@@ -18357,57 +18353,6 @@ RectTransform:
   m_AnchoredPosition: {x: 5.2193823, y: 7.4863634}
   m_SizeDelta: {x: 2142.44, y: 1230.67}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1078323723
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1078323721}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ab0498f53cda8841b25636fec705a8b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::X.UIDialogueTrigger
-  content: "\u571F\u58E4\u4E7E\u88C2\u4E86\uFF0C\u597D\u50CF\u53EF\u4EE5\u7A2E\u4EC0\u9EBC\u6771\u897F\u9032\u53BB"
-  displayDuration: 3
-  useFixedPosition: 1
-  targetPosition: {x: 0, y: 0}
-  triggerOnEnable: 0
---- !u!114 &1078323724
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1078323721}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f66677e792bd674eb639c64c8b02d19, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::X.HeldItemTrigger
-  requiredItemIds: 05000000
-  consumeItem: 1
-  panelsToOpen:
-  - {fileID: 1680487898}
-  objectsToDisable:
-  - {fileID: 1407638950}
-  newZoomPanelToReplace: {fileID: 1618088234}
-  onTriggered:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1078323723}
-        m_TargetAssemblyTypeName: X.UIDialogueTrigger, Assembly-CSharp
-        m_MethodName: DisableDialogue
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &1078323725
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18428,7 +18373,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -7318519906286057560, guid: 8ad1e5aa80c15b7458d13bfc95ad4bb0, type: 3}
+  m_Sprite: {fileID: -8200097216026067040, guid: f34a9a29d072a534cbd6dd3134927923, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -21330,13 +21275,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f66677e792bd674eb639c64c8b02d19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::X.HeldItemTrigger
-  requiredItemIds: 070000000800000009000000
+  requiredItemIds: 08000000
   consumeItem: 1
   panelsToOpen:
   - {fileID: 1348282858}
   objectsToDisable:
   - {fileID: 958011311}
-  newZoomPanelToReplace: {fileID: 1348282858}
+  newZoomPanelToReplace: {fileID: 0}
   onTriggered:
     m_PersistentCalls:
       m_Calls: []
@@ -22098,6 +22043,45 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!1 &1313625851
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1313625852}
+  m_Layer: 5
+  m_Name: "\u5531\u7247"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1313625852
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1313625851}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 468561289}
+  - {fileID: 958011312}
+  - {fileID: 1348282859}
+  - {fileID: 2125565416}
+  m_Father: {fileID: 1956399881}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1333010905
 GameObject:
   m_ObjectHideFlags: 0
@@ -22335,11 +22319,11 @@ RectTransform:
   m_GameObject: {fileID: 1348282858}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.7906724, y: 0.7906724, z: 0.7906724}
+  m_LocalScale: {x: 0.79067236, y: 0.79067236, z: 0.79067236}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2095053177}
-  m_Father: {fileID: 1956399881}
+  m_Father: {fileID: 1313625852}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -22521,7 +22505,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1689480920520965235, guid: b9f56a1ba0573d849be690bfef8979ef, type: 3}
+  m_Sprite: {fileID: 5156399814564322427, guid: b0e229a99487e7648b1045765238a6a8, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -23382,7 +23366,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 354886726}
+  m_Father: {fileID: 175972995}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -23533,13 +23517,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f66677e792bd674eb639c64c8b02d19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::X.HeldItemTrigger
-  requiredItemIds: 070000000800000009000000
+  requiredItemIds: 07000000
   consumeItem: 1
   panelsToOpen:
   - {fileID: 958011311}
   objectsToDisable:
   - {fileID: 468561288}
-  newZoomPanelToReplace: {fileID: 958011311}
+  newZoomPanelToReplace: {fileID: 0}
   onTriggered:
     m_PersistentCalls:
       m_Calls: []
@@ -33623,11 +33607,8 @@ RectTransform:
   m_LocalScale: {x: 0.999679, y: 0.999679, z: 0.999679}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 468561289}
-  - {fileID: 958011312}
-  - {fileID: 1348282859}
-  - {fileID: 2125565416}
   - {fileID: 550184312}
+  - {fileID: 1313625852}
   m_Father: {fileID: 1341989302}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -33674,7 +33655,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!223 &1956399884
 Canvas:
   m_ObjectHideFlags: 0
@@ -36389,13 +36370,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f66677e792bd674eb639c64c8b02d19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::X.HeldItemTrigger
-  requiredItemIds: 070000000800000009000000
+  requiredItemIds: 09000000
   consumeItem: 1
   panelsToOpen:
   - {fileID: 2125565415}
   objectsToDisable:
   - {fileID: 1348282858}
-  newZoomPanelToReplace: {fileID: 2125565415}
+  newZoomPanelToReplace: {fileID: 0}
   onTriggered:
     m_PersistentCalls:
       m_Calls: []
@@ -36629,11 +36610,11 @@ RectTransform:
   m_GameObject: {fileID: 2125565415}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.7906724, y: 0.7906724, z: 0.7906724}
+  m_LocalScale: {x: 0.79067236, y: 0.79067236, z: 0.79067236}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 230872669}
-  m_Father: {fileID: 1956399881}
+  m_Father: {fileID: 1313625852}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
