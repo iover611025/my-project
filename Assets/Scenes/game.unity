@@ -9184,7 +9184,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::X.UIDialogueTrigger
   content: 4
-  displayDuration: 5
+  displayDuration: 3.2
   useFixedPosition: 1
   targetPosition: {x: 0, y: -300}
   triggerOnEnable: 1
@@ -9201,15 +9201,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::X.AutoDisableTimer
   triggerMode: 0
-  duration: 2
+  duration: 3.4
   isRepeating: 0
   targetObject: {fileID: 552236644}
   objectsToEnableOnEnd:
   - {fileID: 52589969}
   useBlackFade: 1
-  fadeInDuration: 0.3
-  blackStayDuration: 0.1
-  fadeOutDuration: 0.3
+  fadeInDuration: 0.6
+  blackStayDuration: 1.5
+  fadeOutDuration: 0.4
   pausedDuringTimer: {fileID: 0}
   onTimerStart:
     m_PersistentCalls:
@@ -18402,8 +18402,8 @@ GameObject:
   - component: {fileID: 1085026173}
   - component: {fileID: 1085026172}
   - component: {fileID: 1085026171}
-  - component: {fileID: 1085026174}
   - component: {fileID: 1085026175}
+  - component: {fileID: 1085026174}
   m_Layer: 5
   m_Name: "\u6BBA\u4EBA\u6642\u5C0D\u8A713"
   m_TagString: Untagged
@@ -18510,7 +18510,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::X.UIDialogueTrigger
   content: 3
-  displayDuration: 5
+  displayDuration: 4
   useFixedPosition: 1
   targetPosition: {x: 0, y: -300}
   triggerOnEnable: 1
@@ -29312,7 +29312,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::X.UIDialogueTrigger
   content: 1
-  displayDuration: 5
+  displayDuration: 4
   useFixedPosition: 1
   targetPosition: {x: 0, y: -300}
   triggerOnEnable: 1
@@ -35453,8 +35453,8 @@ GameObject:
   - component: {fileID: 2063341467}
   - component: {fileID: 2063341466}
   - component: {fileID: 2063341465}
-  - component: {fileID: 2063341468}
   - component: {fileID: 2063341469}
+  - component: {fileID: 2063341468}
   m_Layer: 5
   m_Name: "\u6BBA\u4EBA\u6642\u5C0D\u8A712"
   m_TagString: Untagged
@@ -35561,7 +35561,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::X.UIDialogueTrigger
   content: 2
-  displayDuration: 5
+  displayDuration: 4
   useFixedPosition: 1
   targetPosition: {x: 0, y: -300}
   triggerOnEnable: 1
