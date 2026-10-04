@@ -38337,6 +38337,7 @@ GameObject:
   - component: {fileID: 2061508686}
   - component: {fileID: 2061508688}
   - component: {fileID: 2061508687}
+  - component: {fileID: 2061508692}
   - component: {fileID: 2061508689}
   - component: {fileID: 2061508691}
   - component: {fileID: 2061508690}
@@ -38450,10 +38451,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 703639749}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 2061508692}
+        m_TargetAssemblyTypeName: X.ToggleActiveOnClick, Assembly-CSharp
+        m_MethodName: Toggle
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -38504,6 +38505,23 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
   m_EffectDistance: {x: 5.86, y: 0}
   m_UseGraphicAlpha: 1
+--- !u!114 &2061508692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2061508685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea5e7ac54609d9443bd2aac414aae934, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::X.ToggleActiveOnClick
+  targetObject: {fileID: 703639749}
+  changeButtonSprite: 0
+  buttonImage: {fileID: 0}
+  openedSprite: {fileID: 0}
+  closedSprite: {fileID: 0}
 --- !u!1 &2063341463
 GameObject:
   m_ObjectHideFlags: 0
