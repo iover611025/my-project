@@ -5,26 +5,34 @@ using UnityEngine.Events;
 namespace X
 {
     /// <summary>
-    /// 條件接收器。監聽 GameStateManager 的廣播，
-    /// 當所需條件全數滿足時，執行相應的 UnityEvent。
+    /// 監聽來自 GameStateManager 狀態，
+    /// 當需求狀態符合、且指定物件全部為 activeInHierarchy 時，才觸發 UnityEvent。
+    /// 即使物件晚於狀態滿足後才開啟，仍會正確觸發。
     /// </summary>
     public class ConditionReceiver : MonoBehaviour
     {
-        [Header("解謎需求狀態")]
+        [Header("需求狀態")]
         public List<string> requiredStates;
 
-        [Header("條件達成時的事件")]
+        [Header("需要開啟的物件（全部 active 才觸發）")]
+        [Tooltip("若此清單不為空，條件符合時還需確保所有指定物件均為 activeInHierarchy，才會觸發事件。\n即使物件晚於狀態滿足後才開啟，也會自動偵測。")]
+        public List<GameObject> requiredActiveObjects;
+
+        [Header("符合時的事件")]
         public UnityEvent onConditionsMet;
 
+        [Header("等待物件開啟的輪詢間隔（秒）")]
+        [Tooltip("狀態已滿足但物件尚未全部開啟時，每隔此秒數重新檢查一次物件狀態。")]
+        public float checkInterval = 0.2f;
+
         private bool _isTriggered = false;
+        /// <summary>所有 requiredStates 已滿足，正在等待物件全部開啟</summary>
+        private bool _statesMet = false;
 
         private void OnEnable()
         {
-            // 每次房間開啟、物件啟動時，先檢查一次。
-            // 這能確保玩家離開房間再回來時，如果條件已滿足，視覺能正確更新！
             CheckConditions();
 
-            // 訂閱 Manager 的廣播事件
             if (GameStateManager.Instance != null)
             {
                 GameStateManager.Instance.OnStateAdded += OnStateChanged;
@@ -33,14 +41,15 @@ namespace X
 
         private void OnDisable()
         {
-            // 物件隱藏(房間關閉)時，取消訂閱，防止內存洩漏 (Memory Leak)
             if (GameStateManager.Instance != null)
             {
                 GameStateManager.Instance.OnStateAdded -= OnStateChanged;
             }
+
+            // 停用時取消輪詢
+            CancelInvoke(nameof(PollActiveObjects));
         }
 
-        // 當有任何新狀態加入時，觸發此方法
         private void OnStateChanged(string newState)
         {
             if (_isTriggered) return;
@@ -51,12 +60,57 @@ namespace X
         {
             if (_isTriggered || GameStateManager.Instance == null) return;
 
-            // 呼叫 Manager 驗證是否所有字串條件都已滿足
-            if (GameStateManager.Instance.HasAllStates(requiredStates))
+            // 狀態尚未全部滿足 → 直接離開
+            if (!GameStateManager.Instance.HasAllStates(requiredStates)) return;
+
+            // 狀態已滿足
+            _statesMet = true;
+
+            // 嘗試立刻完成（物件可能已是開啟的）
+            if (TryTrigger()) return;
+
+            // 物件尚未全部開啟 → 開始輪詢等待
+            if (!IsInvoking(nameof(PollActiveObjects)))
             {
-                _isTriggered = true;
-                onConditionsMet?.Invoke();
+                InvokeRepeating(nameof(PollActiveObjects), checkInterval, checkInterval);
             }
+        }
+
+        /// <summary>輪詢：狀態已滿足後，等待所有物件變為 active</summary>
+        private void PollActiveObjects()
+        {
+            if (_isTriggered)
+            {
+                CancelInvoke(nameof(PollActiveObjects));
+                return;
+            }
+
+            TryTrigger();
+        }
+
+        /// <summary>
+        /// 嘗試觸發事件。
+        /// 若所有物件已 active 則觸發並停止輪詢，回傳 true；否則回傳 false。
+        /// </summary>
+        private bool TryTrigger()
+        {
+            if (!AreAllRequiredObjectsActive()) return false;
+
+            CancelInvoke(nameof(PollActiveObjects));
+            _isTriggered = true;
+            onConditionsMet?.Invoke();
+            return true;
+        }
+
+        private bool AreAllRequiredObjectsActive()
+        {
+            if (requiredActiveObjects == null || requiredActiveObjects.Count == 0) return true;
+
+            foreach (var obj in requiredActiveObjects)
+            {
+                if (obj == null || !obj.activeInHierarchy) return false;
+            }
+            return true;
         }
     }
 }

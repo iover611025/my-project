@@ -145,6 +145,9 @@ namespace X
                             _isProcessing = false;
                             onTimerEnd?.Invoke();
                             targetObject.SetActive(!targetObject.activeSelf);
+                            // 黑幕轉場中關閉 Panel Return 和 Dialogue
+                            UIPanelManager.Instance?.ForceCloseAllPanels();
+                            DialogueManager.Instance?.ForceCloseDialogue();
                         },
                         onComplete: () => { done = true; }
                     );
@@ -182,6 +185,9 @@ namespace X
                             if (objectsToEnableOnEnd != null)
                                 foreach (var obj in objectsToEnableOnEnd)
                                     if (obj != null) obj.SetActive(true);
+                            // 黑幕轉場中關閉 Panel Return 和 Dialogue
+                            UIPanelManager.Instance?.ForceCloseAllPanels();
+                            DialogueManager.Instance?.ForceCloseDialogue();
                         },
                         onComplete: () => { done = true; }
                     );

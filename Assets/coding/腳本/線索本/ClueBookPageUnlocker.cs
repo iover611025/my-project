@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -70,6 +70,9 @@ namespace X
         [Header("PlayerPrefs 前綴（用於隔離不同場景的存檔）")]
         [Tooltip("建議使用場景名稱，例如 'Bedroom_'")]
         [SerializeField] private string saveKeyPrefix = "ClueBook_";
+
+        [Tooltip("是否啟用 PlayerPrefs 存檔與還原（目前暫時關閉）")]
+        [SerializeField] private bool enableSave = false;
 
         // ──────────────────────────────────────────────
         // 常數
@@ -325,12 +328,16 @@ namespace X
 
         private void SaveSequenceUnlock(int seqIdx)
         {
+            if (!enableSave) return;
+
             PlayerPrefs.SetInt(SeqKey(seqIdx), 1);
             PlayerPrefs.Save();
         }
 
         private void SavePageUnlock(int seqIdx, int pageIdx)
         {
+            if (!enableSave) return;
+
             PlayerPrefs.SetInt(PageKey(seqIdx, pageIdx), 1);
             PlayerPrefs.Save();
         }
@@ -340,6 +347,8 @@ namespace X
         /// </summary>
         private void RestoreFromPrefs()
         {
+            if (!enableSave) return;
+
             foreach (var seqCfg in sequenceConfigs)
             {
                 if (PlayerPrefs.GetInt(SeqKey(seqCfg.sequenceIndex), 0) == 1)

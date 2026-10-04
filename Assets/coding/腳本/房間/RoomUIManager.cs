@@ -80,12 +80,12 @@ namespace X
             var panels = GetCurrentPanels();
             if (panels == null || panels.Length == 0) return;
 
-            if (Input.GetKeyDown(KeyCode.A))
+            if (Input.GetKeyDown(KeyCode.A) | Input.GetKeyDown(KeyCode.LeftArrow))
             {
                 if (enableDebugLogs) Debug.Log($"[RoomUIManager] Update: Key A pressed (currentBigSceneIndex={currentBigSceneIndex} currentRoomIndex={currentRoomIndex}) panels.Length={panels.Length}");
                 SwitchRoom(-1);
             }
-            if (Input.GetKeyDown(KeyCode.D))
+            if (Input.GetKeyDown(KeyCode.D) | Input.GetKeyDown(KeyCode.RightArrow))
             {
                 if (enableDebugLogs) Debug.Log($"[RoomUIManager] Update: Key D pressed (currentBigSceneIndex={currentBigSceneIndex} currentRoomIndex={currentRoomIndex}) panels.Length={panels.Length}");
                 SwitchRoom(1);
