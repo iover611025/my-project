@@ -8,7 +8,7 @@ AudioMixerController:
   m_PrefabAsset: {fileID: 0}
   m_Name: "\u97F3\u6821\u97F3\u6A02\u63A7\u5236\u5668"
   m_OutputGroup: {fileID: 0}
-  m_MasterGroup: {fileID: 24300002}
+  m_MasterGroup: {fileID: 8148387348988257394}
   m_Snapshots:
   - {fileID: 24500006}
   m_StartSnapshot: {fileID: 24500006}
