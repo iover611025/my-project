@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
@@ -89,15 +89,7 @@ namespace X
                     return;
                 }
             }
-            // --- 預設限制：手上有物品時不給撿 ---
-            else if (pickupRequirement == PickupRequirement.Default)
-            {
-                if (!inventoryUI.IsHeldEmpty())
-                {
-                    Debug.Log("[Pickup] 目前握持著物品，請先將手上物品放回物品欄。");
-                    return;
-                }
-            }
+            // --- Default: auto-move item into first empty inventory slot even when holding ---
 
             ExecutePickup(inventoryUI);
         }
@@ -120,10 +112,13 @@ namespace X
 
             if (validEntries.Count == 0) return;
 
-            // 2. 預先確認背包有足夠空格（全部能放才執行，避免只撿部分）
-            if (!inventoryUI.HasEnoughSpace(validEntries.Count))
+            // 2. Check space: when holding an item, only slot spaces count (held slot unavailable)
+            bool spaceOk = inventoryUI.IsHeldEmpty()
+                ? inventoryUI.HasEnoughSpace(validEntries.Count)
+                : inventoryUI.HasEnoughSlotSpace(validEntries.Count);
+            if (!spaceOk)
             {
-                Debug.Log("[Pickup] 背包空間不足，無法拾取所有物品。");
+                Debug.Log("[Pickup] 物品欄空位不足，無法拾取所有物品。");
                 return;
             }
 

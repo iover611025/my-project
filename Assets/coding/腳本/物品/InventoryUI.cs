@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -215,6 +215,22 @@ namespace X
                     if (s != null && s.IsEmpty) emptyCount++;
             }
             if (IsHeldEmpty()) emptyCount++; // 握持區也算一個空位
+            return emptyCount >= slotCount;
+        }
+
+        /// <summary>
+        /// Only counts empty inventory slots (excludes held slot).
+        /// Used when player is holding an item and we need slot-only space check.
+        /// </summary>
+        public bool HasEnoughSlotSpace(int slotCount)
+        {
+            if (slotCount <= 0) return true;
+            int emptyCount = 0;
+            if (slots != null)
+            {
+                foreach (var s in slots)
+                    if (s != null && s.IsEmpty) emptyCount++;
+            }
             return emptyCount >= slotCount;
         }
 

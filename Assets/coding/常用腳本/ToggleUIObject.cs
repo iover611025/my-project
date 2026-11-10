@@ -14,6 +14,9 @@ namespace X
 
         private Image img;
 
+        public AudioClip clickSFX;
+        public float volume = 1f;
+
         void Awake()
         {
             img = GetComponent<Image>();
@@ -25,6 +28,11 @@ namespace X
                 
         public void OnClick()
         {
+            if(clickSFX != null)
+            {
+                SFXManager.Instance.Play(clickSFX, volume);
+            }
+
             // 若已開啟且設定禁用，再次點擊不做任何事（避免切回圖片）
             if (disableClickWhenOpen && isOpen)
                 return;

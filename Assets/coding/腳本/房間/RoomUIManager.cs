@@ -17,7 +17,7 @@ namespace X
         public UICoverManager uiCoverManager; // Inspector拖入（可為 null）
 
         [Header("實際房間管理（同步實際房間 GameObject）")]
-        public RoomManager roomManager; // Inspector 拖入以同步實際房間切換
+        public RoomManager roomManager; // Inspector 拖入以同步實際房間切換（可為 null，本腳本具備獨立管理能力）
 
         // 可在 Inspector 開啟詳細除錯
         public bool enableDebugLogs = true;
@@ -51,7 +51,7 @@ namespace X
         void Start()
         {
             if (enableDebugLogs) Debug.Log($"[RoomUIManager] Start currentBigSceneIndex={currentBigSceneIndex} currentRoomIndex={currentRoomIndex}");
-            ValidateConfiguration(); // 新增：檢查 Inspector 設定協助除錯
+            ValidateConfiguration(); // 檢查 Inspector 設定協助除錯
             ShowRoom(currentRoomIndex);
         }
 
@@ -59,7 +59,7 @@ namespace X
         {
             if (isTransitioning) return; // 轉場期間禁止輸入
 
-            // 新增：當 PanelActivator 正在顯示 returnImage（等待玩家點擊返回）時，禁止 A/D 切換
+            // 當 PanelActivator 正在顯示 returnImage（等待玩家點擊返回）時，禁止 A/D 切換
             if (UIPanelManager.Instance != null && UIPanelManager.Instance.IsBlockingInput)
             {
                 if (enableDebugLogs) Debug.Log("[RoomUIManager] Update: input blocked by PanelActivator (returnImage shown)");
@@ -92,7 +92,7 @@ namespace X
             }
         }
 
-        // 方向 -1 或 +1（已改為循環）
+        // 方向 -1 或 +1（循環切換）
         public void SwitchRoom(int direction)
         {
             var panels = GetCurrentPanels();
@@ -164,7 +164,7 @@ namespace X
                 // 啟動 UICover 的過場（UICoverManager 會在淡入完成時把 toPanel 設為 active）
                 uiCoverManager.FadeSwitchPanel(fromPanel, toPanel);
 
-                // 計算等待時間與 activationDelay（在黑幕淡入完成時就執行實際的 panels 切換與 RoomManager 同步）
+                // 計算等待時間與 activationDelay（在黑幕淡入完成時就執行實際的 panels 切換與世界房間同步）
                 float fade = uiCoverManager.fadeDuration;
                 float stay = uiCoverManager.blackStayDuration;
                 float waitTime = fade * 2f + stay;
@@ -173,11 +173,12 @@ namespace X
                 // 等待到黑幕已覆蓋（fade in 完成）
                 yield return new WaitForSecondsRealtime(activationDelay);
 
-                // 這裡立刻把 panels 狀態設為目標（確保 UI 與 RoomManager 同步，且是在黑幕下完成）
+                // 這裡立刻把 panels 狀態設為目標（確保 UI 與世界物件同步，且是在黑幕下完成）
                 var postPanels = GetCurrentPanels();
                 if (postPanels != null && postPanels.Length > 0)
                 {
                     if (enableDebugLogs) Debug.Log($"[RoomUIManager] Post-fade (at activationDelay) ActivateOnly index={toIndex}, panels.Length={postPanels.Length}");
+                    DeactivateOtherBigScenes(currentBigSceneIndex);
                     RoomHelper.ActivateOnly(postPanels, toIndex);
 
                     if (enableDebugLogs)
@@ -202,12 +203,8 @@ namespace X
                     Debug.LogWarning("[RoomUIManager] No panels found to activate during transition.");
                 }
 
-                // 同步實際房間索引（若有） — 也在黑幕下完成
-                if (roomManager != null)
-                {
-                    if (enableDebugLogs) Debug.Log($"[RoomUIManager] Syncing RoomManager.SetRoomIndex({toIndex}) at activationDelay");
-                    roomManager.SetRoomIndex(toIndex);
-                }
+                // 同步當前大場景的世界房間/背景（也在黑幕下完成）
+                ApplyCurrentWorldRooms(toIndex);
 
                 // 等候剩下的過場時間（黑幕停留 + fade out）
                 float remaining = waitTime - activationDelay;
@@ -223,6 +220,7 @@ namespace X
                 if (postPanels != null && postPanels.Length > 0)
                 {
                     if (enableDebugLogs) Debug.Log($"[RoomUIManager] Post-fade ActivateOnly index={toIndex}, panels.Length={postPanels.Length}");
+                    DeactivateOtherBigScenes(currentBigSceneIndex);
                     RoomHelper.ActivateOnly(postPanels, toIndex);
 
                     if (enableDebugLogs)
@@ -247,11 +245,8 @@ namespace X
                     Debug.LogWarning("[RoomUIManager] No panels found to activate after transition.");
                 }
 
-                if (roomManager != null)
-                {
-                    if (enableDebugLogs) Debug.Log($"[RoomUIManager] Syncing RoomManager.SetRoomIndex({toIndex})");
-                    roomManager.SetRoomIndex(toIndex);
-                }
+                // 同步當前大場景的世界房間/背景
+                ApplyCurrentWorldRooms(toIndex);
             }
 
             isTransitioning = false;
@@ -320,7 +315,7 @@ namespace X
             }
         }
 
-        // 在 RoomUIManager 類別內新增 ShowRoom 方法
+        // 顯示房間方法（小場景切換或初始化）
         public void ShowRoom(int roomIndex)
         {
             var panels = GetCurrentPanels();
@@ -329,6 +324,9 @@ namespace X
                 if (enableDebugLogs) Debug.LogWarning("[RoomUIManager] ShowRoom: no panels to show");
                 return;
             }
+
+            // 關閉所有非目標大場景的 panels 與實體世界背景物件（使大場景行為與小場景完全一致）
+            DeactivateOtherBigScenes(currentBigSceneIndex);
 
             // 優先使用當前大場景的 panels
             if (panels != null && panels.Length > 0)
@@ -348,43 +346,20 @@ namespace X
                 currentRoomIndex = idx;
             }
 
-            // 同步實際房間索引（若有）
-            if (roomManager != null)
-            {
-                if (enableDebugLogs) Debug.Log($"[RoomUIManager] ShowRoom: Syncing RoomManager.SetRoomIndex({currentRoomIndex})");
-                roomManager.SetRoomIndex(currentRoomIndex);
-            }
+            // 同步當前大場景的世界房間/背景物件（原生支援，不依賴 roomManager）
+            ApplyCurrentWorldRooms(currentRoomIndex);
         }
 
-        // 新增：進入大場景（切換 bigScenes 的索引並顯示該場景的指定房間）
+        // 進入大場景（切換 bigScenes 的索引並顯示該場景的指定房間）
         public void EnterBigScene(int bigSceneIndex, int startRoomIndex = 0)
         {
             if (bigScenes != null && bigScenes.Count > 0 && bigSceneIndex >= 0 && bigSceneIndex < bigScenes.Count)
             {
-                // 先停用所有 bigScene 的 panels（避免 shared reference 或舊場景殘留）
-                try
-                {
-                    for (int i = 0; i < bigScenes.Count; i++)
-                    {
-                        var bsAll = bigScenes[i];
-                        if (bsAll == null || bsAll.roomPanels == null) continue;
-                        for (int j = 0; j < bsAll.roomPanels.Length; j++)
-                        {
-                            var rt = bsAll.roomPanels[j];
-                            if (rt != null && rt.gameObject != null && rt.gameObject.activeSelf)
-                            {
-                                if (enableDebugLogs) Debug.Log($"[RoomUIManager] Deactivating panel '{rt.gameObject.name}' from bigScene index {i} id={bsAll.id}");
-                                rt.gameObject.SetActive(false);
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.LogWarning($"[RoomUIManager] EnterBigScene: error deactivating other panels: {ex.Message}");
-                }
-
                 currentBigSceneIndex = bigSceneIndex;
+
+                // 關閉其他大場景的所有 UI 面板與實體背景物件
+                DeactivateOtherBigScenes(bigSceneIndex);
+
                 var panels = bigScenes[bigSceneIndex]?.roomPanels;
                 if (panels != null && panels.Length > 0)
                 {
@@ -398,7 +373,7 @@ namespace X
                     RoomHelper.ActivateOnly(panels, idx);
                     EnsureUIPanelVisible(panels[idx].gameObject);
                     currentRoomIndex = idx;
-                    if (roomManager != null) roomManager.SetRoomIndex(idx);
+                    ApplyCurrentWorldRooms(idx);
                     if (enableDebugLogs) Debug.Log($"[RoomUIManager] EnterBigScene: entered bigScene {bigSceneIndex} startRoom {idx} (id={bigScenes[bigSceneIndex].id})");
                     return;
                 }
@@ -411,7 +386,7 @@ namespace X
                 RoomHelper.ActivateOnly(roomPanels, idx);
                 EnsureUIPanelVisible(roomPanels[idx].gameObject);
                 currentRoomIndex = idx;
-                if (roomManager != null) roomManager.SetRoomIndex(idx);
+                ApplyCurrentWorldRooms(idx);
                 if (enableDebugLogs) Debug.Log($"[RoomUIManager] EnterBigScene: fallback startRoom {idx}");
                 return;
             }
@@ -441,7 +416,7 @@ namespace X
             if (enableDebugLogs) Debug.LogWarning($"[RoomUIManager] EnterBigSceneById: no bigScene found with id {bigSceneId}");
         }
 
-        // 新增：以名稱找到 bigScene 並進入（相容需求）
+        // 以名稱找到 bigScene 並進入
         public void EnterBigSceneByName(string sceneName, int startRoomIndex = 0)
         {
             if (string.IsNullOrEmpty(sceneName))
@@ -489,15 +464,12 @@ namespace X
             return null;
         }
 
-        // 只修改 MatchPanel，移除「同名比對」，改為嚴格比對或子物件比對
+        // 嚴格比對或子物件比對 panel
         private bool MatchPanel(RectTransform rt, GameObject panel)
         {
             if (rt == null || panel == null) return false;
-            // 完全相等（首選）
             if (rt.gameObject == panel) return true;
-            // 若 panel 是 rt 的子物件（nextPanel 可能是內層子物件）
             if (panel.transform.IsChildOf(rt.transform)) return true;
-            // 不再以名稱相同視為 match（會造成不同 bigScene 的同名 panel 被誤判）
             return false;
         }
 
@@ -520,7 +492,8 @@ namespace X
                         {
                             currentBigSceneIndex = i;
                             currentRoomIndex = j;
-                            if (roomManager != null) roomManager.SetRoomIndex(j);
+                            DeactivateOtherBigScenes(i);
+                            ApplyCurrentWorldRooms(j);
                             if (enableDebugLogs) Debug.Log($"[RoomUIManager] SyncToPanel: matched bigScene[{i}] room[{j}] for '{panel.name}'");
                             return true;
                         }
@@ -538,7 +511,7 @@ namespace X
                     {
                         currentBigSceneIndex = -1; // use fallback
                         currentRoomIndex = j;
-                        if (roomManager != null) roomManager.SetRoomIndex(j);
+                        ApplyCurrentWorldRooms(j);
                         if (enableDebugLogs) Debug.Log($"[RoomUIManager] SyncToPanel: matched fallback roomPanels[{j}] for '{panel.name}'");
                         return true;
                     }
@@ -568,9 +541,10 @@ namespace X
                         {
                             currentBigSceneIndex = i;
                             currentRoomIndex = j;
+                            DeactivateOtherBigScenes(i);
                             RoomHelper.ActivateOnly(bs.roomPanels, j);
                             EnsureUIPanelVisible(bs.roomPanels[j].gameObject);
-                            if (roomManager != null) roomManager.SetRoomIndex(j);
+                            ApplyCurrentWorldRooms(j);
                             if (enableDebugLogs) Debug.Log($"[RoomUIManager] ActivatePanel: activated bigScene[{i}] room[{j}] for '{panel.name}'");
                             return true;
                         }
@@ -590,7 +564,7 @@ namespace X
                         currentRoomIndex = j;
                         RoomHelper.ActivateOnly(roomPanels, j);
                         EnsureUIPanelVisible(roomPanels[j].gameObject);
-                        if (roomManager != null) roomManager.SetRoomIndex(j);
+                        ApplyCurrentWorldRooms(j);
                         if (enableDebugLogs) Debug.Log($"[RoomUIManager] ActivatePanel: activated fallback roomPanels[{j}] for '{panel.name}'");
                         return true;
                     }
@@ -599,6 +573,70 @@ namespace X
 
             if (enableDebugLogs) Debug.LogWarning($"[RoomUIManager] ActivatePanel: panel '{panel.name}' not found.");
             return false;
+        }
+
+        // 關閉所有非目標大場景的全部 panels 與實體世界背景物件（使大場景行為與小場景完全一致：非目標大場景全部關閉）
+        private void DeactivateOtherBigScenes(int activeSceneIndex)
+        {
+            if (bigScenes == null || bigScenes.Count == 0) return;
+            for (int i = 0; i < bigScenes.Count; i++)
+            {
+                if (i == activeSceneIndex) continue; // 跳過目前要顯示的目標大場景
+                var bs = bigScenes[i];
+                if (bs == null) continue;
+
+                // 1. 關閉非目標大場景的所有 UI Panel
+                if (bs.roomPanels != null)
+                {
+                    for (int j = 0; j < bs.roomPanels.Length; j++)
+                    {
+                        var rt = bs.roomPanels[j];
+                        if (rt != null && rt.gameObject != null && rt.gameObject.activeSelf)
+                        {
+                            if (enableDebugLogs) Debug.Log($"[RoomUIManager] DeactivateOtherBigScenes: hiding panel '{rt.gameObject.name}' (bigScene[{i}])");
+                            rt.gameObject.SetActive(false);
+                        }
+                    }
+                }
+
+                // 2. 關閉非目標大場景的所有世界物件/實體房間/背景 (GameObject)
+                if (bs.worldRooms != null)
+                {
+                    for (int j = 0; j < bs.worldRooms.Length; j++)
+                    {
+                        var go = bs.worldRooms[j];
+                        if (go != null && go.activeSelf)
+                        {
+                            if (enableDebugLogs) Debug.Log($"[RoomUIManager] DeactivateOtherBigScenes: hiding worldRoom '{go.name}' (bigScene[{i}])");
+                            go.SetActive(false);
+                        }
+                    }
+                }
+            }
+        }
+
+        // 同步並切換當前大場景的世界物件 (即使 roomManager 為 null 也直接接管控制)
+        private void ApplyCurrentWorldRooms(int roomIndex)
+        {
+            if (bigScenes != null && currentBigSceneIndex >= 0 && currentBigSceneIndex < bigScenes.Count)
+            {
+                var currentScene = bigScenes[currentBigSceneIndex];
+                if (currentScene != null && currentScene.worldRooms != null && currentScene.worldRooms.Length > 0)
+                {
+                    int idx = Mathf.Clamp(roomIndex, 0, currentScene.worldRooms.Length - 1);
+                    RoomHelper.ActivateOnly(currentScene.worldRooms, idx);
+                }
+            }
+
+            // 若外部有拖入 RoomManager，一併同步其資料以保持相容性
+            if (roomManager != null)
+            {
+                if (bigScenes != null && currentBigSceneIndex >= 0 && currentBigSceneIndex < bigScenes.Count)
+                {
+                    roomManager.rooms = bigScenes[currentBigSceneIndex].worldRooms;
+                }
+                roomManager.SetRoomIndex(roomIndex);
+            }
         }
 
         // 幫助：若目標 panel 的父物件被停用，從上到下啟用需要的 ancestors
@@ -623,6 +661,8 @@ namespace X
                 }
             }
         }
+
+        // 切換至指定大場景與房間（DirectRoomTeleporter 等外部元件呼叫）
         public void TransitionToBigScene(int sceneId, int roomIndex)
         {
             // 1. 找到對應的大場景資料
@@ -637,53 +677,46 @@ namespace X
             currentRoomIndex = roomIndex;
             BigScene data = bigScenes[sceneIdx];
 
-            // 2. 更新 RoomManager 的實體物件陣列 (關鍵修正)
-            if (roomManager != null)
-            {
-                // 直接更換 RoomManager 的 rooms 來源
-                roomManager.rooms = data.worldRooms;
-                // 強制執行一次顯示邏輯
-                roomManager.SetRoomIndex(roomIndex);
-            }
+            // 2. 關閉所有非目標大場景的全部 UI 面板與實體世界物件 (A、B、D 全部關閉)
+            DeactivateOtherBigScenes(sceneIdx);
 
-            // 3. 關閉舊大場景的所有 UI 面板（避免舊場景殘留在畫面上）
-            for (int i = 0; i < bigScenes.Count; i++)
+            // 3. 更新 UI 面板顯示（僅開啟目標大場景的指定房間）
+            if (data.roomPanels != null && data.roomPanels.Length > 0)
             {
-                if (i == sceneIdx) continue; // 跳過目標場景
-                var other = bigScenes[i];
-                if (other == null || other.roomPanels == null) continue;
-                foreach (var rt in other.roomPanels)
+                int pIdx = Mathf.Clamp(roomIndex, 0, data.roomPanels.Length - 1);
+                RoomHelper.ActivateOnly(data.roomPanels, pIdx);
+                if (data.roomPanels[pIdx] != null)
                 {
-                    if (rt != null && rt.gameObject.activeSelf)
-                        rt.gameObject.SetActive(false);
+                    EnsureUIPanelVisible(data.roomPanels[pIdx].gameObject);
                 }
             }
 
-            // 4. 更新 UI 面板顯示（僅開啟目標大場景的指定房間）
-            RoomHelper.ActivateOnly(data.roomPanels, roomIndex);
+            // 4. 更新實體世界物件（僅開啟目標大場景的指定世界房間，其餘關閉；並同步 RoomManager）
+            ApplyCurrentWorldRooms(roomIndex);
 
             if (enableDebugLogs)
                 Debug.Log($"[RoomUIManager] 已切換至大場景: {data.sceneName}, 房間索引: {roomIndex}");
         }
+
+        // 依據傳入的目標 Panel 自動同步大場景與房間
         public void SyncByPanel(GameObject targetPanel)
         {
             if (targetPanel == null) return;
 
             for (int i = 0; i < bigScenes.Count; i++)
             {
+                if (bigScenes[i] == null || bigScenes[i].roomPanels == null) continue;
                 for (int j = 0; j < bigScenes[i].roomPanels.Length; j++)
                 {
-                    if (bigScenes[i].roomPanels[j].gameObject == targetPanel)
+                    if (bigScenes[i].roomPanels[j] != null && bigScenes[i].roomPanels[j].gameObject == targetPanel)
                     {
                         currentBigSceneIndex = i;
                         currentRoomIndex = j;
 
-                        // 同步實體房間物件陣列
-                        if (roomManager != null)
-                        {
-                            roomManager.rooms = bigScenes[i].worldRooms; // 更新陣列來源
-                            roomManager.SetRoomIndex(j); // 切換到對應房間
-                        }
+                        // 關閉其他大場景的所有 UI 面板與實體世界物件
+                        DeactivateOtherBigScenes(i);
+                        RoomHelper.ActivateOnly(bigScenes[i].roomPanels, j);
+                        ApplyCurrentWorldRooms(j);
 
                         if (enableDebugLogs) Debug.Log($"已自動同步至：{bigScenes[i].sceneName} 房間 {j}");
                         return;
@@ -691,7 +724,8 @@ namespace X
                 }
             }
         }
-        // 新增：檢查 Inspector 設定（在 Start 呼叫）
+
+        // 檢查 Inspector 設定（在 Start 呼叫）
         private void ValidateConfiguration()
         {
             if (!enableDebugLogs) return;
@@ -710,7 +744,7 @@ namespace X
                         Debug.LogWarning($"[RoomUIManager] bigScenes[{i}] is null");
                         continue;
                     }
-                    Debug.Log($"[RoomUIManager] bigScene[{i}] id={bs.id} name='{bs.sceneName}' panels={(bs.roomPanels != null ? bs.roomPanels.Length : 0)}");
+                    Debug.Log($"[RoomUIManager] bigScene[{i}] id={bs.id} name='{bs.sceneName}' panels={(bs.roomPanels != null ? bs.roomPanels.Length : 0)} worldRooms={(bs.worldRooms != null ? bs.worldRooms.Length : 0)}");
                     if (seenIds.Contains(bs.id))
                         Debug.LogWarning($"[RoomUIManager] Duplicate bigScene id detected: {bs.id} (index {i})");
                     else

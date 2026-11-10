@@ -34,6 +34,10 @@ namespace X
         [Tooltip("在黑幕完全遮蔽時，會開啟這些UI物件（例如離開特定房間時重新開啟物品欄）")]
         public GameObject[] uiElementsToShow;
 
+        [Header("傳送前清除面板（選填）")]
+        [Tooltip("勾選後，傳送觸發時會自動呼叫 UIPanelManager.ForceCloseAllPanels()，清除所有已開啟的面板及返回按鈕圖片")]
+        public bool closeAllPanelsOnTeleport = true;
+
         [Header("目標傳送設定")]
         [SerializeField] private int targetBigSceneId;    // 畫面上現有的欄位
         [SerializeField] private int targetRoomIndex;     // 畫面上現有的欄位
@@ -99,7 +103,12 @@ namespace X
                 yield return FadeImageAlpha(blackFadeImage, 0f, 1f, fadeDuration);
             }
             
-            // 2. 在黑幕完全遮蔽時切換 UI 物件的顯示/隱藏狀態，避免畫面穿幫
+            // 2. 在黑幕完全遮蔽時，清除面板返回按鈕及切換 UI 物件顯示/隱藏狀態
+            if (closeAllPanelsOnTeleport && UIPanelManager.Instance != null)
+            {
+                UIPanelManager.Instance.ForceCloseAllPanels();
+            }
+
             if (uiElementsToHide != null)
             {
                 foreach (var ui in uiElementsToHide)

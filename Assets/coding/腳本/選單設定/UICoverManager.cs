@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 using System.Collections;
 
 namespace X
@@ -10,7 +11,12 @@ namespace X
         public GameObject settingsPanel;
         public GameObject gamePanel;
         public GameObject overlaySettingsButton; // 設定按鈕（獨立，不會被隱藏）
-        public Slider volumeSlider;
+        [Header("音量控制")]
+        public AudioMixer audioMixer;         // 拖入音效設定.mixer
+        public Slider musicSlider;            // 拖入 Music 音量 Slider
+        public Slider sfxSlider;              // 拖入 SFX 音量 Slider
+        public string musicExposedParam = "MusicVolume";
+        public string sfxExposedParam   = "SFXVolume";
 
         [Header("黑幕效果")]
         public Image blackFadeImage; // 拖入全螢幕Image，預設alpha=0
@@ -91,8 +97,10 @@ namespace X
             // 初始化 UI 狀態：不要在 Start 自動觸發過場（直接設定初始面板）
             InitializePanels();
 
-            if (volumeSlider != null)
-                volumeSlider.onValueChanged.AddListener(SetVolume);
+            if (musicSlider != null)
+                musicSlider.onValueChanged.AddListener(SetMusicVolume);
+            if (sfxSlider != null)
+                sfxSlider.onValueChanged.AddListener(SetSFXVolume);
         }
 
         // 初始化面板（不使用過場）
@@ -557,11 +565,21 @@ namespace X
         {
             Application.Quit();
         }
-
-        // 音量調整
-        public void SetVolume(float value)
+        // Music 音量 (Slider 值 0~1 轉換為 dB)
+        public void SetMusicVolume(float value)
         {
-            AudioListener.volume = value;
+            if (audioMixer != null)
+                audioMixer.SetFloat(musicExposedParam, Mathf.Approximately(value, 0f) ? -80f : Mathf.Log10(value) * 20f);
+        }
+
+        // SFX 音量 (Slider 值 0~1 轉換為 dB)
+        public void SetSFXVolume(float value)
+        {
+            if (audioMixer != null)
+                audioMixer.SetFloat(sfxExposedParam, Mathf.Approximately(value, 0f) ? -80f : Mathf.Log10(value) * 20f);
         }
     }
 }
+
+
+

@@ -341,6 +341,13 @@
       },
       "url": "https://packages.unity.com"
     },
+    "individual.yu-ying-montreal.multi-component-copy-paste-tool": {
+      "version": "1.0.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
     "io.github.hatayama.uloopmcp": {
       "version": "https://github.com/hatayama/unity-cli-loop.git?path=/Packages/src",
       "depth": 0,
