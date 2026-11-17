@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.Events;
@@ -30,6 +30,7 @@ namespace X
         public bool isRepeating = false;
 
         [Header("目標設定")]
+        [Tooltip("計時結束後要切換/關閉的目標物件。若為空則不操作任何目標物件。")]
         public GameObject targetObject;
 
         [Tooltip("計時結束或觸發時，要同時被開啟（SetActive true）並各自開啟的物件。")]
@@ -64,15 +65,8 @@ namespace X
         private Coroutine _timerCoroutine;
         private bool _isProcessing = false;
 
-        private void Reset()
-        {
-            // Inspector 新增元件時，直接預設為自身 GameObject
-            targetObject = gameObject;
-        }
-
         private void Awake()
         {
-            if (targetObject == null) targetObject = gameObject;
             _cachedWait = new WaitForSeconds(duration);
 
             if (useBlackFade)
@@ -144,7 +138,8 @@ namespace X
                         {
                             _isProcessing = false;
                             onTimerEnd?.Invoke();
-                            targetObject.SetActive(!targetObject.activeSelf);
+                            if (targetObject != null)
+                                targetObject.SetActive(!targetObject.activeSelf);
                             // 黑幕轉場中關閉 Panel Return 和 Dialogue
                             UIPanelManager.Instance?.ForceCloseAllPanels();
                             DialogueManager.Instance?.ForceCloseDialogue();
@@ -157,7 +152,8 @@ namespace X
                 {
                     _isProcessing = false;
                     onTimerEnd?.Invoke();
-                    targetObject.SetActive(!targetObject.activeSelf);
+                    if (targetObject != null)
+                        targetObject.SetActive(!targetObject.activeSelf);
                 }
 
                 // 如果是點擊觸發且有包含計時模式，重新啟動計時器以重新倒數
@@ -181,7 +177,8 @@ namespace X
                         {
                             _isProcessing = false;
                             onTimerEnd?.Invoke();
-                            targetObject.SetActive(false);
+                            if (targetObject != null)
+                                targetObject.SetActive(false);
                             if (objectsToEnableOnEnd != null)
                                 foreach (var obj in objectsToEnableOnEnd)
                                     if (obj != null) obj.SetActive(true);
@@ -197,7 +194,8 @@ namespace X
                 {
                     _isProcessing = false;
                     onTimerEnd?.Invoke();
-                    targetObject.SetActive(false);
+                    if (targetObject != null)
+                        targetObject.SetActive(false);
                     if (objectsToEnableOnEnd != null)
                         foreach (var obj in objectsToEnableOnEnd)
                             if (obj != null) obj.SetActive(true);
