@@ -22,11 +22,23 @@ namespace X
         // 可在 Inspector 開啟詳細除錯
         public bool enableDebugLogs = true;
 
+        [Header("Debug 顯示")]
+        [Tooltip("在遊戲畫面左上角顯示目前大場景與房間資訊")]
+        public bool showDebugOverlay = true;
+        [Tooltip("Debug 顯示的字體大小")]
+        public int debugFontSize = 20;
+        [Tooltip("Debug 顯示的位置（左上角為原點）")]
+        public Vector2 debugPosition = new Vector2(10, 10);
+
         // currentBigSceneIndex == -1 表示使用 fallback roomPanels
         private int currentBigSceneIndex = 0;
         private int currentRoomIndex = 0;
 
         private bool isTransitioning = false; // 轉場中禁止輸入
+
+        // OnGUI 樣式（延遲初始化）
+        private GUIStyle _debugStyle;
+        private GUIStyle _debugBgStyle;
 
         public static RoomUIManager Instance { get; private set; }
 
@@ -723,6 +735,80 @@ namespace X
                     }
                 }
             }
+        }
+
+        // ─── Debug 畫面顯示 ───────────────────────────────────────────────
+
+        private void OnGUI()
+        {
+            if (!showDebugOverlay) return;
+
+            // 延遲初始化樣式（OnGUI 中才能建立 GUIStyle）
+            if (_debugStyle == null)
+            {
+                _debugStyle = new GUIStyle(GUI.skin.label)
+                {
+                    fontSize    = debugFontSize,
+                    fontStyle   = FontStyle.Bold,
+                    normal      = { textColor = Color.white },
+                    padding     = new RectOffset(6, 6, 4, 4)
+                };
+            }
+
+            if (_debugBgStyle == null)
+            {
+                var bgTex = new Texture2D(1, 1);
+                bgTex.SetPixel(0, 0, new Color(0f, 0f, 0f, 0.55f));
+                bgTex.Apply();
+                _debugBgStyle = new GUIStyle
+                {
+                    normal = { background = bgTex },
+                    padding = new RectOffset(6, 6, 4, 4)
+                };
+            }
+
+            // 組合顯示文字
+            string bigSceneName = "（無）";
+            int    bigSceneId   = -1;
+            if (bigScenes != null && currentBigSceneIndex >= 0 && currentBigSceneIndex < bigScenes.Count)
+            {
+                var bs = bigScenes[currentBigSceneIndex];
+                if (bs != null)
+                {
+                    bigSceneName = string.IsNullOrEmpty(bs.sceneName) ? $"id={bs.id}" : bs.sceneName;
+                    bigSceneId   = bs.id;
+                }
+            }
+            else if (currentBigSceneIndex == -1)
+            {
+                bigSceneName = "fallback roomPanels";
+            }
+
+            string roomName = "（無）";
+            var panels = GetCurrentPanels();
+            if (panels != null && currentRoomIndex >= 0 && currentRoomIndex < panels.Length)
+            {
+                var rt = panels[currentRoomIndex];
+                if (rt != null) roomName = rt.gameObject.name;
+            }
+            else if (roomPanels != null && currentRoomIndex >= 0 && currentRoomIndex < roomPanels.Length)
+            {
+                var rt = roomPanels[currentRoomIndex];
+                if (rt != null) roomName = rt.gameObject.name;
+            }
+
+            string transitioning = isTransitioning ? "  ⟳ 轉場中" : "";
+            string line1 = $"🗺 大場景：{bigSceneName}  (id={bigSceneId}, idx={currentBigSceneIndex})";
+            string line2 = $"🚪 房間：{roomName}  (idx={currentRoomIndex}){transitioning}";
+            string text  = line1 + "\n" + line2;
+
+            // 計算背景框大小
+            Vector2 size = _debugStyle.CalcSize(new GUIContent(text));
+            Rect bgRect  = new Rect(debugPosition.x - 4, debugPosition.y - 2, size.x + 8, size.y + 4);
+            Rect txtRect = new Rect(debugPosition.x, debugPosition.y, size.x + 8, size.y + 4);
+
+            GUI.Box(bgRect, GUIContent.none, _debugBgStyle);
+            GUI.Label(txtRect, text, _debugStyle);
         }
 
         // 檢查 Inspector 設定（在 Start 呼叫）

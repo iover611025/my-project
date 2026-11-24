@@ -61,9 +61,12 @@ namespace X
                 _handle.anchoredPosition = isOn ? _handleOnPos : _handleOffPos;
                 _backgroundImage.color = isOn ? _onColor : _offColor;
                 _linkedSlider.interactable = isOn;
-                if (!isOn) _linkedSlider.value = _linkedSlider.minValue;
                 _sliderCanvasGroup.alpha = isOn ? 1f : 0.5f;
             }
+
+            // 同步攝影機晃動
+            if (CameraFollowMouse.Instance != null)
+                CameraFollowMouse.Instance.SetSwayActive(isOn);
         }
 
         IEnumerator AnimateToggle(bool isOn)
@@ -90,15 +93,12 @@ namespace X
             float elapsed = 0;
             float startAlpha = _sliderCanvasGroup.alpha;
             float endAlpha = isOn ? 1f : 0.5f;
-            float startVal = _linkedSlider.value;
-            float endVal = isOn ? startVal : _linkedSlider.minValue;
 
             while (elapsed < _animationDuration)
             {
                 elapsed += Time.deltaTime;
                 float t = elapsed / _animationDuration;
                 _sliderCanvasGroup.alpha = Mathf.Lerp(startAlpha, endAlpha, t);
-                if (!isOn) _linkedSlider.value = Mathf.Lerp(startVal, endVal, t);
                 yield return null;
             }
         }

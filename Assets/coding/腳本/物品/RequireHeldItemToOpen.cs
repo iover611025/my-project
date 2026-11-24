@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.Events;
 using System.Collections;
 
 namespace X
@@ -31,6 +32,16 @@ namespace X
         public UICoverManager uiCoverManager; // 如有則使用 UICoverManager 的轉場
         public TransitionType transitionType = TransitionType.Simple;
         public string transitionMessage = "";
+
+        [Header("外部呼叫事件")]
+        [Tooltip("成功用鑰匙開門時觸發（可在 Inspector 拖拉外部方法，或由程式碼訂閱 OnDoorUnlockedAction）。")]
+        public UnityEvent OnDoorUnlocked;
+
+        /// <summary>
+        /// 成功開門時觸發的 C# 事件，供外部腳本以程式碼訂閱。
+        /// <para>範例：<c>door.OnDoorUnlockedAction += MyMethod;</c></para>
+        /// </summary>
+        public event System.Action OnDoorUnlockedAction;
 
         [Header("解鎖條件（可選）")]
         [Tooltip("在 GameStateManager 中必須全數存在的狀態名稱。留空表示無條件可使用。")]
@@ -99,6 +110,8 @@ namespace X
                         doorToggle.SetOpen(true); // 開門（不切回）
                         isOpen = true;
                         Debug.Log("[RequireHeldItemToOpen] 門已開啟！（空手）");
+                        OnDoorUnlocked?.Invoke();
+                        OnDoorUnlockedAction?.Invoke();
                     }
                     else
                     {
@@ -114,6 +127,8 @@ namespace X
                         doorToggle.SetOpen(true); // 開門（不切回）
                         isOpen = true;
                         Debug.Log("[RequireHeldItemToOpen] 門已開啟！");
+                        OnDoorUnlocked?.Invoke();
+                        OnDoorUnlockedAction?.Invoke();
                     }
                     else
                     {

@@ -12,10 +12,40 @@ namespace X
     ///   只使用 IPointerClickHandler，不訂閱 Button.onClick。
     ///   因此不受 DisableButtonClick（會清空 onClick）的影響。
     ///   Button 若被設為 interactable = false，點擊事件才會真正停止。
+    ///
+    /// 播放模式（Inspector 切換）：
+    ///   Overlap  — 允許重疊播放（PlayOneShot 疊加）。
+    ///   NoRepeat — 播放期間忽略新的觸發，clip 播完後才能再次播放。
+    ///   Cooldown — 兩次播放之間需等待固定冷卻時間（秒）。
     /// </summary>
     [RequireComponent(typeof(Graphic))]
     public class PlaySoundOnClick : MonoBehaviour, IPointerClickHandler
     {
+        // ────────────────────────────────────────
+        // 播放模式
+        // ────────────────────────────────────────
+
+        public enum PlayMode
+        {
+            /// <summary>允許重疊播放（每次點擊都播）。</summary>
+            Overlap,
+            /// <summary>播放期間忽略新觸發，clip 播完後才解鎖。</summary>
+            NoRepeat,
+            /// <summary>兩次播放之間需等待固定冷卻時間。</summary>
+            Cooldown
+        }
+
+        [Header("播放模式")]
+        [Tooltip("Overlap：允許重疊播放。\nNoRepeat：播放期間忽略新觸發。\nCooldown：兩次播放需間隔指定秒數。")]
+        [SerializeField] private PlayMode playMode = PlayMode.NoRepeat;
+
+        [Tooltip("【Cooldown 模式】兩次播音之間的最短間隔（秒）。")]
+        [SerializeField, Min(0f)] private float cooldown = 0.5f;
+
+        // ────────────────────────────────────────
+        // 音效設定
+        // ────────────────────────────────────────
+
         [Header("音效")]
         [Tooltip("點擊時播放的音效。")]
         [SerializeField] private AudioClip clip;
@@ -23,11 +53,19 @@ namespace X
         [Tooltip("音量（0 ~ 1）")]
         [SerializeField, Range(0f, 1f)] private float volume = 1f;
 
-        [Header("冷卻（選填）")]
-        [Tooltip("兩次播音之間最短間隔。設為 0 則無限制。")]
-        [SerializeField, Min(0f)] private float cooldown = 0f;
+        // ────────────────────────────────────────
+        // 內部狀態
+        // ────────────────────────────────────────
 
+        /// <summary>NoRepeat 模式：clip 預計播放結束的 Time.time。</summary>
+        private float _playEndTime = -1f;
+
+        /// <summary>Cooldown 模式：上次成功播放的 Time.time。</summary>
         private float _lastPlayTime = -999f;
+
+        // ────────────────────────────────────────
+        // Unity
+        // ────────────────────────────────────────
 
         private void Awake()
         {
@@ -71,9 +109,22 @@ namespace X
         {
             if (target == null) return;
 
-            // 冷卻檢查
-            if (cooldown > 0f && Time.time - _lastPlayTime < cooldown) return;
-            _lastPlayTime = Time.time;
+            switch (playMode)
+            {
+                case PlayMode.NoRepeat:
+                    // 播放保護：clip 尚未播完則忽略
+                    if (Time.time < _playEndTime) return;
+                    _playEndTime = Time.time + target.length;
+                    break;
+
+                case PlayMode.Cooldown:
+                    // 冷卻檢查：距上次播放未超過冷卻時間則忽略
+                    if (Time.time - _lastPlayTime < cooldown) return;
+                    _lastPlayTime = Time.time;
+                    break;
+
+                // PlayMode.Overlap：無限制，直接播
+            }
 
             if (SFXManager.Instance != null)
             {
