@@ -9213,8 +9213,8 @@ RectTransform:
   m_Children:
   - {fileID: 1740788938}
   - {fileID: 684454323}
-  - {fileID: 703639750}
   - {fileID: 175972995}
+  - {fileID: 703639750}
   - {fileID: 328795298}
   - {fileID: 1682618799}
   m_Father: {fileID: 0}
@@ -9797,7 +9797,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9921569, g: 0.8862746, b: 0.73333335, a: 1}
+  m_Color: {r: 0.83921576, g: 0.83921576, b: 0.83921576, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -12784,7 +12784,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &488668394
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12825,7 +12825,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -4493377935930531221, guid: 20f46b61360299f4e8b9e5c76c9889ec, type: 3}
+  m_Sprite: {fileID: 3105764586970837610, guid: 4930d1cc6d00cff4dbf4411217f99384, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -17953,6 +17953,9 @@ MonoBehaviour:
   searchRoot: {fileID: 168179839}
   mode: 0
   startRevealed: 0
+  autoCloseOnSceneChange: 1
+  autoCloseOnObjectClick: 1
+  imageToggle: {fileID: 0}
 --- !u!114 &668708379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18954,6 +18957,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::X.ClueBook
   switcher: {fileID: 703639754}
   unlocker: {fileID: 703639755}
+  jumpToBigScenePageOnEnable: 1
+  respectPageUnlocks: 1
+  bigScenePages:
+  - bigSceneId: 2
+    sceneName: 
+    sequenceIndex: 0
+    pageIndex: 1
 --- !u!1 &712117922
 GameObject:
   m_ObjectHideFlags: 0
@@ -26890,7 +26900,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &986154882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47567,7 +47577,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!223 &1695025079
 Canvas:
   m_ObjectHideFlags: 0
@@ -49505,8 +49515,8 @@ MonoBehaviour:
   _linkedSlider: {fileID: 739913049}
   _sliderCanvasGroup: {fileID: 739913050}
   _animationDuration: 0.2
-  _onColor: {r: 1, g: 1, b: 0.83921576, a: 1}
-  _offColor: {r: 0.56078434, g: 0.3372549, b: 0.30980393, a: 1}
+  _onColor: {r: 0.6627451, g: 0.4784314, b: 0.47450984, a: 1}
+  _offColor: {r: 0.7019608, g: 0.5882353, b: 0.5019608, a: 1}
 --- !u!1 &1774466428
 GameObject:
   m_ObjectHideFlags: 0
@@ -49900,7 +49910,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 2103991499}
+      - m_Target: {fileID: 1562183094}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
         m_Mode: 6
@@ -49916,6 +49926,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: BreathingCanvasGroup, Assembly-CSharp
         m_MethodName: Play
         m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 2103991499}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -52543,7 +52565,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.50980395, g: 0.33333334, b: 0.3137255, a: 1}
+  m_Color: {r: 0.7019608, g: 0.5882353, b: 0.5019608, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

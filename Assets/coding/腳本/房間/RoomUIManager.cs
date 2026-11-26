@@ -44,10 +44,12 @@ namespace X
 
         public int CurrentBigSceneIndex => currentBigSceneIndex;
         public int CurrentRoomIndex => currentRoomIndex;
+        public BigScene CurrentBigScene =>
+            (bigScenes != null && currentBigSceneIndex >= 0 && currentBigSceneIndex < bigScenes.Count)
+                ? bigScenes[currentBigSceneIndex]
+                : null;
         public int CurrentBigSceneId =>
-            (bigScenes != null && currentBigSceneIndex >= 0 && currentBigSceneIndex < bigScenes.Count && bigScenes[currentBigSceneIndex] != null)
-                ? bigScenes[currentBigSceneIndex].id
-                : -1;
+            CurrentBigScene != null ? CurrentBigScene.id : -1;
 
         void Awake()
         {

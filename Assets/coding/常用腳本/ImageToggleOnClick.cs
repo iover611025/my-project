@@ -31,6 +31,18 @@ namespace X
                 _originalSprite = targetImage.sprite;
         }
 
+        /// <summary>目前是否正在顯示第二張圖。</summary>
+        public bool IsUsingSecond => _isUsingSecond;
+
+        /// <summary>直接設定是否顯示第二張圖（供外部腳本同步狀態使用）。</summary>
+        public void SetUsingSecond(bool useSecond)
+        {
+            if (targetImage == null || sprite2 == null) return;
+
+            _isUsingSecond = useSecond;
+            targetImage.sprite = useSecond ? sprite2 : _originalSprite;
+        }
+
         public void OnPointerClick(PointerEventData eventData)
         {
             if (targetImage == null || sprite2 == null) return;
