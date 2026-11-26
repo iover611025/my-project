@@ -3964,7 +3964,7 @@ MonoBehaviour:
   holdDuration: 0.5
   minAlpha: 0
   maxAlpha: 1
-  triggerAfterCycles: 5
+  triggerAfterCycles: 4
   stopAfterTrigger: 0
   onCycleTargetReached:
     m_PersistentCalls:
@@ -8242,7 +8242,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u5730\u677F\u4E0A\u7684\u6B7B\u8005\u7269\u54C1\n\u8173\u5370\n\u5DE6\u908A\u684C\u4E0A\u7684\u66F8\n\u5DE6\u908A\u684C\u4E0A\u7684\u82B1\u76C6\n\u53F3\u908A\u684C\u4E0A\u7684\u8774\u8776\u73BB\u7483\u7F69\n\u82B1\u5703\n\u66F8\u6AC3\n\u4FDD\u96AA\u7BB1\u8DDF\u88E1\u9762\u7684\u7269\u54C1\uFF08\u5047\u8A2D\u6709\u7684\u8A71\uFF09\n\u5531\u7247\u6A5F"
+  m_text: "\u5730\u677F\u4E0A\u7684\u6B7B\u8005\u7269\u54C1\n\u5169\u500B\u8173\u5370\n\u5DE6\u908A\u684C\u4E0A\u7684\u66F8\n\u5DE6\u908A\u684C\u4E0A\u7684\u82B1\u76C6\n\u53F3\u908A\u684C\u4E0A\u7684\u8774\u8776\u73BB\u7483\u7F69\n\u82B1\u5703\n\u66F8\u6AC3\n\u4FDD\u96AA\u7BB1\u8DDF\u88E1\u9762\u7684\u7269\u54C1\uFF08\u5047\u8A2D\u6709\u7684\u8A71\uFF09\n\u5531\u7247\u6A5F\uFF08\u611F\u89BA\u53EF\u4EE5\u6700\u5F8C\u518D\u8ABF\u67E5\uFF09"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4a6f7294fd1d7af438aea8d3e17c5cc2, type: 2}
   m_sharedMaterial: {fileID: -5894997467271640437, guid: 4a6f7294fd1d7af438aea8d3e17c5cc2, type: 2}
@@ -10678,8 +10678,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4970ae9148b51be479314d823b1b9d6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreathingCanvasGroup
-  fadeDuration: 0.39
-  holdDuration: 1.8
+  fadeDuration: 0.8
+  holdDuration: 8
   minAlpha: 0
   maxAlpha: 1
   triggerAfterCycles: 0
@@ -12784,7 +12784,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &488668394
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16010,7 +16010,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90.01}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1427, y: 175}
+  m_AnchoredPosition: {x: 1282, y: -100}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &569305208
@@ -17636,8 +17636,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4970ae9148b51be479314d823b1b9d6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreathingCanvasGroup
-  fadeDuration: 0.39
-  holdDuration: 1.8
+  fadeDuration: 0.8
+  holdDuration: 9
   minAlpha: 0
   maxAlpha: 1
   triggerAfterCycles: 0
@@ -30260,7 +30260,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: f1c811ff1fd927a49b6eda5fc9da63c4, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.07
+  m_Volume: 0.08
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -33729,8 +33729,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4970ae9148b51be479314d823b1b9d6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreathingCanvasGroup
-  fadeDuration: 0.39
-  holdDuration: 1.8
+  fadeDuration: 0.8
+  holdDuration: 9
   minAlpha: 0
   maxAlpha: 1
   triggerAfterCycles: 0
@@ -39433,8 +39433,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4970ae9148b51be479314d823b1b9d6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreathingCanvasGroup
-  fadeDuration: 0.39
-  holdDuration: 1.8
+  fadeDuration: 0.8
+  holdDuration: 8
   minAlpha: 0
   maxAlpha: 1
   triggerAfterCycles: 0
@@ -43160,7 +43160,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -50738,7 +50738,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.43137255}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.7058824}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -51424,7 +51424,7 @@ MonoBehaviour:
   holdDuration: 0.5
   minAlpha: 0
   maxAlpha: 1
-  triggerAfterCycles: 5
+  triggerAfterCycles: 4
   stopAfterTrigger: 1
   onCycleTargetReached:
     m_PersistentCalls:
