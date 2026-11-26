@@ -14,6 +14,7 @@ namespace X
 
         private Vector3 initialPosition;
         private Vector3 velocity = Vector3.zero;
+        private bool _isSwayPaused = false;
 
         void Awake() { Instance = this; } // 確保初始化
 
@@ -21,10 +22,10 @@ namespace X
 
         void Update()
         {
-            // 即使 isSwaying 為 false，也要跑 SmoothDamp 讓它平滑回正
+            // 即使 isSwaying 為 false 或暫停中，也要跑 SmoothDamp 讓它平滑回正
             Vector3 targetPos = initialPosition;
 
-            if (isSwaying)
+            if (isSwaying && !_isSwayPaused)
             {
                 Vector2 mousePos = Input.mousePosition;
                 float x = (mousePos.x / Screen.width - 0.5f) * 2f;
@@ -36,6 +37,7 @@ namespace X
         }
 
         public void SetSwayActive(bool active) => isSwaying = active;
+        public void SetSwayPaused(bool paused) => _isSwayPaused = paused;
         public void SetSwayAmount(float val) => moveAmount = val;
     }
 }

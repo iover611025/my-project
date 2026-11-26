@@ -93,7 +93,7 @@ namespace X
             }
             else
             {
-                if (CameraFollowMouse.Instance != null) CameraFollowMouse.Instance.SetSwayActive(true);
+                if (CameraFollowMouse.Instance != null) CameraFollowMouse.Instance.SetSwayPaused(false);
                 if (_activeReturnObj != null) _activeReturnObj.SetActive(false);
                 IsBlockingInput = false;
             }
@@ -128,10 +128,10 @@ namespace X
                 _activeReturnObj.SetActive(false);
             }
 
-            // 恢復攝影機晃動
+            // 解除面板暫停攝影機晃動（保留玩家原本的設定）
             if (CameraFollowMouse.Instance != null)
             {
-                CameraFollowMouse.Instance.SetSwayActive(true);
+                CameraFollowMouse.Instance.SetSwayPaused(false);
             }
 
             // 解除輸入阻擋

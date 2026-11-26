@@ -29,10 +29,10 @@ namespace X
         {
             if (panelToOpen == null) return;
 
-            // 執行關閉晃動
+            // 暫停晃動（不覆蓋玩家的設定開關）
             if (disableSwayOnOpen && CameraFollowMouse.Instance != null)
             {
-                CameraFollowMouse.Instance.SetSwayActive(false);
+                CameraFollowMouse.Instance.SetSwayPaused(true);
             }
 
             UIPanelManager.Instance.PushPanel(panelToOpen, this);
