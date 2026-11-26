@@ -42,6 +42,13 @@ namespace X
 
         public static RoomUIManager Instance { get; private set; }
 
+        public int CurrentBigSceneIndex => currentBigSceneIndex;
+        public int CurrentRoomIndex => currentRoomIndex;
+        public int CurrentBigSceneId =>
+            (bigScenes != null && currentBigSceneIndex >= 0 && currentBigSceneIndex < bigScenes.Count && bigScenes[currentBigSceneIndex] != null)
+                ? bigScenes[currentBigSceneIndex].id
+                : -1;
+
         void Awake()
         {
             // 確保場景中只有一個 RoomUIManager 實例

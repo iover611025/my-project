@@ -45,6 +45,9 @@ TagManager:
   - name: CloseUp
     uniqueID: 4077718769
     locked: 0
+  - name: CloseUP2
+    uniqueID: 387315753
+    locked: 0
   - name: UI
     uniqueID: 3936507255
     locked: 0

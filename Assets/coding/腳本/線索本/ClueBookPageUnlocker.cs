@@ -369,26 +369,30 @@ namespace X
         private SequenceUnlockConfig FindSequenceCfg(int seqIndex)
             => sequenceConfigs.Find(c => c.sequenceIndex == seqIndex);
 
-#if UNITY_EDITOR
-        // ──────────────────────────────────────────────
-        // Editor 工具（僅在 Editor 中可用）
-        // ──────────────────────────────────────────────
-
         /// <summary>
-        /// 清除所有 PlayerPrefs 解鎖存檔（Editor 測試用，Runtime 請勿呼叫）。
+        /// 清除此線索本的所有 PlayerPrefs 解鎖存檔（並重置執行期解鎖狀態）。
         /// </summary>
-        [ContextMenu("🗑 清除所有解鎖存檔（Editor Only）")]
+        [ContextMenu("🗑 清除所有解鎖存檔")]
         public void ClearAllSaveData()
         {
             foreach (var seqCfg in sequenceConfigs)
             {
+                seqCfg.isUnlocked = false;
                 PlayerPrefs.DeleteKey(SeqKey(seqCfg.sequenceIndex));
                 foreach (var pageCfg in seqCfg.pages)
+                {
+                    pageCfg.isUnlocked = false;
                     PlayerPrefs.DeleteKey(PageKey(seqCfg.sequenceIndex, pageCfg.pageIndex));
+                }
             }
             PlayerPrefs.Save();
             Debug.Log("[ClueBookPageUnlocker] 所有解鎖存檔已清除。");
         }
+
+#if UNITY_EDITOR
+        // ──────────────────────────────────────────────
+        // Editor 工具（僅在 Editor 中可用）
+        // ──────────────────────────────────────────────
 
         /// <summary>
         /// 解鎖所有頁籤與頁面（Editor 測試用）。

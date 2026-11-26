@@ -45,6 +45,15 @@ namespace X
 
         private void OnToggleChanged(bool isOn) => ApplyState(isOn, true);
 
+        public bool IsOn => _toggle != null && _toggle.isOn;
+
+        public void SetStateImmediate(bool isOn)
+        {
+            if (_toggle == null) return;
+            _toggle.SetIsOnWithoutNotify(isOn);
+            ApplyState(isOn, false);
+        }
+
         private void ApplyState(bool isOn, bool animate)
         {
             if (_toggleCoroutine != null) StopCoroutine(_toggleCoroutine);

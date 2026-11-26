@@ -73,5 +73,28 @@ namespace X
             }
             return true;
         }
+
+        /// <summary>
+        /// 清空所有已解鎖的遊戲狀態（用於重新開始／重玩遊戲）。
+        /// </summary>
+        public void ClearAllStates()
+        {
+            _unlockedStates.Clear();
+            Debug.Log("[GameStateManager] 已清空所有遊戲狀態。");
+        }
+
+        /// <summary>
+        /// 場景重載前釋放 DontDestroyOnLoad 舊實例，避免新場景的實例在 Awake 被當成重複項刪除，
+        /// 導致新場景內 UnityEvent 綁定出現 Missing (Object)。
+        /// </summary>
+        public static void ReleaseForReload()
+        {
+            if (_instance != null)
+            {
+                var go = _instance.gameObject;
+                _instance = null;
+                Destroy(go);
+            }
+        }
     }
 }

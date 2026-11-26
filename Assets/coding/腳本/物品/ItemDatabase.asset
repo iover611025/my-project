@@ -49,3 +49,23 @@ MonoBehaviour:
     itemName: "\u5531\u7247\u788E\u72473"
     icon: {fileID: 306347198828393010, guid: 387bdf8d0bc621d42bfae20ff45d65d2, type: 3}
     pickupDescription: "\u5531\u7247\u788E\u6389"
+  - id: 10
+    itemName: "\u53F3\u62BD\u5C5C\u9470\u5319"
+    icon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    pickupDescription: "\u53F3\u62BD\u5C5C\u9470\u5319"
+  - id: 11
+    itemName: "\u6B98\u7F3Aa"
+    icon: {fileID: 326040671410330308, guid: 1add5b73410c3ce4795a3c0a166831df, type: 3}
+    pickupDescription: "\u788E\u72471"
+  - id: 12
+    itemName: "\u6B98\u7F3Ab"
+    icon: {fileID: 3503534600844118387, guid: c858bac04c5fd084a9ce4e9a0a9bfddb, type: 3}
+    pickupDescription: "\u788E\u72472"
+  - id: 13
+    itemName: "\u6B98\u7F3Ac"
+    icon: {fileID: -4631655210615950538, guid: 654eb25e9f1b79647a75234cc2fd04bc, type: 3}
+    pickupDescription: "\u788E\u72473"
+  - id: 14
+    itemName: "\u62FC\u5716\u76D2\u9470\u5319"
+    icon: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
+    pickupDescription: "\u62FC\u5716\u76D2\u9470\u5319"

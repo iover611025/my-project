@@ -49,6 +49,16 @@ namespace X
         public bool IsFading { get { return _isFading; } }
         public static bool GlobalIsFading { get { return _globalIsFading; } }
 
+        public static void ResetGlobalFadeState()
+        {
+            _globalIsFading = false;
+        }
+
+        void Awake()
+        {
+            _globalIsFading = false;
+        }
+
         void Start()
         {
             // 初始化黑幕（確保可見性與 alpha=0）
@@ -170,6 +180,7 @@ namespace X
                 // 若沒設黑幕Image則直接切換
                 if (fromPanel != null) fromPanel.SetActive(false);
                 if (toPanel != null) toPanel.SetActive(true);
+                if (toPanel == gamePanel) GameInitializer.ApplyPendingBigSceneIfAny();
                 // 更新 lastActivePanel
                 if (toPanel != null) lastActivePanel = toPanel;
                 yield break;
@@ -200,6 +211,7 @@ namespace X
             // 切換面板
             if (fromPanel != null) fromPanel.SetActive(false);
             if (toPanel != null) toPanel.SetActive(true);
+            if (toPanel == gamePanel) GameInitializer.ApplyPendingBigSceneIfAny();
 
             if (toPanel != null) lastActivePanel = toPanel;
 
@@ -399,6 +411,7 @@ namespace X
             if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
             if (settingsPanel != null) settingsPanel.SetActive(false);
             if (gamePanel != null) gamePanel.SetActive(true);
+            GameInitializer.ApplyPendingBigSceneIfAny();
 
             lastActivePanel = gamePanel;
             if (overlaySettingsButton != null)

@@ -110,5 +110,18 @@ namespace X
                 transitionCanvasGroup.alpha = active ? 1f : 0f;
             }
         }
+
+        /// <summary>
+        /// 場景重載前釋放 DontDestroyOnLoad 舊實例，避免新場景的實例在 Awake 被刪除而產生 Missing 引用。
+        /// </summary>
+        public static void ReleaseForReload()
+        {
+            if (Instance != null)
+            {
+                var go = Instance.gameObject;
+                Instance = null;
+                Destroy(go);
+            }
+        }
     }
 }
